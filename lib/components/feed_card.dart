@@ -8,6 +8,7 @@ import 'package:musedme/utils/app_colors.dart';
 import 'package:musedme/utils/constants.dart';
 
 import '../widgets/button_widget.dart';
+import '../widgets/glass_morphism.dart';
 import '../widgets/text_widget.dart';
 
 class FeedCard extends StatelessWidget {
@@ -52,9 +53,20 @@ class FeedCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10,),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(Constants.coverImage, height: 250, fit: BoxFit.cover,),
+          Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(Constants.coverImage, height: 250, fit: BoxFit.cover,),
+              ),
+
+              const GlassMorphism(
+                start: 0.3,
+                end: 0.3,
+                child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 60),
+              )
+            ],
           ),
           const SizedBox(height: 20,),
           const Padding(
@@ -75,7 +87,7 @@ class FeedCard extends StatelessWidget {
                   text: "34 comments",
                   icon: Assets.iconsComment,
                 ),
-                 Spacer(),
+                 const Spacer(),
                  ButtonWidget(
                   onPressed: () => null,
                   text: "Share",

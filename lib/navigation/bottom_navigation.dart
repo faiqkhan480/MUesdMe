@@ -5,6 +5,7 @@ import 'package:musedme/utils/app_colors.dart';
 import 'package:musedme/widgets/text_widget.dart';
 
 import '../generated/assets.dart';
+import '../screens/videos_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   List<String> menu = ["Feed", "Videos", "Favorites", "Messages", "Profile"];
-  int currIndex = 0;
+  int currIndex = 1;
 
   void handleTap(int index) {
     setState(() {
@@ -30,7 +31,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         index: currIndex,
         children: [
           const FeedScreen(),
-          Container(),
+          const VideosScreen(),
           Container(),
           Container(),
           Container(),
