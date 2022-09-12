@@ -23,8 +23,15 @@ class _FeedScreenState extends State<FeedScreen> {
       body: Column(
         children: [
           header(),
-
-          const FeedCard(),
+          const SizedBox(height: 20,),
+          Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  itemBuilder: (context, index) => const FeedCard(),
+                  separatorBuilder: (context, index) => const SizedBox(height: 20),
+                  itemCount: 4
+              )
+          ),
         ],
       ),
     );
@@ -124,7 +131,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       Center(child: SvgPicture.asset(Assets.iconsAdd)) :
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network("https://cdn.hswstatic.com/gif/play/0b7f4e9b-f59c-4024-9f06-b3dc12850ab7-1920-1080.jpg",
+                        child: Image.network(Constants.dummyImage,
                           fit: BoxFit.cover,),
                       ),
                     ),
