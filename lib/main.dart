@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:musedme/screens/feed_screen.dart';
 
+import 'navigation/bottom_navigation.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'Larsseit'
       ),
-      home: const FeedScreen(),
+      home: const BottomNavigation(),
     );
   }
 }
