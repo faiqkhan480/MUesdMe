@@ -31,7 +31,7 @@ class Header extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
-          boxShadow: showShadow ? [BoxShadow(
+          boxShadow: showShadow ? [const BoxShadow(
               color: AppColors.shadowColor,
               blurRadius: 8
           )] : null
@@ -77,7 +77,9 @@ class Header extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8)
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                      textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+                      textStyle: const TextStyle(fontSize: 12,
+                          color: Colors.white,
+                          fontFamily: Constants.fontFamily)
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

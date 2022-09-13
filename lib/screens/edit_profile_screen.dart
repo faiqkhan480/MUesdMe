@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../components/content_edit_card.dart';
 import '../components/custom_header.dart';
+import '../components/email_pass_card.dart';
 import '../components/header.dart';
 import '../components/social_links.dart';
+import '../components/user_info.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
@@ -26,13 +29,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children:  [
           const CustomHeader(title: "Edit Profile"),
 
-          const SizedBox(height: 80,),
+          const SizedBox(height: 60,),
 
           Flexible(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
                 child: Column(
                   children: [
+                    const GeneralInfo(),
+
+                    const SizedBox(height: 20,),
+
+                    const ContentEditCard(),
+
+                    const SizedBox(height: 20,),
+
+                    const EmailPasswordCard(),
+
+                    const SizedBox(height: 20,),
+
                     SocialLinks(
                       val1: connectTwitter,
                       val2: connectFacebook,

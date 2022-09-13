@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'Larsseit'
       ),
-      home: const EditProfileScreen(),
-      // home: const BottomNavigation(),
+      // home: const EditProfileScreen(),
+      home: const BottomNavigation(),
     );
   }
 }

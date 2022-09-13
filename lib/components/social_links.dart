@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:musedme/utils/assets.dart';
-import 'package:musedme/widgets/text_widget.dart';
 
+import '../utils/assets.dart';
+import '../widgets/text_widget.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
+import '../widgets/shadowed_box.dart';
 
 class SocialLinks extends StatelessWidget {
 
@@ -24,15 +25,7 @@ class SocialLinks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [BoxShadow(
-              color: AppColors.shadowColor,
-              blurRadius: 4
-          )]
-      ),
+    return ShadowedBox(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,12 +36,15 @@ class SocialLinks extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: SvgPicture.asset(index == 0 ? Assets.iconsTwitter : index == 1 ? Assets.iconsFacebook : Assets.iconsGoogle,
-                    height: 20,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: SvgPicture.asset(index == 0 ? Assets.iconsTwitter : index == 1 ? Assets.iconsFacebook : Assets.iconsGoogle,
+                      height: 20,
+                    ),
                   ),
                 ),
                 Expanded(
-                    flex: 4,
+                    flex: index < 2 ? 6 : 5,
                     child: TextWidget(index == 0 ?  "Twitter" : index == 1 ? "Facebook" : "Google Plus",)),
                 if(index < 2)
                   Expanded(
@@ -77,7 +73,7 @@ class SocialLinks extends StatelessWidget {
                               child: const Text("Connect"),
                             ),
                           ),
-                          Icon(Icons.arrow_forward_ios_rounded)
+                          const Icon(Icons.arrow_forward_ios_rounded)
                         ],
                       )
                   ),

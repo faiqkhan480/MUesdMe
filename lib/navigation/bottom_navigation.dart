@@ -17,7 +17,7 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   List<String> menu = ["Feed", "Videos", "Favorites", "Messages", "Profile"];
-  int currIndex = 4;
+  int currIndex = 0;
 
   void handleTap(int index) {
     setState(() {
