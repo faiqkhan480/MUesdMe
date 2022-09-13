@@ -82,6 +82,7 @@ flutter:
       - asset: assets/fonts/Larsseit/Larsseit-Thin.otf
       - asset: assets/fonts/Larsseit/Larsseit-Light.otf
       - asset: assets/fonts/Larsseit/Larsseit.otf
+        weight: 400
       - asset: assets/fonts/Larsseit/Larsseit-Medium.otf
       - asset: assets/fonts/Larsseit/Larsseit-Bold.otf
       - asset: assets/fonts/Larsseit/Larsseit-ExtraBold.otf
