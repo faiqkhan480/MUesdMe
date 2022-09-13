@@ -37,7 +37,11 @@ class ButtonWidget extends StatelessWidget {
             SvgPicture.asset(icon!),
             const SizedBox(width: 5,),
           ],
-          Text(text),
+          TextWidget(text,
+            color: textColor,
+            size: 12,
+            weight: FontWeight.w500,
+          ),
         ],
       ),
     );

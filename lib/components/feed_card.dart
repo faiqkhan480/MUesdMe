@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:musedme/generated/assets.dart';
 import 'package:musedme/utils/app_colors.dart';
 import 'package:musedme/utils/constants.dart';
@@ -12,7 +12,13 @@ import '../widgets/glass_morphism.dart';
 import '../widgets/text_widget.dart';
 
 class FeedCard extends StatelessWidget {
-  const FeedCard({Key? key}) : super(key: key);
+  final double? horizontalSpace;
+  final bool isVideo;
+  const FeedCard({
+    Key? key,
+    this.horizontalSpace,
+    this.isVideo = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +31,7 @@ class FeedCard extends StatelessWidget {
               blurRadius: 4
           )]
       ),
+      margin: EdgeInsets.symmetric(horizontal: horizontalSpace ?? 0),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -56,12 +63,28 @@ class FeedCard extends StatelessWidget {
           Stack(
             alignment: AlignmentDirectional.center,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(Constants.coverImage, height: 250, fit: BoxFit.cover,),
+              Badge(
+                shape: BadgeShape.square,
+                // badgeColor: Colors.black26,
+                borderRadius: BorderRadius.circular(8),
+                position: BadgePosition.topEnd(top: 12, end: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                badgeContent: Row(
+                  children: [
+                    SvgPicture.asset(Assets.iconsEye),
+                    const SizedBox(width: 5,),
+                    const TextWidget("3m views", color: Colors.white, weight: FontWeight.w300,),
+                  ],
+                ),
+                elevation: 0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(Constants.coverImage, height: 250, fit: BoxFit.cover,),
+                ),
               ),
 
-              const GlassMorphism(
+              if(isVideo)
+                const GlassMorphism(
                 start: 0.3,
                 end: 0.3,
                 child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 60),

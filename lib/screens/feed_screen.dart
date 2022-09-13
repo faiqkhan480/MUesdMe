@@ -26,7 +26,7 @@ class _FeedScreenState extends State<FeedScreen> {
           Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  itemBuilder: (context, index) => const FeedCard(),
+                  itemBuilder: (context, index) => FeedCard(isVideo: index != 0),
                   separatorBuilder: (context, index) => const SizedBox(height: 20),
                   itemCount: 4
               )
