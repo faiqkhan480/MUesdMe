@@ -71,7 +71,7 @@ class TodayPicks extends StatelessWidget {
                     ),
                   ),
 
-                  GlassMorphism(
+                  const GlassMorphism(
                     start: 0.3,
                     end: 0.3,
                     child: Icon(Icons.play_arrow_rounded, color: Colors.white),

@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 class GlassMorphism extends StatelessWidget {
   final Widget child;
-  final double start;
-  final double end;
+  final double? start;
+  final double? end;
   const GlassMorphism({
     Key? key,
     required this.child,
-    required this.start,
-    required this.end,
+    this.start,
+    this.end,
   }) : super(key: key);
 
   @override
@@ -24,8 +24,8 @@ class GlassMorphism extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.white.withOpacity(start),
-                Colors.white.withOpacity(end),
+                Colors.white.withOpacity(start ?? 0.3),
+                Colors.white.withOpacity(end ?? 0.3),
               ],
               begin: AlignmentDirectional.topStart,
               end: AlignmentDirectional.bottomEnd,

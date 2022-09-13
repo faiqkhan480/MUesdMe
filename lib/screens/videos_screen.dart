@@ -6,6 +6,7 @@ import 'package:musedme/widgets/text_widget.dart';
 
 import '../components/header.dart';
 import '../components/todays_picks.dart';
+import '../components/trending_card.dart';
 
 class VideosScreen extends StatefulWidget {
   const VideosScreen({Key? key}) : super(key: key);
@@ -46,6 +47,10 @@ class _VideosScreenState extends State<VideosScreen> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 children: const [
+                  TrendingCard(),
+
+                  SizedBox(height: 20,),
+
                   FeedCard(),
 
                   ListTile(
