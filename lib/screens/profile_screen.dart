@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:musedme/screens/edit_profile_screen.dart';
 
 import '../components/feed_card.dart';
 import '../components/header.dart';
 import '../components/info_card.dart';
-import '../generated/assets.dart';
+import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../widgets/text_widget.dart';
 
@@ -22,6 +24,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     "Videos"
   ];
 
+  handleClick() {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditProfileScreen(),));
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -30,7 +36,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.blue,
         body: Column(
           children: [
-            const Header(title: "Profile", isProfile: true, showShadow: false,),
+            Header(
+              title: "Profile",
+              isProfile: true,
+              showShadow: false,
+              action: handleClick,
+            ),
             // const SizedBox(height: 20,),
             Flexible(
               child: SingleChildScrollView(

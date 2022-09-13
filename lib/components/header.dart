@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../generated/assets.dart';
+import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
@@ -14,13 +14,15 @@ class Header extends StatelessWidget {
     required this.title,
     this.showLives = false,
     this.showShadow = true,
-    this.isProfile = false
+    this.isProfile = false,
+    this.action
   }) : super(key: key);
 
   final String title;
   final bool showLives;
   final bool showShadow;
   final bool isProfile;
+  final VoidCallback? action;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class Header extends StatelessWidget {
                 ),
                 const SizedBox(width: 15),
                 TextButton(
-                  onPressed: () => null,
+                  onPressed: action,
                   style: TextButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
                       foregroundColor: Colors.white,

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../generated/assets.dart';
+import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../widgets/text_widget.dart';
@@ -37,7 +37,6 @@ class InfoCard extends StatelessWidget {
                     color: AppColors.lightGrey,
                     iconSize: 30,
                     icon: const Icon(CupertinoIcons.ellipsis)
-                    // icon: const Icon(Icons.more_horiz_rounded,)
                 ),
               ),
               const SizedBox(height: 5,),

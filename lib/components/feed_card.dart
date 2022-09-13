@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:musedme/generated/assets.dart';
+import 'package:musedme/utils/assets.dart';
 import 'package:musedme/utils/app_colors.dart';
 import 'package:musedme/utils/constants.dart';
 

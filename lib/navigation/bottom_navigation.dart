@@ -4,7 +4,7 @@ import 'package:musedme/screens/feed_screen.dart';
 import 'package:musedme/utils/app_colors.dart';
 import 'package:musedme/widgets/text_widget.dart';
 
-import '../generated/assets.dart';
+import '../utils/assets.dart';
 import '../screens/profile_screen.dart';
 import '../screens/videos_screen.dart';
 

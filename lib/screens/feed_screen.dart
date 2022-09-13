@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:musedme/components/header.dart';
-import 'package:musedme/generated/assets.dart';
+import 'package:musedme/utils/assets.dart';
 import 'package:musedme/utils/app_colors.dart';
 
 import '../components/feed_card.dart';

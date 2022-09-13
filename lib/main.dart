@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:musedme/screens/edit_profile_screen.dart';
 import 'package:musedme/screens/feed_screen.dart';
 
 import 'navigation/bottom_navigation.dart';
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'Larsseit'
       ),
-      home: const BottomNavigation(),
+      home: const EditProfileScreen(),
+      // home: const BottomNavigation(),
     );
   }
 }

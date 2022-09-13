@@ -4,18 +4,23 @@ class Assets {
 
   static const String iconsAdd = 'assets/icons/add.svg';
   static const String iconsComment = 'assets/icons/comment.svg';
+  static const String iconsDelete = 'assets/icons/delete.svg';
+  static const String iconsEditProfile = 'assets/icons/edit_profile.svg';
+  static const String iconsEye = 'assets/icons/eye.svg';
+  static const String iconsFacebook = 'assets/icons/facebook.svg';
   static const String iconsFavorites = 'assets/icons/Favorites.svg';
   static const String iconsFeed = 'assets/icons/Feed.svg';
+  static const String iconsGoogle = 'assets/icons/google.svg';
   static const String iconsHeart = 'assets/icons/heart.svg';
   static const String iconsLive = 'assets/icons/live.svg';
   static const String iconsLogo = 'assets/icons/logo.png';
   static const String iconsMessages = 'assets/icons/Messages.svg';
   static const String iconsProfile = 'assets/icons/Profile.svg';
   static const String iconsShare = 'assets/icons/share.svg';
-  static const String iconsVideos = 'assets/icons/Videos.svg';
-  static const String iconsEye = 'assets/icons/eye.svg';
-  static const String iconsEditProfile = 'assets/icons/edit_profile.svg';
+  static const String iconsTwitter = 'assets/icons/twitter.svg';
+  static const String iconsUploadImage = 'assets/icons/upload_image.svg';
   static const String iconsVerified = 'assets/icons/verified.svg';
+  static const String iconsVideos = 'assets/icons/Videos.svg';
 
   static const List<String> menuIcons = [
     iconsFeed,
