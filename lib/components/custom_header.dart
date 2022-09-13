@@ -34,7 +34,7 @@ class CustomHeader extends StatelessWidget {
               Row(
                 children: [
                   ElevatedButton(
-                    onPressed: () => null,
+                    onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(

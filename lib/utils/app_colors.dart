@@ -8,4 +8,5 @@ class AppColors {
   static const Color lightGrey = Color(0xFFB1B1B1);
   static const Color grayScale = Color(0xFFEEEEEE);
   static const Color successColor = Color(0xFF61B500);
+  static const Color progressColor = Color(0xFF6E00DD);
 }
