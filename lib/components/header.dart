@@ -12,29 +12,33 @@ class Header extends StatelessWidget {
   const Header({
     Key? key,
     required this.title,
-    this.showLives = false
+    this.showLives = false,
+    this.showShadow = true,
+    this.isProfile = false
   }) : super(key: key);
 
   final String title;
   final bool showLives;
+  final bool showShadow;
+  final bool isProfile;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          boxShadow: [BoxShadow(
+          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
+          boxShadow: showShadow ? [BoxShadow(
               color: AppColors.shadowColor,
               blurRadius: 8
-          )]
+          )] : null
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: showLives ? 0 : 10, top: 8),
             child: Row(
               children: [
                 Image.asset(Assets.iconsLogo, height: 40),
@@ -47,7 +51,8 @@ class Header extends StatelessWidget {
                 ),
                 ),
                 const Spacer(),
-                ElevatedButton(
+                if(!isProfile)
+                  ElevatedButton(
                   onPressed: () => null,
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -69,18 +74,34 @@ class Header extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                       textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SvgPicture.asset(Assets.iconsLive),
+                      SvgPicture.asset(isProfile ? Assets.iconsEditProfile : Assets.iconsLive),
                       const SizedBox(width: 5,),
-                      const Text("Go Live"),
+                      Text(isProfile ? "Edit Profile" : "Go Live"),
                     ],
                   ),
                 ),
+                if(isProfile)...[
+                  const SizedBox(width: 10),
+                  TextButton(
+                      onPressed: () => null,
+                      style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+                      ),
+                      child: const Icon(CupertinoIcons.gear_solid, color: AppColors.secondaryColor,)
+                  ),
+                ],
               ],
             ),
           ),

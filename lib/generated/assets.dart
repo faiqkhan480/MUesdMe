@@ -14,6 +14,8 @@ class Assets {
   static const String iconsShare = 'assets/icons/share.svg';
   static const String iconsVideos = 'assets/icons/Videos.svg';
   static const String iconsEye = 'assets/icons/eye.svg';
+  static const String iconsEditProfile = 'assets/icons/edit_profile.svg';
+  static const String iconsVerified = 'assets/icons/verified.svg';
 
   static const List<String> menuIcons = [
     iconsFeed,
