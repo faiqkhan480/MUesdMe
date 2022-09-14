@@ -31,12 +31,25 @@ class GeneralInfo extends StatelessWidget {
 
   Widget dataRow(String label, String value, {double? fontSize, FontWeight? weight, EdgeInsets? padding}) {
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+      padding: padding ?? const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          TextWidget(label, color: AppColors.lightGrey, size: 12, weight: FontWeight.normal,),
-          TextWidget(value, size: fontSize ?? 16, weight: weight ?? FontWeight.w500,),
+          Expanded(child: TextWidget(label, color: AppColors.lightGrey, size: 12, weight: FontWeight.normal,)),
+          Expanded(
+            child: TextField(
+              textAlign: TextAlign.end,
+              controller: TextEditingController(text: value),
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                isDense: true,
+
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+              ),
+            ),
+          ),
+          // TextWidget(value, size: fontSize ?? 16, weight: weight ?? FontWeight.w500,),
         ],
       ),
     );

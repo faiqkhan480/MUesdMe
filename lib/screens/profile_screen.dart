@@ -91,15 +91,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   toolbarHeight: toolbarHeight,
                   bottom: PreferredSize(
                       preferredSize: const Size(double.infinity, 0),
-                      child: TabBar(
-                          labelColor: AppColors.primaryColor,
-                          unselectedLabelColor: Colors.black,
-                          isScrollable: true,
-                          indicatorSize: TabBarIndicatorSize.label,
-                          labelPadding: const EdgeInsets.symmetric(horizontal: 30.0),
-                          tabs: List.generate(tabs.length, (index) => Tab(
-                            text: tabs.elementAt(index),
-                          ))
+                      child: Row(
+                        children: [
+                          TabBar(
+                              labelColor: AppColors.primaryColor,
+                              unselectedLabelColor: Colors.black,
+                              isScrollable: true,
+                              indicatorSize: TabBarIndicatorSize.label,
+                              labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              indicator: const UnderlineTabIndicator(
+                                  borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
+                                  insets: EdgeInsets.symmetric(horizontal: 35.0)),
+                              tabs: List.generate(tabs.length, (index) => Tab(
+                                text: tabs.elementAt(index),
+                              ))
+                          ),
+                        ],
                       )
                   ),
                 ),

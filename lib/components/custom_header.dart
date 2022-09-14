@@ -21,8 +21,7 @@ class CustomHeader extends StatelessWidget {
       alignment: AlignmentDirectional.bottomCenter,
       children: [
         Container(
-          padding:
-              const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 100),
+          padding: const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 100),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
@@ -33,21 +32,33 @@ class CustomHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        shadowColor: AppColors.shadowColor.withOpacity(0.2),
-                        elevation: 5,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        fixedSize: const Size(20, 40),
-                        textStyle: const TextStyle(
-                            fontSize: 12, fontFamily: Constants.fontFamily)),
-                    child: const Icon(CupertinoIcons.back,
-                        color: AppColors.secondaryColor),
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
+                          ),
+                          // padding: const EdgeInsets.symmetric(vertical: 18),
+                          minimumSize: Size(50, 0),
+                          textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+                      ),
+                      child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
                   ),
+                  // ElevatedButton(
+                  //   onPressed: () => Navigator.pop(context),
+                  //   style: ElevatedButton.styleFrom(
+                  //       backgroundColor: Colors.white,
+                  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  //       shadowColor: AppColors.shadowColor.withOpacity(0.2),
+                  //       elevation: 5,
+                  //       padding: const EdgeInsets.symmetric(vertical: 15),
+                  //       fixedSize: const Size(20, 40),
+                  //       textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)),
+                  //   child: const Icon(CupertinoIcons.back,
+                  //       color: AppColors.secondaryColor),
+                  // ),
                   // TextButton(
                   //     onPressed: () => null,
                   //     style: TextButton.styleFrom(
@@ -82,7 +93,7 @@ class CustomHeader extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 20),
+                            horizontal: 15, vertical: 10),
                         textStyle: const TextStyle(
                             fontSize: 12,
                             fontFamily: Constants.fontFamily,
@@ -105,7 +116,7 @@ class CustomHeader extends StatelessWidget {
 
         Positioned(
           // left: 0,
-          right: 166,
+          right: 110,
           bottom: -28,
           child: IconButton(
             onPressed: () => null,

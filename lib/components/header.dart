@@ -107,7 +107,8 @@ class Header extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8),
                               side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          minimumSize: Size(50, 0),
+                          padding: const EdgeInsets.symmetric(vertical: 6),
                           textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
                       ),
                       child: const Icon(CupertinoIcons.gear_solid, color: AppColors.secondaryColor,)

@@ -23,7 +23,7 @@ class ContentEditCard extends StatelessWidget {
           const SizedBox(height: 10,),
           RichText(
               text: const TextSpan(
-                style: TextStyle(fontFamily: Constants.fontFamily),
+                style: TextStyle(fontFamily: Constants.fontFamily, color: Colors.black),
                 children: [
                   TextSpan(text: "There’s nothing better drive on Golden Gate Bridge the wide strait connecting."),
                   TextSpan(text: " #Golden #Bridge", style: TextStyle(color: AppColors.primaryColor),),

@@ -44,7 +44,7 @@ class SocialLinks extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                    flex: index < 2 ? 6 : 5,
+                    flex: index < 2 ? 6 : 4,
                     child: TextWidget(index == 0 ?  "Twitter" : index == 1 ? "Facebook" : "Google Plus",)),
                 if(index < 2)
                   Expanded(
@@ -55,7 +55,7 @@ class SocialLinks extends StatelessWidget {
                 ))
                 else
                   Expanded(
-                      flex: 2,
+                      flex: 3,
                       child: Row(
                         children: [
                           Expanded(
