@@ -17,6 +17,7 @@ class Header extends StatelessWidget {
     this.showLives = false,
     this.showShadow = true,
     this.isProfile = false,
+    this.height,
     this.action
   }) : super(key: key);
 
@@ -24,6 +25,7 @@ class Header extends StatelessWidget {
   final bool showLives;
   final bool showShadow;
   final bool isProfile;
+  final double? height;
   final VoidCallback? action;
 
   @override
@@ -38,6 +40,7 @@ class Header extends StatelessWidget {
               blurRadius: 8
           )] : null
       ),
+      height: height,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

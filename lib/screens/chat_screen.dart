@@ -68,7 +68,6 @@ class ChatScreen extends StatelessWidget {
           )
         ],
       ),
-
       body: Stack(
         // alignment: AlignmentDirectional.bottomCenter,
         children: [
