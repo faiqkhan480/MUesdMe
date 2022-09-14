@@ -112,9 +112,21 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             ),
                             title: const TextWidget("Julian Dasilva", weight: FontWeight.w800),
                             subtitle: const TextWidget("Hi Julian! See you after work?", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
-                            trailing: IconButton(
-                                onPressed: handleClick,
-                                icon: SvgPicture.asset(Assets.iconsAdd)
+                            trailing: GestureDetector(
+                                onTap: () {
+                                  // showPopover(
+                                  //   context: context,
+                                  //   transitionDuration: const Duration(milliseconds: 150),
+                                  //   bodyBuilder: (context) => const ListItems(),
+                                  //   onPop: () => print('Popover was popped!'),
+                                  //   direction: PopoverDirection.top,
+                                  //   width: 200,
+                                  //   height: 400,
+                                  //   arrowHeight: 15,
+                                  //   arrowWidth: 30,
+                                  // );
+                                },
+                                child: SvgPicture.asset(Assets.iconsAdd)
                             )
                           ),
                           if(index == 5)
@@ -137,17 +149,17 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   void handleClick() {
-    // showPopover(
-    //   context: context,
-    //   transitionDuration: const Duration(milliseconds: 150),
-    //   bodyBuilder: (context) => const ListItems(),
-    //   onPop: () => print('Popover was popped!'),
-    //   direction: PopoverDirection.top,
-    //   width: 200,
-    //   height: 400,
-    //   arrowHeight: 15,
-    //   arrowWidth: 30,
-    // );
+    showPopover(
+      context: context,
+      transitionDuration: const Duration(milliseconds: 150),
+      bodyBuilder: (context) => const ListItems(),
+      onPop: () => print('Popover was popped!'),
+      direction: PopoverDirection.top,
+      width: 200,
+      height: 400,
+      arrowHeight: 15,
+      arrowWidth: 30,
+    );
   }
 }
 

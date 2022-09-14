@@ -20,6 +20,9 @@ class Assets {
   static const String iconsUploadImage = 'assets/icons/upload_image.svg';
   static const String iconsVerified = 'assets/icons/verified.svg';
   static const String iconsVideos = 'assets/icons/Videos.svg';
+  static const String iconsDownloadedVideos = 'assets/icons/downloaded_videos.svg';
+  static const String iconsHistory = 'assets/icons/history.svg';
+  static const String iconsWatchLater = 'assets/icons/watch_later.svg';
 
   static const String iconsLogo = 'assets/icons/logo.png';
   static const String iconsSmileyFace = 'assets/icons/smiling_face.png';

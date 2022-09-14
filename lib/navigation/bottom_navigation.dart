@@ -4,6 +4,7 @@ import 'package:musedme/screens/feed_screen.dart';
 import 'package:musedme/utils/app_colors.dart';
 import 'package:musedme/widgets/text_widget.dart';
 
+import '../screens/library_screen.dart';
 import '../screens/messages_screen.dart';
 import '../utils/assets.dart';
 import '../screens/profile_screen.dart';
@@ -31,12 +32,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return Scaffold(
       body: IndexedStack(
         index: currIndex,
-        children: [
-          const FeedScreen(),
-          const VideosScreen(),
-          Container(),
-          const MessagesScreen(),
-          const ProfileScreen(),
+        children: const [
+          FeedScreen(),
+          VideosScreen(),
+          LibraryScreen(),
+          MessagesScreen(),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: Container(

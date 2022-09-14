@@ -47,7 +47,7 @@ class InfoCard extends StatelessWidget {
               const SizedBox(height: 5,),
               Row(
                 children: [
-                  const TextWidget("@jamesjunior",
+                  const TextWidget("@jamesjunior ",
                     size: 14,
                     color: AppColors.lightGrey,
                     weight: FontWeight.w400,

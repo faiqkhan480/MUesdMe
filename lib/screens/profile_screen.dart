@@ -130,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               isProfile: true,
               showShadow: false,
               action: handleClick,
-              height: 120,
+              height: 108,
             ),
           ],
         ),

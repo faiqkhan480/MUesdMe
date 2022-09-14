@@ -11,11 +11,12 @@ import '../widgets/glass_morphism.dart';
 
 class TrendingCard extends StatelessWidget {
   final double? horizontalSpace;
-  const TrendingCard({Key? key, this.horizontalSpace}) : super(key: key);
+  final double? itemWidth;
+  const TrendingCard({Key? key, this.horizontalSpace, this.itemWidth}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: EdgeInsets.symmetric(horizontal: horizontalSpace ?? 0.0),
       child: Badge(
         shape: BadgeShape.square,
@@ -38,7 +39,7 @@ class TrendingCard extends StatelessWidget {
               child: Image.network(
                   Constants.coverImage,
                 height: 180,
-                width: double.infinity,
+                width: itemWidth ?? double.infinity,
                 fit: BoxFit.cover,
               ),
             ),
@@ -60,7 +61,7 @@ class TrendingCard extends StatelessWidget {
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Stack(
                           alignment: AlignmentDirectional.center,

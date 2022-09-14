@@ -10,4 +10,8 @@ class AppColors {
   static const Color grayScale = Color(0xFFEEEEEE);
   static const Color successColor = Color(0xFF61B500);
   static const Color progressColor = Color(0xFF6E00DD);
+  static const Color violet = Color(0xFF987AD7);
+  static const Color lightGreen = Color(0xFF95D49B);
+  static const Color lightPink = Color(0xFFE085D3);
+  static const Color tabBarColor = Color(0xFFF1F6FA);
 }
