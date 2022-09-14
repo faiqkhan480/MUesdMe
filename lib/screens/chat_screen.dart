@@ -4,9 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../components/message_input.dart';
+import '../components/message_tile.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
+
+final List<ChatMessage> messages = [
+  ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
+  ChatMessage(messageContent: "How have you been?", messageType: "receiver"),
+  ChatMessage(messageContent: "Hey Kriss, I am doing fine dude. wbu?", messageType: "sender"),
+  ChatMessage(messageContent: "ehhhh, doing OK.", messageType: "receiver"),
+  ChatMessage(messageContent: "Is there any thing wrong?", messageType: "sender"),
+];
 
 class ChatScreen extends StatelessWidget {
   final String title;
@@ -59,6 +68,14 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
 
+      body: ListView.builder(
+        itemCount: messages.length,
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(top: 10,bottom: 10),
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => MessageTile(message: messages.elementAt(index)),
+      ),
+
       bottomSheet: Container(
         decoration: const BoxDecoration(
             color: Colors.white,
@@ -101,3 +118,10 @@ class ChatScreen extends StatelessWidget {
     );
   }
 }
+
+class ChatMessage{
+  String messageContent;
+  String messageType;
+  ChatMessage({required this.messageContent, required this.messageType});
+}
+
