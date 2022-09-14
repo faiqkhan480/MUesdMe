@@ -22,39 +22,58 @@ class _MessagesScreenState extends State<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8.0, top: 5),
+          child: TextButton(
+              onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
+                  ),
+                  // padding: const EdgeInsets.symmetric(vertical: 18),
+                  textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+              ),
+              child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
+          ),
+        ),
+        title: const SearchField(),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  TextButton(
-                      onPressed: () => null,
-                      style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
-                      ),
-                      child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
-                  ),
-
-                  const SizedBox(width: 20,),
-
-                  const Expanded(child: SearchField()),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+            //   child: Row(
+            //     crossAxisAlignment: CrossAxisAlignment.end,
+            //     children: [
+            //       TextButton(
+            //           onPressed: () => null,
+            //           style: TextButton.styleFrom(
+            //               backgroundColor: Colors.white,
+            //               shape: RoundedRectangleBorder(
+            //                   borderRadius: BorderRadius.circular(8),
+            //                   side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
+            //               ),
+            //               padding: const EdgeInsets.symmetric(vertical: 18),
+            //               textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+            //           ),
+            //           child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
+            //       ),
+            //
+            //       const SizedBox(width: 20,),
+            //
+            //       const Expanded(child: SearchField()),
+            //     ],
+            //   ),
+            // ),
 
             const Padding(
-              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20),
+              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10),
               child: TextWidget("Messages", size: 28, weight: FontWeight.bold,),
             ),
             const Padding(
@@ -79,7 +98,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         children: [
                           ListTile(
                             onTap: () => handleNavigation("Julian Dasilva"),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                             leading: Badge(
                               badgeColor: AppColors.successColor,
                               position: BadgePosition.topEnd(top: -1, end: 4),

@@ -1,7 +1,11 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import '../components/message_input.dart';
 import '../utils/app_colors.dart';
+import '../utils/assets.dart';
 import '../utils/constants.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -22,7 +26,6 @@ class ChatScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
                   ),
-                  elevation: 8,
                   // padding: const EdgeInsets.symmetric(vertical: 18),
                   textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
               ),
@@ -32,12 +35,18 @@ class ChatScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 25,
-                  backgroundImage: NetworkImage(Constants.dummyImage)),
+             Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Badge(
+                badgeColor: AppColors.successColor,
+                position: BadgePosition.topEnd(top: -1, end: 4),
+                elevation: 0,
+                borderSide: const BorderSide(color: Colors.white, width: .7),
+                child: const CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 18,
+                    backgroundImage: NetworkImage(Constants.dummyImage)),
+              ),
             ),
             Text(title, style: const TextStyle(fontFamily: Constants.fontFamily)),
           ],
@@ -48,6 +57,46 @@ class ChatScreen extends StatelessWidget {
               icon: const Icon(Icons.info_outline_rounded, color: AppColors.lightGrey,)
           )
         ],
+      ),
+
+      bottomSheet: Container(
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+            boxShadow: [
+              BoxShadow(
+                  color: AppColors.shadowColor,
+                  // spreadRadius: 3,
+                  blurRadius: 5
+              )
+            ]
+        ),
+        height: 64,
+        width: double.infinity,
+        child: Material(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+            child: Row(
+              children: [
+                IconButton(
+                    onPressed: () => null,
+                    color: AppColors.primaryColor,
+                    iconSize: 30,
+                    icon: Image.asset(Assets.iconsSmileyFace)
+                ),
+                const Expanded(child: MessageInput()),
+                const SizedBox(width: 5,),
+                IconButton(
+                    onPressed: () => null,
+                    color: AppColors.primaryColor,
+                    iconSize: 30,
+                    icon: const Icon(Icons.send,)
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

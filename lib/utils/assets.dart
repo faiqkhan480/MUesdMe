@@ -13,7 +13,6 @@ class Assets {
   static const String iconsGoogle = 'assets/icons/google.svg';
   static const String iconsHeart = 'assets/icons/heart.svg';
   static const String iconsLive = 'assets/icons/live.svg';
-  static const String iconsLogo = 'assets/icons/logo.png';
   static const String iconsMessages = 'assets/icons/Messages.svg';
   static const String iconsProfile = 'assets/icons/Profile.svg';
   static const String iconsShare = 'assets/icons/share.svg';
@@ -21,6 +20,9 @@ class Assets {
   static const String iconsUploadImage = 'assets/icons/upload_image.svg';
   static const String iconsVerified = 'assets/icons/verified.svg';
   static const String iconsVideos = 'assets/icons/Videos.svg';
+
+  static const String iconsLogo = 'assets/icons/logo.png';
+  static const String iconsSmileyFace = 'assets/icons/smiling_face.png';
 
   static const List<String> menuIcons = [
     iconsFeed,

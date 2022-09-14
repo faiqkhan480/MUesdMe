@@ -12,7 +12,7 @@ class SearchField extends StatelessWidget {
       shadowColor: AppColors.shadowColor.withOpacity(.3),
       borderRadius: BorderRadius.circular(10),
       color: Colors.white,
-      child: TextFormField(
+      child: TextField(
         // obscureText: true,
         autofocus: false,
         decoration: InputDecoration(

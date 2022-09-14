@@ -31,14 +31,14 @@ class _VideosScreenState extends State<VideosScreen> {
       child: Scaffold(
         body: Column(
           children: [
-            const Header(title: "Media videos"),
+            Header(title: "Media videos", action: () => null,),
             const SizedBox(height: 20,),
             TabBar(
               labelColor: AppColors.primaryColor,
                 unselectedLabelColor: Colors.black,
                 isScrollable: true,
                 indicatorSize: TabBarIndicatorSize.label,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 30.0),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
                 tabs: List.generate(tabs.length, (index) => Tab(
                   text: tabs.elementAt(index),
                 ))
