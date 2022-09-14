@@ -108,7 +108,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               child: const CircleAvatar(
                                   backgroundColor: Colors.white,
                                   radius: 25,
-                                  backgroundImage: NetworkImage(Constants.dummyImage)),
+                                  backgroundImage: NetworkImage(Constants.albumArt)),
                             ),
                             title: const TextWidget("Julian Dasilva", weight: FontWeight.w800),
                             subtitle: const TextWidget("Hi Julian! See you after work?", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),

@@ -13,6 +13,7 @@ final List<ChatMessage> messages = [
   ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
   ChatMessage(messageContent: "How have you been?", messageType: "receiver"),
   ChatMessage(messageContent: "Hey Kriss, I am doing fine dude. wbu?", messageType: "sender"),
+  ChatMessage(messageContent: "Hey Kriss, I am doing fine dude. wbu? Hey Kriss, I am doing fine dude. wbu?Hey Kriss, I am doing fine dude. wbu?", messageType: "sender"),
   ChatMessage(messageContent: "ehhhh, doing OK.", messageType: "receiver"),
   ChatMessage(messageContent: "Is there any thing wrong?", messageType: "sender"),
 ];
@@ -54,7 +55,7 @@ class ChatScreen extends StatelessWidget {
                 child: const CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 18,
-                    backgroundImage: NetworkImage(Constants.dummyImage)),
+                    backgroundImage: NetworkImage(Constants.albumArt)),
               ),
             ),
             Text(title, style: const TextStyle(fontFamily: Constants.fontFamily)),
@@ -68,52 +69,60 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
 
-      body: ListView.builder(
-        itemCount: messages.length,
-        shrinkWrap: true,
-        padding: const EdgeInsets.only(top: 10,bottom: 10),
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => MessageTile(message: messages.elementAt(index)),
-      ),
+      body: Stack(
+        // alignment: AlignmentDirectional.bottomCenter,
+        children: [
+          ListView.builder(
+            itemCount: messages.length,
+            shrinkWrap: true,
+            padding: const EdgeInsets.only(top: 10,bottom: 60),
+            // physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => MessageTile(message: messages.elementAt(index)),
+          ),
 
-      bottomSheet: Container(
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-            boxShadow: [
-              BoxShadow(
-                  color: AppColors.shadowColor,
-                  // spreadRadius: 3,
-                  blurRadius: 5
-              )
-            ]
-        ),
-        height: 64,
-        width: double.infinity,
-        child: Material(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
-            child: Row(
-              children: [
-                IconButton(
-                    onPressed: () => null,
-                    color: AppColors.primaryColor,
-                    iconSize: 30,
-                    icon: Image.asset(Assets.iconsSmileyFace)
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Container(
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: AppColors.shadowColor,
+                        // spreadRadius: 3,
+                        blurRadius: 5
+                    )
+                  ]
+              ),
+              height: 64,
+              width: double.infinity,
+              child: Material(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                          onPressed: () => null,
+                          color: AppColors.primaryColor,
+                          iconSize: 30,
+                          icon: Image.asset(Assets.iconsSmileyFace)
+                      ),
+                      const Expanded(child: MessageInput()),
+                      const SizedBox(width: 5,),
+                      IconButton(
+                          onPressed: () => null,
+                          color: AppColors.primaryColor,
+                          iconSize: 30,
+                          icon: const Icon(Icons.send,)
+                      ),
+                    ],
+                  ),
                 ),
-                const Expanded(child: MessageInput()),
-                const SizedBox(width: 5,),
-                IconButton(
-                    onPressed: () => null,
-                    color: AppColors.primaryColor,
-                    iconSize: 30,
-                    icon: const Icon(Icons.send,)
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
