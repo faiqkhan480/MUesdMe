@@ -1,15 +1,24 @@
 import 'package:badges/badges.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:musedme/screens/chat_screen.dart';
 import 'package:musedme/utils/app_colors.dart';
 import 'package:musedme/widgets/text_widget.dart';
+import 'package:popover/popover.dart';
 
+import '../components/search_field.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 
-class MessagesScreen extends StatelessWidget {
+class MessagesScreen extends StatefulWidget {
   const MessagesScreen({Key? key}) : super(key: key);
 
+  @override
+  State<MessagesScreen> createState() => _MessagesScreenState();
+}
+
+class _MessagesScreenState extends State<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,8 +27,34 @@ class MessagesScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  TextButton(
+                      onPressed: () => null,
+                      style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+                      ),
+                      child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
+                  ),
+
+                  const SizedBox(width: 20,),
+
+                  const Expanded(child: SearchField()),
+                ],
+              ),
+            ),
+
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20),
               child: TextWidget("Messages", size: 28, weight: FontWeight.bold,),
             ),
             const Padding(
@@ -43,6 +78,7 @@ class MessagesScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           ListTile(
+                            onTap: () => handleNavigation("Julian Dasilva"),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                             leading: Badge(
                               badgeColor: AppColors.successColor,
@@ -58,7 +94,7 @@ class MessagesScreen extends StatelessWidget {
                             title: const TextWidget("Julian Dasilva", weight: FontWeight.w800),
                             subtitle: const TextWidget("Hi Julian! See you after work?", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
                             trailing: IconButton(
-                                onPressed: () => null,
+                                onPressed: handleClick,
                                 icon: SvgPicture.asset(Assets.iconsAdd)
                             )
                           ),
@@ -70,6 +106,63 @@ class MessagesScreen extends StatelessWidget {
                     separatorBuilder: (context, index) => const Divider(color: AppColors.grayScale, thickness: 1, height: 1),
                     itemCount: 6
                 )
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  handleNavigation(String title) {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => ChatScreen(title: title),));
+  }
+
+  void handleClick() {
+    // showPopover(
+    //   context: context,
+    //   transitionDuration: const Duration(milliseconds: 150),
+    //   bodyBuilder: (context) => const ListItems(),
+    //   onPop: () => print('Popover was popped!'),
+    //   direction: PopoverDirection.top,
+    //   width: 200,
+    //   height: 400,
+    //   arrowHeight: 15,
+    //   arrowWidth: 30,
+    // );
+  }
+}
+
+class ListItems extends StatelessWidget {
+  const ListItems({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scrollbar(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: ListView(
+          padding: const EdgeInsets.all(8),
+          children: [
+            InkWell(
+              onTap: () {
+              },
+              child: Container(
+                height: 50,
+                color: Colors.amber[100],
+                child: const Center(child: Text('Entry A')),
+              ),
+            ),
+            const Divider(),
+            Container(
+              height: 50,
+              color: Colors.amber[200],
+              child: const Center(child: Text('Entry B')),
+            ),
+            const Divider(),
+            Container(
+              height: 50,
+              color: Colors.amber[300],
+              child: const Center(child: Text('Entry C')),
             ),
           ],
         ),

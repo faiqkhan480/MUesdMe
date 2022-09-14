@@ -32,7 +32,7 @@ class FeedCard extends StatelessWidget {
           )]
       ),
       margin: EdgeInsets.symmetric(horizontal: horizontalSpace ?? 0),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -97,7 +97,7 @@ class FeedCard extends StatelessWidget {
             child: TextWidget("There’s nothing better drive on Golden Gate Bridge the wide strait connecting. #Golden #Bridge more"),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: Row(
               children:  [
                  ButtonWidget(
