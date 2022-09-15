@@ -29,7 +29,6 @@ class LibraryScreen extends StatelessWidget {
                   Container(
                   decoration: BoxDecoration(
                     color: AppColors.tabBarColor,
-                      // border: Border.all(color: Constants.black12),
                       borderRadius: BorderRadius.circular(10)),
                   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),

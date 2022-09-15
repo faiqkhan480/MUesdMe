@@ -9,6 +9,7 @@ import 'package:musedme/utils/constants.dart';
 
 import '../widgets/button_widget.dart';
 import '../widgets/glass_morphism.dart';
+import '../widgets/image_widget.dart';
 import '../widgets/text_widget.dart';
 
 class FeedCard extends StatelessWidget {
@@ -77,9 +78,9 @@ class FeedCard extends StatelessWidget {
                   ],
                 ),
                 elevation: 0,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(Constants.coverImage, height: 250, fit: BoxFit.cover,),
+                child: const ImageWidget(
+                  url: Constants.coverImage,
+                  height: 250,
                 ),
               ),
 

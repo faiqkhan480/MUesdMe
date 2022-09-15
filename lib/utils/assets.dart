@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  // SVG IMAGES
   static const String iconsAdd = 'assets/icons/add.svg';
   static const String iconsComment = 'assets/icons/comment.svg';
   static const String iconsDelete = 'assets/icons/delete.svg';
@@ -24,8 +25,12 @@ class Assets {
   static const String iconsHistory = 'assets/icons/history.svg';
   static const String iconsWatchLater = 'assets/icons/watch_later.svg';
 
+  // PNG IMAGES
   static const String iconsLogo = 'assets/icons/logo.png';
   static const String iconsSmileyFace = 'assets/icons/smiling_face.png';
+
+  // LOTTIE ANIMATIONS
+  static const String loader = 'assets/lottie/lf30.json';
 
   static const List<String> menuIcons = [
     iconsFeed,

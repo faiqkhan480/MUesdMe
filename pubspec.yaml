@@ -36,6 +36,7 @@ dependencies:
   badges: ^2.0.3
   cupertino_icons: ^1.0.2
   flutter_svg: ^1.1.5
+  lottie: ^1.4.3
   popover: ^0.2.6+3
 
 dev_dependencies:
@@ -51,6 +52,7 @@ flutter:
   assets:
    - assets/
    - assets/icons/
+   - assets/lottie/
 
 
   fonts:

@@ -49,24 +49,24 @@ class _VideosScreenState extends State<VideosScreen> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                 children: const [
-                  FeedCard(horizontalSpace: 20, isVideo: true),
+                  FeedCard(horizontalSpace: 10, isVideo: true),
 
                   TitleRow(title: "Trending videos"),
 
-                  TrendingCard(horizontalSpace: 20),
+                  TrendingCard(horizontalSpace: 10),
 
                   SizedBox(height: 20,),
 
-                  TrendingCard(horizontalSpace: 20),
+                  TrendingCard(horizontalSpace: 10),
 
                   SizedBox(height: 20,),
 
-                  FeedCard(horizontalSpace: 20, isVideo: true),
+                  FeedCard(horizontalSpace: 10, isVideo: true),
 
                   SizedBox(height: 20,),
 
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10),
+                    padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 5),
                     child: ListTile(
                       title: TextWidget("Today's Picks", weight: FontWeight.w800, size: 20),
                       subtitle: Padding(
