@@ -305,11 +305,11 @@ class _LiveScreenState extends State<LiveScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Flexible(
-                flex: 3,
+                flex: 2,
                 child: InvitationCard()),
 
             Flexible(
-              flex: 5,
+              flex: 4,
               child: AnimatedList(
                 key: _key,
                   padding: const EdgeInsets.only(left: 20, right: 50),

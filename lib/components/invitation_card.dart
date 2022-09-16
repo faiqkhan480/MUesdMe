@@ -25,8 +25,9 @@ class InvitationCard extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,14 +62,15 @@ class InvitationCard extends StatelessWidget {
                   color: AppColors.successColor,
                   borderRadius: BorderRadius.circular(10)
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(Assets.iconsLive, height: 30, color: Colors.white),
+                  SvgPicture.asset(Assets.iconsLive, height: 10, color: Colors.white),
                   const SizedBox(height: 5,),
                   const TextWidget("Accept\ninvite",
                     color: Colors.white,
+                    align: TextAlign.center,
                     size: 10,
                     weight: FontWeight.normal,
                   ),
