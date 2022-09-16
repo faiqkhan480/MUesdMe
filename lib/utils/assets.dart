@@ -11,11 +11,13 @@ class Assets {
   static const String iconsFacebook = 'assets/icons/facebook.svg';
   static const String iconsFavorites = 'assets/icons/Favorites.svg';
   static const String iconsFeed = 'assets/icons/Feed.svg';
+  static const String iconsFilter = 'assets/icons/filter.svg';
   static const String iconsGoogle = 'assets/icons/google.svg';
   static const String iconsHeart = 'assets/icons/heart.svg';
   static const String iconsLive = 'assets/icons/live.svg';
   static const String iconsMessages = 'assets/icons/Messages.svg';
   static const String iconsProfile = 'assets/icons/Profile.svg';
+  static const String iconsSearch = 'assets/icons/search.svg';
   static const String iconsShare = 'assets/icons/share.svg';
   static const String iconsTwitter = 'assets/icons/twitter.svg';
   static const String iconsUploadImage = 'assets/icons/upload_image.svg';

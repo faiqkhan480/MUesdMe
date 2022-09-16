@@ -26,7 +26,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0, top: 5),
           child: TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => (Navigator.canPop(context)) ? Navigator.pop(context) : null,
               style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(

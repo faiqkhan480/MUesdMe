@@ -18,6 +18,7 @@ class Header extends StatelessWidget {
     this.showShadow = true,
     this.isProfile = false,
     this.height,
+    this.handleSearch,
     this.action
   }) : super(key: key);
 
@@ -27,6 +28,7 @@ class Header extends StatelessWidget {
   final bool isProfile;
   final double? height;
   final VoidCallback? action;
+  final VoidCallback? handleSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class Header extends StatelessWidget {
                 const Spacer(),
                 if(!isProfile)
                   TextButton(
-                      onPressed: () => null,
+                      onPressed: handleSearch,
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
