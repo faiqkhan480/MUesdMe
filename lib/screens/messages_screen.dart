@@ -2,12 +2,12 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:musedme/screens/chat_screen.dart';
-import 'package:musedme/utils/app_colors.dart';
-import 'package:musedme/widgets/text_widget.dart';
 import 'package:popover/popover.dart';
 
 import '../components/search_field.dart';
+import '../screens/chat_screen.dart';
+import '../widgets/text_widget.dart';
+import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 

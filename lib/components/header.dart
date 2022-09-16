@@ -2,6 +2,8 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:musedme/screens/live_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
@@ -71,14 +73,14 @@ class Header extends StatelessWidget {
                           ),
                           elevation: 2,
                           shadowColor: AppColors.shadowColor.withOpacity(0.3),
-                          minimumSize: Size(50, 15),
+                          minimumSize: const Size(50, 15),
                           textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
                       ),
                       child: const Icon(CupertinoIcons.search, color: AppColors.secondaryColor),
                   ),
                 const SizedBox(width: 15),
                 TextButton(
-                  onPressed: action,
+                  onPressed: action ?? () => handleLive(context),
                   style: TextButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
                       foregroundColor: Colors.white,
@@ -109,7 +111,7 @@ class Header extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8),
                               side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
                           ),
-                          minimumSize: Size(50, 0),
+                          minimumSize: const Size(50, 0),
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
                       ),
@@ -188,5 +190,10 @@ class Header extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future handleLive (context) async {
+    await [Permission.camera, Permission.microphone].request();
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => const LiveScreen(),));
   }
 }

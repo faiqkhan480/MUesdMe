@@ -23,7 +23,7 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Header(title: "Live Feed", showLives: true, action: () => null, handleSearch: handleNavigation),
+          Header(title: "Live Feed", showLives: true, handleSearch: handleNavigation),
           const SizedBox(height: 20,),
           Expanded(
               child: ListView.separated(

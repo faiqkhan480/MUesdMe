@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:musedme/components/feed_card.dart';
-import 'package:musedme/components/title_row.dart';
-import 'package:musedme/screens/feed_screen.dart';
-import 'package:musedme/utils/app_colors.dart';
-import 'package:musedme/utils/constants.dart';
-import 'package:musedme/widgets/text_widget.dart';
 
+import '../components/feed_card.dart';
 import '../components/header.dart';
+import '../components/title_row.dart';
 import '../components/todays_picks.dart';
 import '../components/trending_card.dart';
+import '../utils/app_colors.dart';
+import '../widgets/text_widget.dart';
 
 class VideosScreen extends StatefulWidget {
   const VideosScreen({Key? key}) : super(key: key);
@@ -32,7 +30,7 @@ class _VideosScreenState extends State<VideosScreen> {
       child: Scaffold(
         body: Column(
           children: [
-            Header(title: "Media videos", action: () => null,),
+            Header(title: "Media videos",),
             const SizedBox(height: 20,),
             TabBar(
               labelColor: AppColors.primaryColor,

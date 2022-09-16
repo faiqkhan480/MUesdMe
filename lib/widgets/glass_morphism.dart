@@ -6,11 +6,13 @@ class GlassMorphism extends StatelessWidget {
   final Widget child;
   final double? start;
   final double? end;
+  final BoxShape? shape;
   const GlassMorphism({
     Key? key,
     required this.child,
     this.start,
     this.end,
+    this.shape
   }) : super(key: key);
 
   @override
@@ -30,7 +32,7 @@ class GlassMorphism extends StatelessWidget {
               begin: AlignmentDirectional.topStart,
               end: AlignmentDirectional.bottomEnd,
             ),
-            shape: BoxShape.circle,
+            shape: shape ?? BoxShape.circle,
             // borderRadius: BorderRadius.all(Radius.circular(10)),
             // border: Border.all(
             //   width: 1.5,

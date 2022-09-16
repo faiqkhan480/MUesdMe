@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:musedme/utils/app_colors.dart';
-import 'package:musedme/utils/constants.dart';
-import 'package:musedme/widgets/image_widget.dart';
-import 'package:musedme/widgets/text_widget.dart';
 
+import '../utils/app_colors.dart';
+import '../utils/constants.dart';
 import '../components/news_card.dart';
 import '../components/search_field.dart';
 import '../components/title_row.dart';
 import '../components/trending_card.dart';
 import '../utils/assets.dart';
 import '../widgets/glass_morphism.dart';
+import '../widgets/image_widget.dart';
+import '../widgets/text_widget.dart';
 
 final List<String> filters = [
   "Trending videos",
@@ -146,14 +145,14 @@ class SearchScreen extends StatelessWidget {
                 SizedBox(
                   height: 55,
                   child: ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     itemBuilder: (context, index) => TextButton(
                           onPressed: () => null,
                         style: TextButton.styleFrom(
                           foregroundColor: filterColors.elementAt(index),
                           backgroundColor: filterColors.elementAt(index).withOpacity(0.3),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          padding: EdgeInsets.symmetric(horizontal: 16)
+                          padding: const EdgeInsets.symmetric(horizontal: 16)
                         ),
                           child: Text(filters.elementAt(index)),
                       ),

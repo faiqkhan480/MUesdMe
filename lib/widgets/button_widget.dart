@@ -9,6 +9,7 @@ class ButtonWidget extends StatelessWidget {
     Key? key,
     required this.text,
     this.icon,
+    this.vertical = false,
     required this.onPressed,
     this.textColor
   }) : super(key: key);
@@ -16,6 +17,7 @@ class ButtonWidget extends StatelessWidget {
   final String text;
   final String? icon;
   final Color? textColor;
+  final bool vertical;
   final VoidCallback? onPressed;
 
   @override
@@ -31,7 +33,19 @@ class ButtonWidget extends StatelessWidget {
           fontWeight: FontWeight.w500
         )
       ),
-      child: Row(
+      child: vertical ? Column(
+        children: [
+          if(icon != null)...[
+            SvgPicture.asset(icon!, height: 30),
+            const SizedBox(height: 5,),
+          ],
+          TextWidget(text,
+            color: textColor,
+            size: 14,
+            weight: FontWeight.w500,
+          ),
+        ],
+      ) : Row(
         children: [
           if(icon != null)...[
             SvgPicture.asset(icon!),

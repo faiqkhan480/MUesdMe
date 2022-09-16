@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:musedme/components/todays_picks.dart';
-import 'package:musedme/utils/app_colors.dart';
 
+import '../utils/app_colors.dart';
 import '../components/category_card.dart';
 import '../components/custom_header.dart';
 import '../utils/assets.dart';
