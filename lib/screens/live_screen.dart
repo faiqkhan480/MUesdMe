@@ -10,6 +10,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:musedme/widgets/glass_morphism.dart';
 
 import '../components/comment_tile.dart';
+import '../components/invitation_card.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
@@ -151,7 +152,6 @@ class _LiveScreenState extends State<LiveScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black26,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -214,7 +214,12 @@ class _LiveScreenState extends State<LiveScreen> {
       body: Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: <Widget>[
-          _broadcastView(),
+          Container(
+            color: Colors.amberAccent,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+          ),
+          // _broadcastView(),
           _toolbar(),
           _commentsView(),
         ],
@@ -299,7 +304,12 @@ class _LiveScreenState extends State<LiveScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const Flexible(
+                flex: 3,
+                child: InvitationCard()),
+
             Flexible(
+              flex: 5,
               child: AnimatedList(
                 key: _key,
                   padding: const EdgeInsets.only(left: 20, right: 50),
