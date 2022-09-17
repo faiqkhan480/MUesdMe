@@ -10,6 +10,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:musedme/widgets/glass_morphism.dart';
 
 import '../components/comment_tile.dart';
+import '../components/custom_scroll_view_content.dart';
 import '../components/invitation_card.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
@@ -51,7 +52,7 @@ class _LiveScreenState extends State<LiveScreen> {
   @override
   void initState() {
     super.initState();
-    // initialize agora sdk
+    // // initialize agora sdk
     // initializeAgora();
   }
 
@@ -222,7 +223,48 @@ class _LiveScreenState extends State<LiveScreen> {
           // _broadcastView(),
           _toolbar(),
           _commentsView(),
+
+          // DraggableScrollableSheet(
+          //   initialChildSize: 0.30,
+          //   minChildSize: 0.15,
+          //   builder: (BuildContext context, ScrollController scrollController) {
+          //     return SingleChildScrollView(
+          //       controller: scrollController,
+          //       child: CustomScrollViewContent(),
+          //     );
+          //   },
+          // ),
         ],
+      ),
+
+      bottomNavigationBar: InkWell(
+        onTap: _handleBottomSheet,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+        child: Ink(
+          decoration: const BoxDecoration(
+              color: AppColors.primaryColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              boxShadow: [
+                BoxShadow(
+                    color: AppColors.shadowColor,
+                    // spreadRadius: 3,
+                    blurRadius: 5
+                )
+              ]
+          ),
+          child: SizedBox(
+            height: 54,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(Assets.iconsAdd, color: Colors.white),
+                const SizedBox(width: 5,),
+                const TextWidget("Invite People to Join live", color: Colors.white, weight: FontWeight.normal),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -319,6 +361,7 @@ class _LiveScreenState extends State<LiveScreen> {
               ),
             ),
 
+            // MESSAGE FIELD
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30),
               child: Row(
@@ -329,15 +372,16 @@ class _LiveScreenState extends State<LiveScreen> {
                       child: TextField(
                         autofocus: false,
                         controller: chatController,
+                        onSubmitted: (val) => _handleSubmit,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
                               onPressed: _handleSubmit,
-                              color: AppColors.lightGrey,
+                              color: Colors.white,
                               iconSize: 30,
                               icon: const Icon(Icons.send,)
                           ),
                           hintText: 'Write your comment here...',
-                          hintStyle: const TextStyle(color: AppColors.lightGrey),
+                          hintStyle: const TextStyle(color: Colors.white),
                           // isDense: true,
                           // fillColor: AppColors.textFieldColor,
                           // filled: true,
@@ -492,7 +536,7 @@ class _LiveScreenState extends State<LiveScreen> {
     List<int> list = "mute user blet".codeUnits;
     Uint8List bytes = Uint8List.fromList(list);
     if (streamId != null) _engine?.sendStreamMessage(streamId!, bytes);
-    //_engine.switchCamera();
+    _engine!.switchCamera();
   }
 
   void _handleSubmit() {
@@ -500,5 +544,15 @@ class _LiveScreenState extends State<LiveScreen> {
     _key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
     chatController.clear();
     FocusScope.of(context).unfocus();
+  }
+
+  void _handleBottomSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return const CustomScrollViewContent();
+      },
+    );
   }
 }

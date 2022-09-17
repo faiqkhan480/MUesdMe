@@ -117,6 +117,7 @@ class SearchScreen extends StatelessWidget {
             ),
           ),
 
+          // HEADER
           Container(
             padding: const EdgeInsets.fromLTRB(0, 50, 10, 10),
             decoration: const BoxDecoration(

@@ -18,6 +18,7 @@ class Assets {
   static const String iconsMessages = 'assets/icons/Messages.svg';
   static const String iconsProfile = 'assets/icons/Profile.svg';
   static const String iconsSearch = 'assets/icons/search.svg';
+  static const String iconsSelection = 'assets/icons/selection.svg';
   static const String iconsShare = 'assets/icons/share.svg';
   static const String iconsTwitter = 'assets/icons/twitter.svg';
   static const String iconsUploadImage = 'assets/icons/upload_image.svg';
