@@ -1,3 +1,4 @@
+import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,11 +8,13 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:lottie/lottie.dart';
 import 'package:musedme/widgets/glass_morphism.dart';
 
 import '../components/comment_tile.dart';
 import '../components/custom_scroll_view_content.dart';
 import '../components/invitation_card.dart';
+import '../models/chat.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
@@ -31,12 +34,16 @@ class _LiveScreenState extends State<LiveScreen> {
   TextEditingController chatController = TextEditingController();
 
   final _users = <int>[];
-  RtcEngine? _engine;
   bool muted = false;
   bool flash = false;
+  bool loader = true;
   int? streamId;
+  String userId = "abc";
 
-  final List<String> _comments = ["Smile James!", "Hey James Junior, Good morning!"];
+  RtcEngine? _engine;
+  AgoraRtmClient? _client;
+  AgoraRtmChannel? _channel;
+  final List<Chat> _comments = [];
   // The key of the list
   final GlobalKey<AnimatedListState> _key = GlobalKey();
 
@@ -45,15 +52,17 @@ class _LiveScreenState extends State<LiveScreen> {
     // clear users
     _users.clear();
     // destroy sdk and leave channel
-    _engine!.destroy();
+    _engine?.destroy();
+    _channel?.leave();
+    _client?.destroy();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    // // initialize agora sdk
-    // initializeAgora();
+    // initialize agora sdk
+    initializeAgora();
   }
 
   Future<void> initializeAgora() async {
@@ -96,9 +105,10 @@ class _LiveScreenState extends State<LiveScreen> {
       },
     ));
 
-    await _engine?.joinChannel(Constants.token, widget.channelName ?? "firstChannel", null, 0);
+    await _engine?.joinChannel(Constants.rtcToken, Constants.testChanel, null, 0);
   }
 
+  // <----------------START RTC------------------> //
   Future<void> _initAgoraRtcEngine() async {
     _engine = await RtcEngine.createWithContext(RtcEngineContext(Constants.appId));
     _addListeners();
@@ -112,6 +122,8 @@ class _LiveScreenState extends State<LiveScreen> {
     } else {
       await _engine!.setClientRole(ClientRole.Audience);
     }
+
+    _createClient();
   }
 
   void _addListeners() {
@@ -150,8 +162,82 @@ class _LiveScreenState extends State<LiveScreen> {
     ));
   }
 
+  // <----------------END RTC------------------> //
+
+  // <----------------START RTM------------------> //
+  Future _createClient() async {
+    _client = await AgoraRtmClient.createInstance(Constants.appId);
+    debugPrint("RTM Initialize::::::::");
+
+    _client?.onMessageReceived = (AgoraRtmMessage message, String peerId) {
+      // logController.addLog("Private Message from " + peerId + ": " + message.text);
+      _comments.add(Chat(uid: peerId, message: message.text));
+    };
+    _client?.onConnectionStateChanged = (int state, int reason) {
+      debugPrint('Connection state changed::::::::::: $state, reason: $reason');
+      if (state == 5) {
+        _client?.logout();
+        // logController.addLog('Logout.');
+      }
+    };
+    _login();
+  }
+
+  Future _login() async {
+    debugPrint('Login :::::::::::::');
+    try {
+      await _client?.login(Constants.rtmToken, userId);
+      setState(() => loader = false);
+      _joinChannel();
+    } catch (errorCode) {
+      debugPrint('Login error:::: $errorCode');
+    }
+  }
+
+  Future _joinChannel() async {
+    try {
+      _channel = await _createChannel(Constants.testChanel);
+      debugPrint('Join channel success.');
+      await _channel?.join();
+      // logController.addLog('Join channel success.');
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => MessageScreen(
+      //           client: _client,
+      //           channel: _channel,
+      //           logController: logController,
+      //         )));
+    } catch (errorCode) {
+      debugPrint('Join channel error: $errorCode');
+    }
+  }
+
+  Future<AgoraRtmChannel?> _createChannel(String name) async {
+    AgoraRtmChannel? channel = await _client?.createChannel(name);
+    if(channel != null) {
+      channel.onMemberJoined = (AgoraRtmMember member) {
+        _comments.insert(0, Chat(uid: member.userId, message: "Member joined: ${member.userId}"));
+        _key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
+      };
+      channel.onMemberLeft = (AgoraRtmMember member) {
+        _comments.insert(0, Chat(uid: member.userId, message: "Member left: ${member.userId}"));
+        _key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
+      };
+      channel.onMessageReceived = (AgoraRtmMessage message, AgoraRtmMember member) {
+        debugPrint(":::::::::::: RECIEVED MESSAGE");
+        _comments.insert(0, Chat(uid: member.userId, message: message.text));
+        _key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
+      };
+    }
+    return channel;
+  }
+
+  // <----------------END RTM------------------> //
+
   @override
   Widget build(BuildContext context) {
+    debugPrint(":::::::::$_comments");
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -215,25 +301,19 @@ class _LiveScreenState extends State<LiveScreen> {
       body: Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: <Widget>[
-          Container(
-            color: Colors.amberAccent,
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-          ),
-          // _broadcastView(),
-          _toolbar(),
-          _commentsView(),
-
-          // DraggableScrollableSheet(
-          //   initialChildSize: 0.30,
-          //   minChildSize: 0.15,
-          //   builder: (BuildContext context, ScrollController scrollController) {
-          //     return SingleChildScrollView(
-          //       controller: scrollController,
-          //       child: CustomScrollViewContent(),
-          //     );
-          //   },
+          // Container(
+          //   color: Colors.amberAccent,
+          //   height: MediaQuery.of(context).size.height,
+          //   width: MediaQuery.of(context).size.width,
           // ),
+          _broadcastView(),
+
+          if(loader)
+            Lottie.asset(Assets.loader)
+          else ...[
+            _toolbar(),
+            _commentsView(),
+          ],
         ],
       ),
 
@@ -356,7 +436,7 @@ class _LiveScreenState extends State<LiveScreen> {
                 key: _key,
                   padding: const EdgeInsets.only(left: 20, right: 50),
                   reverse: true,
-                  itemBuilder: (context, index, animation) => CommentTile(_comments.elementAt(index), animation: animation),
+                  itemBuilder: (context, index, animation) => CommentTile(_comments.elementAt(index).message, animation: animation),
                   initialItemCount: _comments.length,
               ),
             ),
@@ -539,11 +619,16 @@ class _LiveScreenState extends State<LiveScreen> {
     _engine!.switchCamera();
   }
 
-  void _handleSubmit() {
-    _comments.insert(0, chatController.text);
-    _key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
-    chatController.clear();
-    FocusScope.of(context).unfocus();
+  void _handleSubmit() async {
+    String text = chatController.text;
+    if (text.isNotEmpty) {
+      try {
+        await _channel?.sendMessage(AgoraRtmMessage.fromText(text));
+      } catch (errorCode) {
+        debugPrint("Send channel message error: $errorCode");
+        // widget.logController.addLog('Send channel message error: ' + errorCode.toString());
+      }
+    }
   }
 
   void _handleBottomSheet() {

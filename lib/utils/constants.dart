@@ -6,6 +6,8 @@ class Constants {
   static const String albumArt = "https://legiit-service.s3.amazonaws.com/a3444aabc35417cbb401fc4fbb7148ba/3b9307a4d28eebc3dfff71d319423997.jpg";
 
   // AGORA CREDENTIALS
+  static const String testChanel = "demo";
   static const String appId = 'd7c60d2d306241c49386d0f998fffb4f';
-  static const String token = '007eJxTYBDZGLIpzsB5UWD+b/6oBXMeWl5TmaD431JfnHVOt6RhxToFhhTzZDODFKMUYwMzIxPDZBNLYwuzFIM0S0uLtLS0JJO0Z4oqyanFqsmeM/MYmBgYGViAGMRnApPMYJIFTPIypGUWFReXOGck5uWl5jAwsDKAAAAUdyXE';
+  static const String rtcToken = '007eJxTYAjpnWBqzFj6fKtsAduCeO4aW6kzR8/Ok3pY1MDj92bBlW0KDCnmyWYGKUYpxgZmRiaGySaWxhZmKQZplpYWaWlpSSZp/XwayXwJmskBm4KZmBgYGViAGMRnApPMYJIFSqak5uYzMLAygAAAvtMg5g==';
+  static const String rtmToken = '006d7c60d2d306241c49386d0f998fffb4fIAAmKhKpv+9q+LGr9zm6vqiLGO7ZKaK7DMEiQQgEXrR89cJBJDUAAAAAEABdcOmd72YpYwEA6APvZilj';
 }

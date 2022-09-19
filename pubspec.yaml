@@ -34,13 +34,14 @@ dependencies:
 
 
   agora_rtc_engine: ^5.3.0
+  agora_rtm: ^1.1.1
   badges: ^2.0.3
   cupertino_icons: ^1.0.2
   flutter_svg: ^1.1.5
   flutter_vector_icons: ^1.0.0
   intl: ^0.17.0
   lottie: ^1.4.3
-  permission_handler:
+  permission_handler: ^10.0.0
   popover: ^0.2.6+3
 
 dev_dependencies:
