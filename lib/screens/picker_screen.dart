@@ -33,6 +33,7 @@ class _EditorScreenState extends State<EditorScreen> {
   VideoFile? selectedVideo;
   String? image;
   String? video;
+  String? videoPath;
   bool imagePicker = true;
   bool loader = true;
 
@@ -118,7 +119,7 @@ class _EditorScreenState extends State<EditorScreen> {
           video = videoFiles.first?.files?.first.path;
           loader = false;
         });
-        debugPrint(":::::::::::::::" + selectedVideo.toString());
+        // debugPrint(":::::::::::::::" + selectedVideo.toString());
         // _controller.play();
       }
     }
@@ -129,8 +130,33 @@ class _EditorScreenState extends State<EditorScreen> {
     await getVideosPath();
   }
 
+  // onChange(d) async {
+  //   debugPrint("CAALLEDD:::::::");
+  //   assert((d?.files?.length ?? 0) > 0);
+  //   if(d is FileModel) {
+  //     image = d.files?.elementAt(0);
+  //     setState(() => selectedImage = d);
+  //   }
+  //   else{
+  //     // await _controller.dispose();
+  //     // setState(() {
+  //     //   _controllers = [];
+  //     // });
+  //     // _controller = VideoPlayerController.file(File(d!.files!.elementAt(0).path));
+  //     // // await _controller.initialize();
+  //     // await Future.forEach(d!.files!, (FileElement element) async {
+  //     //   VideoPlayerController c = VideoPlayerController.file(File(element.path!));
+  //     //   // await c.initialize();
+  //     //   _controllers.add(c);
+  //     // });
+  //     video = d!.files!.elementAt(0).path;
+  //     setState(() => selectedVideo = d);
+  //   }
+  // }
+
   @override
   void dispose() {
+    for (var element in _controllers) {element.dispose();}
     _controller.dispose();
     super.dispose();
   }
@@ -164,7 +190,8 @@ class _EditorScreenState extends State<EditorScreen> {
                           child: DropdownButton(
                             items: getItems(),
                             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                            onChanged: (d) {
+                            // onChanged: onChange,
+                            onChanged: (d) async {
                               assert((d?.files?.length ?? 0) > 0);
                               if(d is FileModel) {
                                 image = d.files?.elementAt(0);
@@ -190,6 +217,8 @@ class _EditorScreenState extends State<EditorScreen> {
                 ],
               ),
               const Divider(),
+
+              // VIEW BOX
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.45,
                   child: imagePicker && image != null ?
@@ -212,11 +241,11 @@ class _EditorScreenState extends State<EditorScreen> {
                 const CircularProgressIndicator()
               else
                 Flexible(
-                // height: MediaQuery.of(context).size.height * 0.38,
-                  child: TabBarView(
+                    child: TabBarView(
                     children: [
+                      // IMAGES
                       Grids(
-                        onTap: (int i) {
+                        onTap: (int i, {String? path}) {
                           setState(() {
                             image = selectedImage?.files?.elementAt(i) as String;
                           });
@@ -224,24 +253,21 @@ class _EditorScreenState extends State<EditorScreen> {
                         // controllers: _controllers,
                         items: selectedImage?.files,
                       ),
+                      // VIDEOS
                       Grids(
-                        onTap: (int i) {
+                        onTap: (int i, {String? path}) {
                           setState(() {
                             video = selectedVideo?.files?.elementAt(i).path;
+                            _controller = _controllers.elementAt(i);
                           });
+                          // _controller.play();
                         },
                         controllers: _controllers,
                         items: selectedVideo?.files,
                       ),
                     ],
                   )
-              ),
-
-              // Flexible(
-              //     child:TabBarView(
-              //         physics: const NeverScrollableScrollPhysics(),
-              //         children: List.generate(2, body))
-              // )
+              )
             ],
           ),
         ),
@@ -264,53 +290,6 @@ class _EditorScreenState extends State<EditorScreen> {
         ),
       ),
     );
-  }
-
-  Widget body(int index) {
-    bool isFile = index == 0 ? (selectedImage == null || selectedImage!.files!.isEmpty) : (selectedVideo == null || selectedVideo!.files!.isEmpty);
-    int? itemCount = index == 0 ? selectedImage?.files?.length : selectedVideo?.files?.length;
-    if (isFile) {
-      return const SizedBox.shrink();
-    } else {
-      return Column(
-        children: [
-          SizedBox(
-              height: MediaQuery.of(context).size.height * 0.45,
-              child: imagePicker && image != null ?
-                  Image.file(File(image!),
-                      height: MediaQuery.of(context).size.height * 0.45,
-                      width: MediaQuery.of(context).size.width
-                  ) :
-              !imagePicker && video != null ?
-              Center(
-                child: _controller.value.isInitialized ?
-                AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                ) : const SizedBox.shrink(),
-              ) :
-              const SizedBox.shrink()
-          ),
-          const Divider(),
-          Flexible(
-            // height: MediaQuery.of(context).size.height * 0.38,
-            child: Grids(
-              onTap: (int i) {
-                if(index == 0) {
-                  setState(() {
-                    image = selectedImage?.files?.elementAt(i);
-                  });
-                }
-                else {
-                  video = selectedVideo?.files?.elementAt(i).path;
-                }
-              },
-              items: index == 0 ? selectedImage?.files : selectedVideo?.files,
-            )
-          ),
-        ],
-      );
-    }
   }
 
   List<DropdownMenuItem>? getItems() {
