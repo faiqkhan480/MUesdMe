@@ -26,7 +26,6 @@ class EditorScreen extends StatefulWidget {
 
 class _EditorScreenState extends State<EditorScreen> {
   late VideoPlayerController _controller;
-  List<VideoPlayerController> _controllers = [];
   List<FileModel?> imageFiles = [];
   List<VideoFile?> videoFiles = [];
   FileModel? selectedImage;
@@ -109,11 +108,7 @@ class _EditorScreenState extends State<EditorScreen> {
         debugPrint(videoFiles.first!.files!.first.path!);
         _controller = VideoPlayerController.file(File(videoFiles.first!.files!.first.path!));
         await _controller.initialize();
-        await Future.forEach(videoFiles.first!.files!, (element) async {
-          VideoPlayerController c = VideoPlayerController.file(File(element.path!));
-          await c.initialize();
-          _controllers.add(c);
-        });
+        _controller.play();
         setState(() {
           selectedVideo = videoFiles.first;
           video = videoFiles.first?.files?.first.path;
@@ -156,7 +151,6 @@ class _EditorScreenState extends State<EditorScreen> {
 
   @override
   void dispose() {
-    for (var element in _controllers) {element.dispose();}
     _controller.dispose();
     super.dispose();
   }
@@ -255,14 +249,15 @@ class _EditorScreenState extends State<EditorScreen> {
                       ),
                       // VIDEOS
                       Grids(
-                        onTap: (int i, {String? path}) {
+                        onTap: (int i, {String? path}) async {
+                          await _controller.dispose();
+                          _controller = VideoPlayerController.file(File(path!));
+                          await _controller.initialize();
+                          _controller.play();
                           setState(() {
                             video = selectedVideo?.files?.elementAt(i).path;
-                            _controller = _controllers.elementAt(i);
                           });
-                          // _controller.play();
                         },
-                        controllers: _controllers,
                         items: selectedVideo?.files,
                       ),
                     ],

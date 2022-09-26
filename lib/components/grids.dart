@@ -40,7 +40,7 @@ class Grids extends StatelessWidget {
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                  return GestureDetector(
-                      onTap: () => onTap!(index, path: snapshot.data),
+                      onTap: () => onTap!(index, path: items!.elementAt(index).path),
                       child:  Image.file(
                         File(snapshot.data ?? ""),
                         fit: BoxFit.cover,
