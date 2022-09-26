@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:musedme/utils/constants.dart';
 
+import '../utils/app_colors.dart';
 import 'text_widget.dart';
 
 class ButtonWidget extends StatelessWidget {
@@ -61,3 +62,39 @@ class ButtonWidget extends StatelessWidget {
     );
   }
 }
+
+class SmallButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+  final Color color;
+  final Widget? icon;
+  final String title;
+  const SmallButton({Key? key, required this.title, this.onPressed, this.icon, this.color = AppColors.primaryColor}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8)
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          textStyle: const TextStyle(fontSize: 12,
+              color: Colors.white,
+              fontFamily: Constants.fontFamily)
+      ),
+      child: icon != null ? Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          icon!,
+          const SizedBox(width: 5,),
+          Text(title),
+        ],
+      ) :
+      Text(title),
+    );
+  }
+}
+

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:musedme/utils/app_colors.dart';
 
+import '../models/chat.dart';
 import '../utils/constants.dart';
 import '../widgets/text_widget.dart';
 
 class CommentTile extends StatelessWidget {
-  final String text;
+  final Chat chat;
   final Animation<double> animation;
-  const CommentTile(this.text, {Key? key, required this.animation}) : super(key: key);
+  const CommentTile(this.chat, {Key? key, required this.animation}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<String> _names = chat.uid.split("");
     return Align(
       alignment: Alignment.centerLeft,
       child: SizeTransition(
@@ -24,11 +27,13 @@ class CommentTile extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircleAvatar(
-                  backgroundColor: Colors.white,
+              CircleAvatar(
+                  backgroundColor: AppColors.secondaryColor,
                   radius: 18,
-                  backgroundImage: NetworkImage(Constants.albumArt)),
-              TextWidget("\t\t$text", weight: FontWeight.normal,),
+                    child: TextWidget("${_names[0]}${_names[1]}".toUpperCase(), color: Colors.white),
+                // backgroundImage: NetworkImage(Constants.albumArt)
+              ),
+              TextWidget("\t\t${chat.message}", weight: FontWeight.normal,),
             ],
           ),
         ),

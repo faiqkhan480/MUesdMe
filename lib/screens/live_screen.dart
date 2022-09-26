@@ -436,7 +436,7 @@ class _LiveScreenState extends State<LiveScreen> {
                 key: _key,
                   padding: const EdgeInsets.only(left: 20, right: 50),
                   reverse: true,
-                  itemBuilder: (context, index, animation) => CommentTile(_comments.elementAt(index).message, animation: animation),
+                  itemBuilder: (context, index, animation) => CommentTile(_comments.elementAt(index), animation: animation),
                   initialItemCount: _comments.length,
               ),
             ),

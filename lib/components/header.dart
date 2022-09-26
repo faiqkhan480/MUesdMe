@@ -5,9 +5,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:musedme/screens/live_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+
+import '../screens/live_screen.dart';
+import '../screens/picker_screen.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
+import '../widgets/button_widget.dart';
 import '../widgets/text_widget.dart';
 
 final List<String> names = ["+ Upload", "Maxwell", "Cristina" , "Dancy", "Andreana", "Andreana"];
@@ -79,27 +83,10 @@ class Header extends StatelessWidget {
                       child: const Icon(CupertinoIcons.search, color: AppColors.secondaryColor),
                   ),
                 const SizedBox(width: 15),
-                TextButton(
+                SmallButton(
                   onPressed: action ?? () => handleLive(context),
-                  style: TextButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      textStyle: const TextStyle(fontSize: 12,
-                          color: Colors.white,
-                          fontFamily: Constants.fontFamily)
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SvgPicture.asset(isProfile ? Assets.iconsEditProfile : Assets.iconsLive),
-                      const SizedBox(width: 5,),
-                      Text(isProfile ? "Edit Profile" : "Go Live"),
-                    ],
-                  ),
+                  title: isProfile ? "Edit Profile" : "Go Live",
+                  icon: SvgPicture.asset(isProfile ? Assets.iconsEditProfile : Assets.iconsLive),
                 ),
                 if(isProfile)...[
                   const SizedBox(width: 10),
@@ -130,7 +117,11 @@ class Header extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               itemBuilder: (context, index) {
                 return InkWell(
-                  onTap: () => null,
+                  onTap: () =>
+                  // index == 0 ?
+                  presentEditor(context, index),
+                  // Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),)) :
+                  // null,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -195,5 +186,13 @@ class Header extends StatelessWidget {
   Future handleLive (context) async {
     await [Permission.camera, Permission.microphone].request();
     Navigator.push(context, CupertinoPageRoute(builder: (context) => const LiveScreen(),));
+  }
+
+
+
+  void presentEditor(context, index) async {
+    if(index == 0) {
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => EditorScreen(),));
+    }
   }
 }
