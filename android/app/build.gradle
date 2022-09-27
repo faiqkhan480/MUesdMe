@@ -46,6 +46,11 @@ imglyConfig {
         include 'ui:transform'
         include 'ui:adjustment'
         include 'ui:text-design'
+        include 'ui:video-trim'
+        include 'ui:video-library'
+        include 'ui:video-composition'
+        include 'ui:audio-composition'
+        include 'ui:giphy-sticker'
 
         // This module is big, remove the serializer if you don't need that feature.
         include 'backend:serializer'
@@ -57,7 +62,9 @@ imglyConfig {
         include 'assets:overlay-basic'
         include 'assets:sticker-shapes'
         include 'assets:sticker-emoticons'
+        include 'assets:sticker-animated'
 
+        include 'backend:sticker-animated'
         include 'backend:sticker-smart'
         include 'backend:background-removal'
     }

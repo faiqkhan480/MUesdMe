@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 
@@ -7,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_storage_path/flutter_storage_path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
-import 'package:imgly_sdk/imgly_sdk.dart' show Configuration, Options, Sticker, StickerCategory, StickerOptions;
+// import 'package:imgly_sdk/imgly_sdk.dart' show Configuration, Sticker, StickerCategory, StickerOptions, AudioOptions;
+import 'package:imgly_sdk/imgly_sdk.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_editor_sdk/video_editor_sdk.dart';
 
 import '../components/grids.dart';
 import '../models/file_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
-import '../utils/constants.dart';
 import '../widgets/button_widget.dart';
 
 class EditorScreen extends StatefulWidget {
@@ -60,8 +60,14 @@ class _EditorScreenState extends State<EditorScreen> {
     ]);
     final categories = <StickerCategory>[logos, emoticons, shapes];
     final configuration = Configuration(
-        sticker:
-        StickerOptions(personalStickers: true, categories: categories));
+        sticker: StickerOptions(personalStickers: true, categories: categories),
+        audio: AudioOptions(categories:  [
+              AudioClipCategory("example_sounds", "SoundHelix", items: [
+                AudioClip("Song-1", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3")
+              ])
+            ]
+        ),
+    );
     return configuration;
   }
 
@@ -76,13 +82,15 @@ class _EditorScreenState extends State<EditorScreen> {
 
   // PICKED SELECTED IMAGE & MOVE TO EDITOR
   handleImage() async {
-    // debugPrint(image);
     var result = await PESDK.openEditor(image: image, configuration: createConfiguration());
     debugPrint(result.toString());
   }
 
-  handleVideo() {
-
+  handleVideo() async {
+    if(video != null && video!.isNotEmpty) {
+      var result = await VESDK.openEditor(Video(video!), configuration: createConfiguration());
+      debugPrint("${result?.toJson()}");
+    }
   }
 
   Future<void> getImagesPath() async {
@@ -114,8 +122,6 @@ class _EditorScreenState extends State<EditorScreen> {
           video = videoFiles.first?.files?.first.path;
           loader = false;
         });
-        // debugPrint(":::::::::::::::" + selectedVideo.toString());
-        // _controller.play();
       }
     }
   }
