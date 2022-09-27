@@ -200,12 +200,15 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() => loader = true);
         bool res = await _authService.loginUser(emailController.text, passwordController.text);
         setState(() => loader = false);
+        if(res) {
+          if(mounted) return;
+          Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
+        }
       }
       catch(e) {
         debugPrint("$e");
         setState(() => loader = false);
       }
     }
-    // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
   }
 }

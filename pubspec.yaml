@@ -36,6 +36,7 @@ dependencies:
   agora_rtm: ^1.1.1
   badges: ^2.0.3
   callkeep: ^0.3.2
+  country_picker: ^2.0.16
   cupertino_icons: ^1.0.2
   flutter_storage_path: ^1.0.3
   flutter_svg: ^1.1.5

@@ -1,12 +1,17 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../navigation/bottom_navigation.dart';
+import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/constants.dart';
+import '../../utils/di_setup.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/text_widget.dart';
 
@@ -18,13 +23,37 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController firstName = TextEditingController();
+  TextEditingController lastName = TextEditingController();
+  TextEditingController userName = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController confirmPassword = TextEditingController();
+  TextEditingController country = TextEditingController();
   TextEditingController dobController = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
   bool isMale = true;
-  String? selectedCountry;
+  bool passSecure = true;
+  bool confirmPassSecure = true;
+  bool loader = false;
+  // String? selectedCountry;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final AuthService _authService = getIt<AuthService>();
+
+  static String countryCodeToEmoji(String countryCode) {
+    // 0x41 is Letter A
+    // 0x1F1E6 is Regional Indicator Symbol Letter A
+    // Example :
+    // firstLetter U => 20 + 0x1F1E6
+    // secondLetter S => 18 + 0x1F1E6
+    // See: https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
+    final int firstLetter = countryCode.codeUnitAt(0) - 0x41 + 0x1F1E6;
+    final int secondLetter = countryCode.codeUnitAt(1) - 0x41 + 0x1F1E6;
+    return String.fromCharCode(firstLetter) + String.fromCharCode(secondLetter);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Form(
+              key: _formKey,
               child: Column(
                 children: [
                   const TextWidget("Create Your Account\n", color: AppColors.secondaryColor, size: 22, weight: FontWeight.w700),
@@ -44,31 +74,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       Expanded(
                         child: InputField(
-                          controller: emailController,
+                          controller: firstName,
                           hintText: "First Name",
-                          keyboardType: TextInputType.phone,
-                          validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
+                          keyboardType: TextInputType.text,
+                          validator: (String? value) => value!.isEmpty ? "First name is required!" : null,
                           onSubmit: (_) => FocusScope.of(context).nextFocus(),
                         ),
                       ),
                       const SizedBox(width: 15,),
                       Expanded(
                         child: InputField(
-                          controller: emailController,
+                          controller: lastName,
                           hintText: "Last Name",
-                          keyboardType: TextInputType.phone,
-                          validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
+                          keyboardType: TextInputType.text,
+                          validator: (String? value) => value!.isEmpty ? "Last name is required!" : null,
                           onSubmit: (_) => FocusScope.of(context).nextFocus(),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 20,),
+                  // USER NAME FIELD
+                  InputField(
+                    controller: userName,
+                    hintText: "User Name",
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s')),],
+                    validator: (String? value) => value!.isEmpty ? "User name is required!" : null,
+                    onSubmit: (_) => FocusScope.of(context).nextFocus(),
+                  ),
+                  const SizedBox(height: 20,),
                   // EMAIL FIELD
                   InputField(
-                    controller: emailController,
+                    controller: email,
                     hintText: "Email",
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.text,
                     validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
                   ),
@@ -130,20 +170,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // DOB & COUNTRY FIELDS
                   Row(
                     children: [
-                      Expanded(child: DropDownInputField(
-                        items: const ["Pakistan", "India", "UAE"],
-                        onChanged: handleCountry,
-                        hintText: "Country",
-                      )),
-                      SizedBox(width: 20,),
+                      Expanded(
+                        child: InputField(
+                          controller: country,
+                          hintText: "Country",
+                          readOnly: true,
+                          onTap: handleCountry,
+                          trailingIcon: country.text.isNotEmpty ? Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(countryCodeToEmoji(country.text),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 25),
+                            ),
+                          ) : null,
+                          keyboardType: TextInputType.text,
+                          validator: (String? value) => value!.isEmpty ? "Country is required!" : null,
+                          onSubmit: (_) => FocusScope.of(context).nextFocus(),
+                        ),
+                      ),
+                      const SizedBox(width: 20,),
                       Expanded(
                         child: InputField(
                           controller: dobController,
                           hintText: "DOB",
                           readOnly: true,
                           onTap: handleDate,
-                          keyboardType: TextInputType.phone,
-                          // validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
+                          keyboardType: TextInputType.text,
+                          validator: (String? value) => value!.isEmpty ? "Birth Date is required!" : null,
                           onSubmit: (_) => FocusScope.of(context).nextFocus(),
                         ),
                       ),
@@ -153,29 +206,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20,),
                   // PASSWORD FIELD
                   InputField(
-                    controller: emailController,
+                    controller: password,
                     hintText: "Password",
-                    keyboardType: TextInputType.phone,
-                    obscureText: true,
-                    validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
+                    keyboardType: TextInputType.text,
+                    obscureText: passSecure,
+                    validator: (String? value) => value!.isEmpty ? "Password is required!" : null,
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
-                    trailingIcon: const Icon(CupertinoIcons.eye, color: AppColors.progressColor),
+                    trailingIcon: IconButton(
+                        onPressed: () => setState(() => passSecure = !passSecure),
+                        icon: Icon(passSecure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.progressColor)),
                   ),
                   const SizedBox(height: 20,),
                   // CONFIRM PASSWORD FIELD
                   InputField(
-                    controller: emailController,
+                    controller: confirmPassword,
                     hintText: "Confirm Password",
-                    keyboardType: TextInputType.phone,
-                    obscureText: true,
-                    validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
+                    keyboardType: TextInputType.text,
+                    obscureText: confirmPassSecure,
+                    validator: (String? value) => value!.isEmpty ? "Confirm Password is required!" : value != password.text ? "Confirm password is not matched!" : null,
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
-                    trailingIcon: const Icon(CupertinoIcons.eye, color: AppColors.progressColor),
+                    trailingIcon: IconButton(
+                        onPressed: () => setState(() => confirmPassSecure = !confirmPassSecure),
+                        icon: Icon(confirmPassSecure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.progressColor)),
                   ),
                   const SizedBox(height: 20,),
 
                   // SUBMIT BUTTON
-                  SizedBox(
+                  if(loader)
+                    SizedBox(
+                        height: 55,
+                        child: Lottie.asset(Assets.loader))
+                  else
+                    SizedBox(
                     width: double.infinity,
                     child: TextButton(
                       onPressed: handleSubmit,
@@ -221,7 +283,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  handleDate() async {
+  Future<void> handleDate() async {
     DateTime? res = await showDatePicker(
         context: context,
         initialDate: selectedDate,
@@ -236,13 +298,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  handleCountry(String? val) {
-    setState(() {
-      selectedCountry = val;
-    });
+  void handleCountry() {
+    showCountryPicker(
+      context: context,
+      showPhoneCode: false, // optional. Shows phone code before the country name.
+      onSelect: (Country c) {
+        setState(() {
+          country.text = c.countryCode;
+        });
+      },
+    );
   }
 
-  handleSubmit() {
-    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
+  Future<void> handleSubmit() async {
+    if(!loader && _formKey.currentState!.validate()) {
+      try {
+        setState(() => loader = true);
+        bool res = await _authService.registerUser(
+          firstName.text, // FIRST NAME
+          lastName.text, // LAST NAME
+          userName.text, // USER NAME
+          email.text, // EMAIL CONTROLLER
+          isMale ? "Male" : "Female", // GENDER
+          country.text, // COUNTRY
+          dobController.text, // DATE OF BIRTH
+          password.text // PASSWORD
+        );
+        setState(() => loader = false);
+        if(res) {
+          if(mounted) return;
+          Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
+        }
+      }
+      catch(e) {
+        debugPrint("$e");
+        setState(() => loader = false);
+      }
+    }
   }
 }

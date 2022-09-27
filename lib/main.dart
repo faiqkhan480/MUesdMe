@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import 'navigation/bottom_navigation.dart';
 import 'screens/auth/login_screen.dart';
 import 'utils/di_setup.dart' as di;
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final GetStorage box = GetStorage();
     return GetMaterialApp(
       title: 'MUsedMe',
       debugShowCheckedModeBanner: false,
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'Larsseit'
       ),
-      home: const LoginScreen(),
+      home: box.read("token") != null ? const BottomNavigation() : const LoginScreen(),
       // home: const BottomNavigation(),
     );
   }
