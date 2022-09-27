@@ -71,7 +71,7 @@ imglyConfig {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {

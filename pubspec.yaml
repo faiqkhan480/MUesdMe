@@ -40,6 +40,7 @@ dependencies:
   flutter_storage_path: ^1.0.3
   flutter_svg: ^1.1.5
   flutter_vector_icons: ^1.0.0
+  get_storage: ^2.0.3
   http: ^0.13.5
   intl: ^0.17.0
   lottie: ^1.4.3

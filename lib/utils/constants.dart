@@ -1,4 +1,14 @@
 class Constants {
+  // BASE URL
+  static const String LIVE_URL = "https://musedme.helpinglab.com:6868";
+  static const String BASE_URL = LIVE_URL;
+  static const String IMAGE_URL = "$BASE_URL/assets/Uploads/profile/";
+
+  ///AUTHENTICATION URLS
+  static const String LOGIN = "$BASE_URL/api/Users/AuthenticateUser";
+  static const String REGISTER = "$BASE_URL/api/Users/SignUp";
+  static const String USER_DETAILS = "$BASE_URL/api/Users/BindUserDetails";
+
   static const String fontFamily = "Larsseit";
   static const String dummyImage = "https://cdn.hswstatic.com/gif/play/0b7f4e9b-f59c-4024-9f06-b3dc12850ab7-1920-1080.jpg";
   static const String greenVector = "https://www.wallpapertip.com/wmimgs/188-1884481_green-blue.jpg";
