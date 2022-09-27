@@ -12,12 +12,14 @@ class ButtonWidget extends StatelessWidget {
     this.icon,
     this.vertical = false,
     required this.onPressed,
-    this.textColor
+    this.textColor,
+    this.bgColor
   }) : super(key: key);
 
   final String text;
   final String? icon;
   final Color? textColor;
+  final Color? bgColor;
   final bool vertical;
   final VoidCallback? onPressed;
 
@@ -26,7 +28,7 @@ class ButtonWidget extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-          backgroundColor: Colors.transparent,
+          backgroundColor: bgColor ?? Colors.transparent,
         textStyle: TextStyle(
           fontFamily: Constants.fontFamily,
           color: textColor,

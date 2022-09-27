@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import 'navigation/bottom_navigation.dart';
 import 'screens/auth/login_screen.dart';
+import 'utils/di_setup.dart' as di;
 
 void main() async {
   await GetStorage.init();
+  di.init();
   runApp(const MyApp());
 }
 
@@ -15,8 +17,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Musedme',
+    return GetMaterialApp(
+      title: 'MUsedMe',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
