@@ -36,6 +36,7 @@ class AuthService {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.users != null) {
           User currentUser = User.fromJson(res.users);
+          debugPrint("::::::::: ${currentUser.token}");
           _box.write("user", res.users);
           _box.write("token", currentUser.token);
           return true;

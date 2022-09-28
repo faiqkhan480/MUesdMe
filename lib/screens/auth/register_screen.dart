@@ -326,7 +326,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         setState(() => loader = false);
         if(res) {
-          if(mounted) return;
+          if(!mounted) return;
           Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
         }
       }

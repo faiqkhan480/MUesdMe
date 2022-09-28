@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:musedme/components/header.dart';
-import 'package:musedme/screens/search_screen.dart';
-import 'package:musedme/utils/assets.dart';
-import 'package:musedme/utils/app_colors.dart';
+import 'package:lottie/lottie.dart';
 
 import '../components/feed_card.dart';
-import '../navigation/bottom_navigation.dart';
-import '../utils/constants.dart';
+import '../components/header.dart';
+import '../models/feed.dart';
+import '../services/api_service.dart';
+import '../utils/assets.dart';
+import '../utils/di_setup.dart';
+import 'search_screen.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -18,6 +18,35 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
+  final ApiService _service = getIt<ApiService>();
+
+  List<Feed?> feeds = [];
+
+  bool loader = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getFeeds();
+  }
+
+  Future<void> getFeeds() async {
+    try{
+      List res = await _service.fetchPosts();
+      setState(() {
+        feeds = res as List<Feed?>;
+        loader = false;
+      });
+    }
+    catch(e) {
+      setState(() {
+        feeds = [];
+        loader = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,12 +54,18 @@ class _FeedScreenState extends State<FeedScreen> {
         children: [
           Header(title: "Live Feed", showLives: true, handleSearch: handleNavigation),
           const SizedBox(height: 20,),
-          Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  itemBuilder: (context, index) => FeedCard(isVideo: index != 0),
-                  separatorBuilder: (context, index) => const SizedBox(height: 20),
-                  itemCount: 4
+          if(loader)
+            Lottie.asset(Assets.loader)
+          else
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: getFeeds,
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    itemBuilder: (context, index) => FeedCard(isVideo: index != 0, post: feeds.elementAt(index)),
+                    separatorBuilder: (context, index) => const SizedBox(height: 20),
+                    itemCount: feeds.length
+                ),
               )
           ),
         ],
