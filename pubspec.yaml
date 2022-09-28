@@ -35,6 +35,7 @@ dependencies:
   agora_rtc_engine: ^5.3.0
   agora_rtm: ^1.1.1
   badges: ^2.0.3
+  cached_video_player: ^2.0.3
   callkeep: ^0.3.2
   country_picker: ^2.0.16
   cupertino_icons: ^1.0.2
@@ -46,6 +47,7 @@ dependencies:
   get_storage: ^2.0.3
   http: ^0.13.5
   intl: ^0.17.0
+  inview_notifier_list: ^3.0.0
   lottie: ^1.4.3
   path_provider: ^2.0.11
   permission_handler: ^10.0.0

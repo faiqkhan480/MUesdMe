@@ -47,7 +47,7 @@ class _VideosScreenState extends State<VideosScreen> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                 children: const [
-                  FeedCard(horizontalSpace: 10, isVideo: true),
+                  FeedCard(horizontalSpace: 10, index: 0,),
 
                   TitleRow(title: "Trending videos"),
 
@@ -59,7 +59,7 @@ class _VideosScreenState extends State<VideosScreen> {
 
                   SizedBox(height: 20,),
 
-                  FeedCard(horizontalSpace: 10, isVideo: true),
+                  FeedCard(horizontalSpace: 10, index: 0),
 
                   SizedBox(height: 20,),
 

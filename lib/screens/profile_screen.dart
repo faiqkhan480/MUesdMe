@@ -116,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                       return const Padding(
                         padding: EdgeInsets.only(top: 10.0, bottom: 10),
-                        child: FeedCard(horizontalSpace: 10, isVideo: true),
+                        child: FeedCard(horizontalSpace: 10, index: 0),
                       );
                     },
                     childCount: 4,

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:lottie/lottie.dart';
 
 import '../components/feed_card.dart';
@@ -60,10 +61,15 @@ class _FeedScreenState extends State<FeedScreen> {
             Expanded(
               child: RefreshIndicator(
                 onRefresh: getFeeds,
-                child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    itemBuilder: (context, index) => FeedCard(isVideo: index != 0, post: feeds.elementAt(index)),
-                    separatorBuilder: (context, index) => const SizedBox(height: 20),
+                child: InViewNotifierList(
+                    isInViewPortCondition:
+                        (double deltaTop, double deltaBottom, double viewPortDimension) {
+                      return deltaTop < (0.5 * viewPortDimension) &&
+                          deltaBottom > (0.5 * viewPortDimension);
+                    },
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    builder: (context, index) => FeedCard(index: index, post: feeds.elementAt(index)),
+                    // separatorBuilder: (context, index) => const SizedBox(height: 20),
                     itemCount: feeds.length
                 ),
               )
