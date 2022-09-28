@@ -53,10 +53,17 @@ class FeedCard extends StatelessWidget {
               position: BadgePosition.topEnd(top: -1, end: 4),
               elevation: 0,
               borderSide: const BorderSide(color: Colors.white, width: .7),
-              child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 25,
-                  backgroundImage: NetworkImage("${Constants.IMAGE_URL}${post?.profilePic}")),
+              child: ImageWidget(
+                url: "${Constants.IMAGE_URL}${post?.profilePic}",
+                borderRadius: 100,
+                height: 80,
+              ),
+              // child: CircleAvatar(
+              //     backgroundColor: Colors.white,
+              //     radius: 25,
+              //     backgroundImage: NetworkImage("${Constants.IMAGE_URL}${post?.profilePic}",
+              //     )
+              // ),
             ),
             title: TextWidget(post?.fullName ??  "", weight: FontWeight.w800),
             subtitle: TextWidget("@${post?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),

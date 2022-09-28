@@ -14,13 +14,13 @@ import '../utils/network.dart';
 // import 'package:http/http.dart' as http;
 
 class AuthService {
-  // User? _currentUser;
-  //
-  // set setCurrentUser(User value) {
-  //   _currentUser = value;
-  // }
-  //
-  // User? get currentUser => _currentUser;
+  User? _currentUser;
+
+  set setCurrentUser(User value) {
+    _currentUser = value;
+  }
+
+  User? get currentUser => _currentUser;
   final GetStorage _box = GetStorage();
 
 
@@ -35,10 +35,10 @@ class AuthService {
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.users != null) {
-          User currentUser = User.fromJson(res.users);
-          debugPrint("::::::::: ${currentUser.token}");
+          _currentUser = User.fromJson(res.users);
+          // debugPrint("::::::::: ${_currentUser?.userName}");
           _box.write("user", res.users);
-          _box.write("token", currentUser.token);
+          _box.write("token", _currentUser?.token);
           return true;
         }
         else {
@@ -81,9 +81,9 @@ class AuthService {
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.users != null) {
-          User currentUser = User.fromJson(res.users);
+          _currentUser = User.fromJson(res.users);
           _box.write("user", res.users);
-          _box.write("token", currentUser.token);
+          _box.write("token", _currentUser?.token);
           return true;
         }
         else {
@@ -98,6 +98,38 @@ class AuthService {
     } catch (e) {
       debugPrint("ERROR >>>>>>>>>> $e");
       return false;
+    }
+  }
+
+  Future<User?> getUser() async {
+    try {
+      var header = {
+        "Authorization": "Bearer ${_box.read("token")}",
+      };
+      var payload = {
+        "UserId": User.fromJson(_box.read("user")).userId.toString(),
+      };
+      final json = await Network.post(url: Constants.USER_DETAILS, payload: payload, headers: header);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.users != null) {
+          _currentUser = User.fromJson(res.users);
+          _box.write("user", res.users);
+          // _box.write("token", _currentUser?.token);
+          return _currentUser;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return null;
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
     }
   }
 }

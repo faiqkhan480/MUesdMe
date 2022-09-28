@@ -22,6 +22,9 @@ class User {
     required this.location,
     required this.postalCode,
     required this.aboutMe,
+    required this.followedBy,
+    required this.followers,
+    required this.followings,
   });
 
   @JsonKey(name: 'UserID')
@@ -71,6 +74,15 @@ class User {
 
   @JsonKey(name: 'AboutMe')
   final String? aboutMe;
+
+  @JsonKey(name: 'FollowedBy')
+  final int? followedBy;
+
+  @JsonKey(name: 'Followers')
+  final int? followers;
+
+  @JsonKey(name: 'Followings')
+  final int? followings;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

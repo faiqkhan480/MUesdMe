@@ -3,13 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../models/auths/user_model.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../widgets/text_widget.dart';
 
 class InfoCard extends StatelessWidget {
-  const InfoCard({Key? key}) : super(key: key);
+  final User? user;
+  const InfoCard({Key? key, this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +42,14 @@ class InfoCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 5,),
-              const TextWidget("James\nMartinia Junior",
+              TextWidget("${user?.firstName} ${user?.lastName}",
                 size: 34,
                 weight: FontWeight.w700,
               ),
               const SizedBox(height: 5,),
               Row(
                 children: [
-                  const TextWidget("@jamesjunior ",
+                  TextWidget("@${user?.userName} ",
                     size: 14,
                     color: AppColors.lightGrey,
                     weight: FontWeight.w400,
@@ -66,7 +68,7 @@ class InfoCard extends StatelessWidget {
 
               const SizedBox(height: 15,),
 
-              const TextWidget("There’s nothing better drive on Golden Gate Bridge the wide strait connecting. #Golden #Bridge",
+              TextWidget(user?.aboutMe ?? '',
                 weight: FontWeight.normal,
               ),
             ],
@@ -81,8 +83,8 @@ class InfoCard extends StatelessWidget {
             padding: const EdgeInsets.all(7),
             borderSide: const BorderSide(color: Colors.white),
             badgeColor: AppColors.successColor,
-            child: const CircleAvatar(
-              backgroundImage: NetworkImage(Constants.dummyImage),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage("${Constants.IMAGE_URL}${user?.profilePic}"),
               radius: 50,
               backgroundColor: Colors.white,
             ),
@@ -103,7 +105,7 @@ class InfoCard extends StatelessWidget {
               color: AppColors.lightGrey,
               weight: FontWeight.normal,
             ),
-            TextWidget(index == 0 ? "1.7m" : index == 1 ? "348" : "2k",
+            TextWidget(index == 0 ? "${user?.followers}" : index == 1 ? "${user?.followings}" : "null",
               size: 22,
               weight: FontWeight.normal,
             ),
