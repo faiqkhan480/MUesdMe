@@ -19,7 +19,7 @@ class ImageWidget extends StatelessWidget {
         child: Image.network(
           url,
           loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : Lottie.asset(Assets.loader),
-          // errorBuilder: (context, error, stackTrace) => Icon(Icons.photo, color: AppColors.secondaryColor.withOpacity(0.4),),
+          errorBuilder: (context, error, stackTrace) => Icon(Icons.photo, color: AppColors.secondaryColor.withOpacity(0.4), size: ((height ?? 0) - 30)),
           height: height,
           fit: BoxFit.cover,
         ));

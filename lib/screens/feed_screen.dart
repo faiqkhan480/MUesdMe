@@ -54,7 +54,7 @@ class _FeedScreenState extends State<FeedScreen> {
       body: Column(
         children: [
           Header(title: "Live Feed", showLives: true, handleSearch: handleNavigation),
-          const SizedBox(height: 20,),
+          // const SizedBox(height: 20,),
           if(loader)
             Lottie.asset(Assets.loader)
           else
@@ -67,8 +67,17 @@ class _FeedScreenState extends State<FeedScreen> {
                       return deltaTop < (0.5 * viewPortDimension) &&
                           deltaBottom > (0.5 * viewPortDimension);
                     },
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    builder: (context, index) => FeedCard(index: index, post: feeds.elementAt(index)),
+                    padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    builder: (context, index) => InViewNotifierWidget(
+                      id: '$index',
+                      builder: (BuildContext context, bool isInView, Widget? child) => Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: FeedCard(
+                            index: index,
+                            isInView: isInView,
+                            post: feeds.elementAt(index)),
+                      ),
+                    ),
                     // separatorBuilder: (context, index) => const SizedBox(height: 20),
                     itemCount: feeds.length
                 ),
