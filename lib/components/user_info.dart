@@ -5,7 +5,17 @@ import '../widgets/shadowed_box.dart';
 import '../widgets/text_widget.dart';
 
 class GeneralInfo extends StatelessWidget {
-  const GeneralInfo({Key? key}) : super(key: key);
+  final TextEditingController firstname;
+  final TextEditingController lastname;
+  final TextEditingController userName;
+  final TextEditingController phone;
+
+  const GeneralInfo({Key? key,
+    required this.firstname,
+    required this.lastname,
+    required this.userName,
+    required this.phone
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +29,19 @@ class GeneralInfo extends StatelessWidget {
             child: TextWidget("General info", color: AppColors.primaryColor, weight: FontWeight.normal,),
           ),
           const SizedBox(height: 10,),
-          dataRow("First name", "James"),
+          dataRow("First name", firstname),
           const Divider(color: AppColors.grayScale, thickness: 1),
-          dataRow("Last name", "Martinia Junior",),
+          dataRow("Last name", lastname,),
           const Divider(color: AppColors.grayScale, thickness: 1),
-          dataRow("Phone number", "",)
+          dataRow("User name", userName,),
+          const Divider(color: AppColors.grayScale, thickness: 1),
+          dataRow("Phone number", phone,)
         ],
       ),
     );
   }
 
-  Widget dataRow(String label, String value, {double? fontSize, FontWeight? weight, EdgeInsets? padding}) {
+  Widget dataRow(String label, TextEditingController controller, {double? fontSize, FontWeight? weight, EdgeInsets? padding}) {
     return Padding(
       padding: padding ?? const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8),
       child: Row(
@@ -39,11 +51,10 @@ class GeneralInfo extends StatelessWidget {
           Expanded(
             child: TextField(
               textAlign: TextAlign.end,
-              controller: TextEditingController(text: value),
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
+              controller: controller,
+              style: const TextStyle(color: Colors.black),
+              decoration: const InputDecoration(
                 isDense: true,
-
                 focusedBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
               ),

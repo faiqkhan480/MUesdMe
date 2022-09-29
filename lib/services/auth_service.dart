@@ -132,4 +132,41 @@ class AuthService {
       return null;
     }
   }
+
+  Future updateUser(
+      String firstName,
+      String lastName,
+      String userName,
+      String profilePic,
+      String phone,
+      String aboutMe
+      ) async {
+    try {
+      var header = {
+        "Authorization": "Bearer ${_box.read("token")}",
+      };
+      var payload = {
+        "UserID": _currentUser?.userId.toString(),
+        "FirstName": firstName,
+        "LastName": lastName,
+        "UserName": userName,
+        "ProfilePic": profilePic,
+        "Phone": phone,
+        "AboutMe": aboutMe,
+      };
+      final json = await Network.post(url: Constants.UPDATE_USER, payload: payload, headers: header);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        Get.snackbar(res.code != 200 ? "Failed!" : "Success!", res.message ?? "",
+            backgroundColor: res.code != 200 ? AppColors.pinkColor : AppColors.green,
+            colorText: Colors.white
+        );
+        return res.code == 200;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return false;
+    }
+  }
 }

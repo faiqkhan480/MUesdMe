@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
 
 import '../components/trending_card.dart';
@@ -15,15 +16,21 @@ class CustomHeader extends StatelessWidget {
     required this.title,
     this.showBottom = true,
     this.showRecentWatches = false,
+    this.loader = false,
     this.showSearch = false,
-    this.buttonColor
+    this.buttonColor,
+    this.imgUrl,
+    this.onSave
   }) : super(key: key);
 
   final String title;
+  final String? imgUrl;
   final bool showBottom;
+  final bool loader;
   final bool showRecentWatches;
   final Color? buttonColor;
   final bool showSearch;
+  final VoidCallback? onSave;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +43,9 @@ class CustomHeader extends StatelessWidget {
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-            boxShadow: [BoxShadow(color: AppColors.shadowColor, blurRadius: 8)],
+            boxShadow: [BoxShadow(
+                color: AppColors.grayScale,  //AppColors.shadowColor,
+                blurRadius: 8)],
           ),
           width: double.infinity,
           child: Column(
@@ -58,35 +67,7 @@ class CustomHeader extends StatelessWidget {
                       ),
                       child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
                   ),
-                  // ElevatedButton(
-                  //   onPressed: () => Navigator.pop(context),
-                  //   style: ElevatedButton.styleFrom(
-                  //       backgroundColor: Colors.white,
-                  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  //       shadowColor: AppColors.shadowColor.withOpacity(0.2),
-                  //       elevation: 5,
-                  //       padding: const EdgeInsets.symmetric(vertical: 15),
-                  //       fixedSize: const Size(20, 40),
-                  //       textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)),
-                  //   child: const Icon(CupertinoIcons.back,
-                  //       color: AppColors.secondaryColor),
-                  // ),
-                  // TextButton(
-                  //     onPressed: () => null,
-                  //     style: TextButton.styleFrom(
-                  //         backgroundColor: Colors.white,
-                  //         shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(8),
-                  //             side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
-                  //         ),
-                  //         padding: const EdgeInsets.symmetric(vertical: 16),
-                  //         textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
-                  //     ),
-                  //     child: const Icon(CupertinoIcons.gear_solid, color: AppColors.secondaryColor,)
-                  // ),
-                  const SizedBox(
-                    width: 15,
-                  ),
+                  const SizedBox(width: 15,),
                   Text(
                     title,
                     style: const TextStyle(
@@ -113,12 +94,15 @@ class CustomHeader extends StatelessWidget {
                       ),
                       child: const Icon(CupertinoIcons.search, size: 22, color: AppColors.secondaryColor),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10,),
                   ],
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
+                  if(loader)
+                    SizedBox(
+                        height: 40,
+                        child: Lottie.asset(Assets.loader))
+                  else
+                    TextButton(
+                    onPressed: onSave,
                     style: TextButton.styleFrom(
                         backgroundColor: buttonColor ?? AppColors.successColor,
                         foregroundColor: Colors.white,
@@ -143,8 +127,8 @@ class CustomHeader extends StatelessWidget {
                   width: double.infinity,
                   child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) => TrendingCard(itemWidth: 300,),
-                      separatorBuilder: (context, index) => SizedBox(width: 10,),
+                      itemBuilder: (context, index) => const TrendingCard(itemWidth: 300,),
+                      separatorBuilder: (context, index) => const SizedBox(width: 10,),
                       itemCount: 2
                   ),
                 ),
@@ -154,10 +138,10 @@ class CustomHeader extends StatelessWidget {
         ),
 
         if(showBottom)...[
-          const Positioned(
+          Positioned(
             bottom: -55,
             child: CircleAvatar(
-              backgroundImage: NetworkImage(Constants.dummyImage),
+              backgroundImage: NetworkImage(imgUrl ?? Constants.dummyImage),
               radius: 60,
               backgroundColor: Colors.white,
             ),

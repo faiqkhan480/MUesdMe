@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ScrollController controller = ScrollController();
 
   handleClick() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditProfileScreen(),));
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => EditProfileScreen(user: user),));
   }
 
   Future<void> getUser() async {

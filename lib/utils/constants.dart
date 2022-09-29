@@ -9,6 +9,8 @@ class Constants {
   static const String LOGIN = "$BASE_URL/api/Users/AuthenticateUser";
   static const String REGISTER = "$BASE_URL/api/Users/SignUp";
   static const String USER_DETAILS = "$BASE_URL/api/Users/BindUserDetails";
+  static const String UPDATE_USER = "$BASE_URL/api/Users/UpdateUser";
+
 
   // POSTS
   static const String FEEDS = "$BASE_URL/api/Feed/GetAllFeeds";

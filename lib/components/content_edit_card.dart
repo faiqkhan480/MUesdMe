@@ -6,7 +6,13 @@ import '../utils/constants.dart';
 import '../widgets/shadowed_box.dart';
 
 class ContentEditCard extends StatelessWidget {
-  const ContentEditCard({Key? key}) : super(key: key);
+
+  final TextEditingController aboutMe;
+
+  const ContentEditCard({
+    Key? key,
+    required this.aboutMe
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +27,25 @@ class ContentEditCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10,),
-          RichText(
-              text: const TextSpan(
-                style: TextStyle(fontFamily: Constants.fontFamily, color: Colors.black),
-                children: [
-                  TextSpan(text: "There’s nothing better drive on Golden Gate Bridge the wide strait connecting."),
-                  TextSpan(text: " #Golden #Bridge", style: TextStyle(color: AppColors.primaryColor),),
-                ],
-              )
+          TextField(
+            // textAlign: TextAlign.end,
+            controller: aboutMe,
+            style: const TextStyle(color: Colors.black),
+            decoration: const InputDecoration(
+              isDense: true,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+            ),
           ),
+          // RichText(
+          //     text: const TextSpan(
+          //       style: TextStyle(fontFamily: Constants.fontFamily, color: Colors.black),
+          //       children: [
+          //         TextSpan(text: "There’s nothing better drive on Golden Gate Bridge the wide strait connecting."),
+          //         TextSpan(text: " #Golden #Bridge", style: TextStyle(color: AppColors.primaryColor),),
+          //       ],
+          //     )
+          // ),
         ],
       ),
     );

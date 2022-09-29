@@ -5,7 +5,8 @@ import '../widgets/shadowed_box.dart';
 import '../widgets/text_widget.dart';
 
 class EmailPasswordCard extends StatelessWidget {
-  const EmailPasswordCard({Key? key}) : super(key: key);
+  final String? email;
+  const EmailPasswordCard({Key? key, this.email}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class EmailPasswordCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          dataRow("Email address", "adrianalima@gmail.com"),
+          dataRow("Email address", email ?? ""),
           const Divider(color: AppColors.grayScale, thickness: 1),
           dataRow("Password", "· · · · · ·",
               fontSize: 36,
