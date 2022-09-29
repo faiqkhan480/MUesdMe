@@ -24,6 +24,7 @@ class AuthService {
   final GetStorage _box = GetStorage();
 
 
+  // USER LOGIN
   Future<bool> loginUser(String email, String pass) async {
     try {
       var payload = {
@@ -56,6 +57,7 @@ class AuthService {
     }
   }
 
+  // USER SIGNUP
   Future registerUser(
     String firstName,
     String lastName,
@@ -101,6 +103,7 @@ class AuthService {
     }
   }
 
+  // GET USER DETAILS
   Future<User?> getUser() async {
     try {
       var header = {
@@ -133,6 +136,7 @@ class AuthService {
     }
   }
 
+  // UPDATE USER DETAILS
   Future updateUser(
       String firstName,
       String lastName,
@@ -155,17 +159,27 @@ class AuthService {
         "AboutMe": aboutMe,
       };
       final json = await Network.post(url: Constants.UPDATE_USER, payload: payload, headers: header);
+      debugPrint("RESPONSE>>>>>>>>>>>>>>>>>>> $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         Get.snackbar(res.code != 200 ? "Failed!" : "Success!", res.message ?? "",
             backgroundColor: res.code != 200 ? AppColors.pinkColor : AppColors.green,
             colorText: Colors.white
         );
+        if(res.code == 200) {
+          await getUser();
+          // _currentUser = User.fromJson(res.users);
+          // _box.write("user", res.users);
+        }
         return res.code == 200;
       }
       return false;
     } catch (e) {
-      debugPrint("ERROR >>>>>>>>>> $e");
+      debugPrint("ERROR >>>>>>>>>> ${e.runtimeType}");
+      Get.snackbar("Failed!", "Error in request",
+          backgroundColor: AppColors.pinkColor,
+          colorText: Colors.white
+      );
       return false;
     }
   }

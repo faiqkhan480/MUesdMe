@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../components/content_edit_card.dart';
 import '../components/custom_header.dart';
@@ -26,6 +32,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   User? get _user => widget.user;
   final AuthService _authService = getIt<AuthService>();
 
+  final ImagePicker _picker = ImagePicker();
+  XFile? _file;
+
   // CONTROLLERS
   final TextEditingController _firstName = TextEditingController();
   final TextEditingController _lastName = TextEditingController();
@@ -36,7 +45,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool connectFacebook = false;
   bool connectTwitter = false;
   bool loader = false;
-  String _profilePic = "";
 
   setValues() {
     _firstName.text = _user?.firstName ?? "";
@@ -44,7 +52,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _userName.text = _user?.userName ?? "";
     _phone.text = _user?.phone ?? "";
     _aboutMe.text = _user?.aboutMe ?? "";
-    _profilePic = _user?.profilePic ?? "";
   }
 
   @override
@@ -60,10 +67,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children:  [
-          CustomHeader(title: "Edit Profile",
+          CustomHeader(
+              title: "Edit Profile",
               onSave: handleSubmit,
               loader: loader,
-              imgUrl: _user?.profilePic != null ? "${Constants.IMAGE_URL}${_user?.profilePic}" : null),
+              onClick: handleImage,
+              img:
+              (_file == null ?
+              NetworkImage("${Constants.IMAGE_URL}${_user?.profilePic}") :
+              FileImage(File(_file!.path))) as ImageProvider,
+          ),
 
           const SizedBox(height: 60,),
 
@@ -131,15 +144,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> handleSubmit() async {
     FocusScope.of(context).unfocus();
     setState(() => loader = true);
+    String base64Image = _user!.profilePic!;
+    if(_file != null) {
+      Uint8List imageBytes =  File(_file!.path).readAsBytesSync();
+      base64Image = base64Encode(imageBytes);
+    }
+    // debugPrint(base64Image);
     var res = await _authService.updateUser(
         _firstName.text,
         _lastName.text,
         _userName.text,
-        _profilePic,
+      base64Image,
         _phone.text,
-        _aboutMe.text
+      _aboutMe.text
     );
     setState(() => loader = false);
-    // Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  Future handleImage() async {
+    var res = await _picker.pickImage(source: ImageSource.gallery);
+    if(res != null) {
+      setState(() => _file = res);
+    }
   }
 }

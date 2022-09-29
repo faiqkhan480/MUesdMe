@@ -19,18 +19,20 @@ class CustomHeader extends StatelessWidget {
     this.loader = false,
     this.showSearch = false,
     this.buttonColor,
-    this.imgUrl,
+    this.img,
+    this.onClick,
     this.onSave
   }) : super(key: key);
 
   final String title;
-  final String? imgUrl;
+  final ImageProvider? img;
   final bool showBottom;
   final bool loader;
   final bool showRecentWatches;
   final Color? buttonColor;
   final bool showSearch;
   final VoidCallback? onSave;
+  final VoidCallback? onClick;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +143,7 @@ class CustomHeader extends StatelessWidget {
           Positioned(
             bottom: -55,
             child: CircleAvatar(
-              backgroundImage: NetworkImage(imgUrl ?? Constants.dummyImage),
+              backgroundImage: img,
               radius: 60,
               backgroundColor: Colors.white,
             ),
@@ -152,7 +154,7 @@ class CustomHeader extends StatelessWidget {
             right: 110,
             bottom: -28,
             child: IconButton(
-              onPressed: () => null,
+              onPressed: onClick,
               iconSize: 55,
               padding: EdgeInsets.zero,
               splashRadius: 2,
