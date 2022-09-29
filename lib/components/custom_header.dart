@@ -18,6 +18,7 @@ class CustomHeader extends StatelessWidget {
     this.showRecentWatches = false,
     this.loader = false,
     this.showSearch = false,
+    this.showSave = true,
     this.buttonColor,
     this.img,
     this.onClick,
@@ -28,6 +29,7 @@ class CustomHeader extends StatelessWidget {
   final ImageProvider? img;
   final bool showBottom;
   final bool loader;
+  final bool showSave;
   final bool showRecentWatches;
   final Color? buttonColor;
   final bool showSearch;
@@ -98,11 +100,11 @@ class CustomHeader extends StatelessWidget {
                     ),
                     const SizedBox(width: 10,),
                   ],
-                  if(loader)
+                  if(showSave && loader)
                     SizedBox(
                         height: 40,
                         child: Lottie.asset(Assets.loader))
-                  else
+                  else if(showSave)
                     TextButton(
                     onPressed: onSave,
                     style: TextButton.styleFrom(

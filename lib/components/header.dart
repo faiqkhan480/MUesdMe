@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../screens/live_screen.dart';
 import '../screens/picker_screen.dart';
+import '../screens/settings_screen.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -91,7 +92,7 @@ class Header extends StatelessWidget {
                 if(isProfile)...[
                   const SizedBox(width: 10),
                   TextButton(
-                      onPressed: () => null,
+                      onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const SettingScreen(),)),
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -192,7 +193,7 @@ class Header extends StatelessWidget {
 
   void presentEditor(context, index) async {
     if(index == 0) {
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => EditorScreen(),));
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),));
     }
   }
 }
