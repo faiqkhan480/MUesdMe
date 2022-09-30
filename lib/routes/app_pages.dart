@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 // SCREENS
+import '../bindings/root_bindings.dart';
 import '../navigation/bottom_navigation.dart';
 import '../screens/edit_profile_screen.dart';
 import '../screens/feed_screen.dart';
@@ -17,7 +18,7 @@ class AppPages {
   static var list = [
     GetPage(
         name: AppRoutes.ROOT,
-        // binding: RootBinding(),
+        binding: RootBinding(),
         page: () => const BottomNavigation()
     ),
     GetPage(
