@@ -76,4 +76,66 @@ class ApiService {
       return [];
     }
   }
+
+  // SEND FOLLOW REQUEST
+  Future<User?> followReq(String followId, int type) async {
+    try {
+      var header = {
+        "Authorization": "Bearer ${_box.read("token")}",
+      };
+      var payload = {
+        "UserID": followId,
+        "FollowedBy": User.fromJson(_box.read("user")).userId.toString(),
+      };
+      final json = await Network.post(url: type == 0 ? Constants.FOLLOW_USER : Constants.UN_FOLLOW_USER, headers: header, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.message != null && res.message!.isNotEmpty) {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+        if(res.code == 200 && res.user != null) {
+          User user = User.fromJson(res.user);
+          return user;
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
+
+  // SEND UN FOLLOW REQUEST
+  Future<User?> unFollowReq(String followId) async {
+    try {
+      var header = {
+        "Authorization": "Bearer ${_box.read("token")}",
+      };
+      var payload = {
+        "UserID": followId,
+        "FollowedBy": User.fromJson(_box.read("user")).userId.toString(),
+      };
+      final json = await Network.post(url: Constants.UN_FOLLOW_USER, headers: header, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.message != null && res.message!.isNotEmpty) {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+        if(res.code == 200 && res.users != null) {
+          User user = User.fromJson(res.users);
+          return user;
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
 }

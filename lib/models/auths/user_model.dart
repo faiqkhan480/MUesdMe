@@ -24,6 +24,7 @@ class User {
     required this.location,
     required this.postalCode,
     required this.aboutMe,
+    required this.follow,
     required this.followedBy,
     required this.followers,
     required this.followings,
@@ -77,11 +78,14 @@ class User {
   @JsonKey(name: 'AboutMe')
   final String? aboutMe;
 
+  @JsonKey(name: 'Follow')
+  int? follow;
+
   @JsonKey(name: 'FollowedBy')
   final int? followedBy;
 
   @JsonKey(name: 'Followers')
-  final int? followers;
+  int? followers;
 
   @JsonKey(name: 'Followings')
   final int? followings;

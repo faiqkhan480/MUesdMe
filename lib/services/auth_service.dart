@@ -104,22 +104,23 @@ class AuthService {
   }
 
   // GET USER DETAILS
-  Future<User?> getUser() async {
+  Future<User?> getUser({int? uid}) async {
     try {
       var header = {
         "Authorization": "Bearer ${_box.read("token")}",
       };
       var payload = {
-        "UserId": User.fromJson(_box.read("user")).userId.toString(),
+        "UserId":  (uid ?? User.fromJson(_box.read("user")).userId).toString(),
       };
       final json = await Network.post(url: Constants.USER_DETAILS, payload: payload, headers: header);
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        debugPrint("RESPONSE>>>>>>>>>>>>>>>>>>> $json");
         if(res.code == 200 && res.user != null) {
+          if(uid != null) {
+            return User.fromJson(res.user);
+          }
           _currentUser = User.fromJson(res.user);
           _box.write("user", res.user);
-          // _box.write("token", _currentUser?.token);
           return _currentUser;
         }
         else {

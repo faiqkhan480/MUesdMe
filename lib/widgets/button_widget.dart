@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:musedme/utils/constants.dart';
 
 import '../utils/app_colors.dart';
+import 'loader.dart';
 import 'text_widget.dart';
 
 class ButtonWidget extends StatelessWidget {
@@ -13,7 +14,8 @@ class ButtonWidget extends StatelessWidget {
     this.vertical = false,
     required this.onPressed,
     this.textColor,
-    this.bgColor
+    this.bgColor,
+    this.loader = false,
   }) : super(key: key);
 
   final String text;
@@ -21,6 +23,7 @@ class ButtonWidget extends StatelessWidget {
   final Color? textColor;
   final Color? bgColor;
   final bool vertical;
+  final bool loader;
   final VoidCallback? onPressed;
 
   @override
@@ -36,7 +39,8 @@ class ButtonWidget extends StatelessWidget {
           fontWeight: FontWeight.w500
         )
       ),
-      child: vertical ? Column(
+      child: vertical ?
+      Column(
         children: [
           if(icon != null)...[
             SvgPicture.asset(icon!, height: 30),
@@ -48,7 +52,13 @@ class ButtonWidget extends StatelessWidget {
             weight: FontWeight.w500,
           ),
         ],
-      ) : Row(
+      ) :
+      loader ?
+      const SizedBox (
+          height: 20,
+          width: 20,
+          child: Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 1.5,))) :
+      Row(
         children: [
           if(icon != null)...[
             SvgPicture.asset(icon!),

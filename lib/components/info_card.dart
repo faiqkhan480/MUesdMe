@@ -7,11 +7,13 @@ import '../models/auths/user_model.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
+import '../widgets/button_widget.dart';
 import '../widgets/text_widget.dart';
 
 class InfoCard extends StatelessWidget {
   final User? user;
-  const InfoCard({Key? key, this.user}) : super(key: key);
+  final Widget? button;
+  const InfoCard({Key? key, this.user, this.button}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,15 @@ class InfoCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 5,),
-              TextWidget("${user?.firstName} ${user?.lastName}",
-                size: 34,
-                weight: FontWeight.w700,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextWidget("${user?.firstName} ${user?.lastName}",
+                    size: 34,
+                    weight: FontWeight.w700,
+                  ),
+                  button ?? const SizedBox.shrink()
+                ],
               ),
               const SizedBox(height: 5,),
               Row(

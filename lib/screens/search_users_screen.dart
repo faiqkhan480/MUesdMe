@@ -12,6 +12,7 @@ import '../utils/constants.dart';
 import '../utils/di_setup.dart';
 import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
+import 'profile_screen.dart';
 
 class SearchUserScreen extends StatefulWidget {
   const SearchUserScreen({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
   final ApiService _apiService = getIt<ApiService>();
 
+  // SEARCH USERS
   Future<void> getUsers(String? search) async {
 
     setState(() => loader = true);
@@ -37,6 +39,11 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
       searchResult = res.isEmpty;
       loader = false;
     });
+  }
+
+  // HANDLE ON CLICK USER
+  void handleClick(User? u) {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileScreen(profile: u),));
   }
 
   @override
@@ -92,27 +99,30 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   itemBuilder: (context, index) => ShadowedBox(
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage("${Constants.IMAGE_URL}${_users.elementAt(index)?.profilePic}"),
-                          radius: 50,
-                          backgroundColor: Colors.white,
-                        ),
-                        const SizedBox(height: 10),
-                        TextWidget(
-                          "${_users.elementAt(index)?.firstName} ${_users.elementAt(index)?.lastName}",
-                          size: 22,
-                          weight: FontWeight.w500,
-                        ),
-                        const SizedBox(height: 10),
-                        TextWidget(
-                          "@${_users.elementAt(index)?.userName}",
-                          size: 18,
-                          color: AppColors.lightGrey,
-                          weight: FontWeight.w500,
-                        ),
-                      ],
+                    child: InkWell(
+                      onTap: () => handleClick(_users.elementAt(index)),
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage("${Constants.IMAGE_URL}${_users.elementAt(index)?.profilePic}"),
+                            radius: 50,
+                            backgroundColor: Colors.white,
+                          ),
+                          const SizedBox(height: 10),
+                          TextWidget(
+                            "${_users.elementAt(index)?.firstName} ${_users.elementAt(index)?.lastName}",
+                            size: 22,
+                            weight: FontWeight.w500,
+                          ),
+                          const SizedBox(height: 10),
+                          TextWidget(
+                            "@${_users.elementAt(index)?.userName}",
+                            size: 18,
+                            color: AppColors.lightGrey,
+                            weight: FontWeight.w500,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 )
