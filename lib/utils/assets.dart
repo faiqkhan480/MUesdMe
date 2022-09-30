@@ -28,6 +28,10 @@ class Assets {
   static const String iconsHistory = 'assets/icons/history.svg';
   static const String iconsWatchLater = 'assets/icons/watch_later.svg';
 
+  static const String searchUsers = 'assets/icons/search-rafiki.svg';
+  static const String emptySearch = 'assets/icons/people_search-cuate.svg';
+
+
   // PNG IMAGES
   static const String iconsLogo = 'assets/icons/logo.png';
   static const String iconsSmileyFace = 'assets/icons/smiling_face.png';

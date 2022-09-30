@@ -9,7 +9,7 @@ import '../models/feed.dart';
 import '../services/api_service.dart';
 import '../utils/assets.dart';
 import '../utils/di_setup.dart';
-import 'search_screen.dart';
+import 'search_users_screen.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -89,6 +89,6 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   handleNavigation() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => const SearchScreen()));
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => const SearchUserScreen()));
   }
 }

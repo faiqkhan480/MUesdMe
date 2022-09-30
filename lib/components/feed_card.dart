@@ -1,21 +1,18 @@
 import 'dart:ui';
 
 import 'package:badges/badges.dart';
-import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:inview_notifier_list/inview_notifier_list.dart';
-import 'package:lottie/lottie.dart';
-import 'package:musedme/utils/assets.dart';
-import 'package:musedme/utils/app_colors.dart';
-import 'package:musedme/utils/constants.dart';
-import 'package:video_player/video_player.dart';
 
 import '../models/feed.dart';
+import '../utils/app_colors.dart';
+import '../utils/assets.dart';
+import '../utils/constants.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/glass_morphism.dart';
 import '../widgets/image_widget.dart';
 import '../widgets/text_widget.dart';
+import '../widgets/video_widget.dart';
 
 class FeedCard extends StatelessWidget {
   final double? horizontalSpace;
@@ -143,78 +140,108 @@ class FeedCard extends StatelessWidget {
               ],
             ),
           ),
+
+          // CommentBox(
+          //   image: Image.network(
+          //     Constants.dummyImage,
+          //     height: 40,
+          //     width: 40,
+          //   ),
+          //   controller: TextEditingController(),
+          //   onImageRemoved: (){
+          //     //on image removed
+          //   },
+          //   onSend: (){
+          //     //on send button pressed
+          //   },
+          // ),
         ],
       ),
     );
   }
 }
 
-class VideoWidget extends StatefulWidget {
-  final String url;
-  final bool play;
+class CommentBox extends StatefulWidget {
+  final Widget? image;
+  final TextEditingController? controller;
+  final BorderRadius? inputRadius;
+  final Function()? onSend,onImageRemoved;
 
-  const VideoWidget({Key? key, required this.url, required this.play})
-      : super(key: key);
+  const CommentBox({Key? key, this.image, this.controller, this.inputRadius, this.onSend , this.onImageRemoved }) : super(key: key);
+
   @override
-  _VideoWidgetState createState() => _VideoWidgetState();
+  _CommentBoxState createState() => _CommentBoxState();
 }
 
-class _VideoWidgetState extends State<VideoWidget> {
-  late CachedVideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
+class _CommentBoxState extends State<CommentBox> {
+  Widget? image;
 
   @override
   void initState() {
+    image = widget.image;
     super.initState();
-    _controller = CachedVideoPlayerController.network(widget.url);
-    _initializeVideoPlayerFuture = _controller.initialize().then((_) {
-      // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-      setState(() {});
-    });
-
-    if (widget.play) {
-      _controller.play();
-      _controller.setLooping(true);
-    }
-  }
-
-  @override
-  void didUpdateWidget(VideoWidget oldWidget) {
-    if (oldWidget.play != widget.play) {
-      if (widget.play) {
-        _controller.play();
-        _controller.setLooping(true);
-      } else {
-        _controller.pause();
-      }
-    }
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeVideoPlayerFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return SizedBox(
-              height: 250,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: CachedVideoPlayer(_controller)),
-              ));
-        } else {
-          return Lottie.asset(Assets.loader);
-        }
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(
+          height: 1,
+          color: Colors.grey[300],
+          thickness: 1,
+        ),
+        const SizedBox(height: 20),
+        // if (image != null)
+        //   _removable(
+        //     context,
+        //     _imageView(context),
+        //   ),
+        if(widget.controller!=null) TextFormField(
+          controller: widget.controller,
+          decoration: InputDecoration(
+            suffixIcon: IconButton(
+              icon: Icon(Icons.send,color: Theme.of(context).primaryColor,),
+              onPressed: widget.onSend,
+            ),
+            filled: true,
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: widget.inputRadius ?? BorderRadius.circular(32),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _removable(BuildContext context, Widget child) {
+    return Stack(
+      alignment: Alignment.topRight,
+      children: [
+        child,
+        IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            setState(() {
+              image = null;
+              // widget?.onImageRemoved();
+            });
+          },
+        )
+      ],
+    );
+  }
+
+  Widget _imageView(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: image,
+      ),
     );
   }
 }
+

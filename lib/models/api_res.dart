@@ -9,6 +9,7 @@ class ApiRes {
     required this.code,
     required this.message,
     required this.users,
+    required this.user,
     required this.feeds,
   });
 
@@ -21,11 +22,13 @@ class ApiRes {
   @JsonKey(name: 'Users')
   final dynamic users;
 
+  @JsonKey(name: 'User')
+  final dynamic user;
+
   @JsonKey(name: 'Feeds')
   final dynamic feeds;
 
   factory ApiRes.fromJson(Map<String, dynamic> json) => _$ApiResFromJson(json);
 
   Map<String, dynamic> toJson() => _$ApiResToJson(this);
-
 }

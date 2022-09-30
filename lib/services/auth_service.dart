@@ -115,9 +115,10 @@ class AuthService {
       final json = await Network.post(url: Constants.USER_DETAILS, payload: payload, headers: header);
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        if(res.code == 200 && res.users != null) {
-          _currentUser = User.fromJson(res.users);
-          _box.write("user", res.users);
+        debugPrint("RESPONSE>>>>>>>>>>>>>>>>>>> $json");
+        if(res.code == 200 && res.user != null) {
+          _currentUser = User.fromJson(res.user);
+          _box.write("user", res.user);
           // _box.write("token", _currentUser?.token);
           return _currentUser;
         }
@@ -159,7 +160,7 @@ class AuthService {
         "AboutMe": aboutMe,
       };
       final json = await Network.post(url: Constants.UPDATE_USER, payload: payload, headers: header);
-      debugPrint("RESPONSE>>>>>>>>>>>>>>>>>>> $json");
+
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         Get.snackbar(res.code != 200 ? "Failed!" : "Success!", res.message ?? "",

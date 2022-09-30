@@ -8,7 +8,9 @@ import '../utils/assets.dart';
 class SearchField extends StatelessWidget {
   final Color? iconColor;
   final String? placeHolder;
-  const SearchField({Key? key, this.iconColor, this.placeHolder}) : super(key: key);
+  final TextEditingController? controller;
+  final ValueChanged<String>? onSubmit;
+  const SearchField({Key? key, this.iconColor, this.placeHolder, this.onSubmit, this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class SearchField extends StatelessWidget {
       child: TextField(
         // obscureText: true,
         autofocus: false,
+        onSubmitted: onSubmit,
         decoration: InputDecoration(
           // prefixIconConstraints: BoxConstraints(minHeight: 20),
           prefixIcon: Padding(
@@ -41,28 +44,6 @@ class SearchField extends StatelessWidget {
               borderSide: const BorderSide(color: Colors.white)),
           focusedBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(10.0),
               borderSide: const BorderSide(color: Colors.white)),
-        ),
-      ),
-    );
-    return Material(
-      elevation: 5.0,
-      shadowColor: AppColors.shadowColor.withOpacity(.3),
-      borderRadius: BorderRadius.circular(10),
-      color: Colors.white,
-      child: TextField(
-        // obscureText: true,
-        autofocus: false,
-        decoration: InputDecoration(
-            prefixIcon: const Icon(CupertinoIcons.search, color: AppColors.primaryColor),
-            hintText: 'Search',
-            isDense: true,
-            // fillColor: Colors.white,
-            // filled: true,
-            // contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(10.0),
-                borderSide: const BorderSide(color: Colors.white)),
-            focusedBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(10.0),
-                borderSide: const BorderSide(color: Colors.white)),
         ),
       ),
     );

@@ -1,4 +1,6 @@
 // ignore: depend_on_referenced_packages
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_model.g.dart';
@@ -87,3 +89,5 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
 }
+
+List<User> userFromJson(String str) => List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
