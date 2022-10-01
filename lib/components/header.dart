@@ -197,7 +197,7 @@ class Header extends StatelessWidget {
 
   void presentEditor(index) async {
     if(index == 0) {
-      Get.toNamed(AppRoutes.PROFILE_EDIT);
+      Get.toNamed(AppRoutes.PICKER);
       // Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),));
     }
   }

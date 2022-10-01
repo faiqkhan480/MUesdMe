@@ -90,11 +90,12 @@ class AuthService extends GetxService {
         "Gender": gender,
       };
       final json = await Network.post(url: Constants.REGISTER, payload: payload);
+      debugPrint("JSON:::::::::: ${json}");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        if(res.code == 200 && res.users != null) {
-          _currentUser = User.fromJson(res.users);
-          _box.write("user", res.users);
+        if(res.code == 200 && res.user != null) {
+          _currentUser = User.fromJson(res.user);
+          _box.write("user", res.user);
           _box.write("token", _currentUser?.token);
           return true;
         }
@@ -180,11 +181,11 @@ class AuthService extends GetxService {
             backgroundColor: res.code != 200 ? AppColors.pinkColor : AppColors.green,
             colorText: Colors.white
         );
-        if(res.code == 200) {
-          await getUser();
-          // _currentUser = User.fromJson(res.users);
-          // _box.write("user", res.users);
-        }
+        // if(res.code == 200) {
+        //   await getUser();
+        //   // _currentUser = User.fromJson(res.users);
+        //   // _box.write("user", res.users);
+        // }
         return res.code == 200;
       }
       return false;

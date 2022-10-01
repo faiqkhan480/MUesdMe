@@ -11,16 +11,15 @@ import 'package:image_picker/image_picker.dart';
 import '../components/content_edit_card.dart';
 import '../components/custom_header.dart';
 import '../components/email_pass_card.dart';
-import '../components/header.dart';
 import '../components/social_links.dart';
 import '../components/user_info.dart';
+import '../controllers/profile_controller.dart';
 import '../models/auths/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
-import '../utils/di_setup.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User? user;
@@ -31,10 +30,12 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  User? get _user => widget.user;
 
+  final ProfileController _controller = Get.find<ProfileController>();
   final AuthService _authService = Get.find<AuthService>();
   final ApiService _apiService = Get.find<ApiService>();
+
+  User? get _user => _authService.currentUser;
 
   final ImagePicker _picker = ImagePicker();
   XFile? _file;
@@ -162,8 +163,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _phone.text,
       _aboutMe.text
     );
+    if(res) {
+      await _controller.getUserDetails();
+    }
     setState(() => loader = false);
-    Navigator.pop(context);
+    Get.offNamed(Get.previousRoute);
   }
 
   Future handleImage() async {

@@ -58,6 +58,6 @@ class ProfileController extends GetxController {
   }
 
   void handleClick() {
-    Get.to(AppRoutes.PROFILE_EDIT, transition: Transition.leftToRight);
+    Get.toNamed(AppRoutes.PROFILE_EDIT);
   }
 }

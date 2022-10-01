@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:musedme/screens/profile_body.dart';
 
 import '../components/custom_header.dart';
 import '../components/feed_card.dart';
 import '../components/header.dart';
 import '../components/info_card.dart';
 import '../controllers/profile_controller.dart';
-import '../controllers/user_profile_controller.dart';
 import '../models/auths/user_model.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
@@ -23,7 +21,7 @@ class ProfileScreen extends StatelessWidget {
   User? get args => Get.arguments;
 
   User? get _user => args != null ? _controller.profile.value : _controller.user.value;
-  // User? get _user => null;
+
   double get _toolbarHeight => _controller.toolbarHeight();
   bool get _loader => _controller.loading();
 
@@ -43,7 +41,6 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(
               height: 500,
               width: double.infinity,
-              // color: Colors.red,
               child: (!_loader || _user != null) ?
               Align(
                 alignment: Alignment.topCenter,

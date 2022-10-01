@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../navigation/bottom_navigation.dart';
+import '../../routes/app_routes.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
@@ -329,8 +330,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         setState(() => loader = false);
         if(res) {
-          if(!mounted) return;
-          Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
+          Get.offAndToNamed(AppRoutes.ROOT);
+          // if(!mounted) return;
+          // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
         }
       }
       catch(e) {
