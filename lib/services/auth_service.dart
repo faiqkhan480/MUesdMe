@@ -22,8 +22,10 @@ class AuthService extends GetxService {
   late final bool isAuthenticated;
 
   Future<AuthService> init() async {
-    isAuthenticated = _box.read("token") != null;
-    _currentUser = User.fromJson(_box.read("user"));
+    if(_box.read("token") != null && _box.read("user") != null) {
+      isAuthenticated = _box.read("token") != null;
+      _currentUser = User.fromJson(_box.read("user"));
+    }
     return this;
   }
 
@@ -43,10 +45,10 @@ class AuthService extends GetxService {
       final json = await Network.post(url: Constants.LOGIN, payload: payload);
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        if(res.code == 200 && res.users != null) {
-          _currentUser = User.fromJson(res.users);
+        if(res.code == 200 && res.user != null) {
+          _currentUser = User.fromJson(res.user);
           // debugPrint("::::::::: ${_currentUser?.userName}");
-          _box.write("user", res.users);
+          _box.write("user", res.user);
           _box.write("token", _currentUser?.token);
           return true;
         }
@@ -112,13 +114,14 @@ class AuthService extends GetxService {
   }
 
   // GET USER DETAILS
-  Future<User?> getUser({int? uid}) async {
+  Future<User?> getUser({int? uid, int? followedBy}) async {
     try {
       var header = {
         "Authorization": "Bearer ${_box.read("token")}",
       };
       var payload = {
         "UserId":  (uid ?? User.fromJson(_box.read("user")).userId).toString(),
+        "FollowedBy":  followedBy?.toString(),
       };
       final json = await Network.post(url: Constants.USER_DETAILS, payload: payload, headers: header);
       debugPrint("JSON  $json");
@@ -193,5 +196,11 @@ class AuthService extends GetxService {
       );
       return false;
     }
+  }
+
+  Future clearUser() async {
+    _box.write("token", null);
+    _box.write("user", null);
+    _currentUser = null;
   }
 }

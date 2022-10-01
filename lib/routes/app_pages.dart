@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 // SCREENS
+import '../bindings/profile_binding.dart';
 import '../bindings/search_binding.dart';
 import '../bindings/root_bindings.dart';
 import '../navigation/bottom_navigation.dart';
@@ -16,6 +17,7 @@ import '../screens/search_users_screen.dart';
 import '../screens/settings_screen.dart';
 
 // ROUTE NAMES
+import '../screens/user_profile_screen.dart';
 import 'app_routes.dart';
 import 'auth_gard.dart';
 
@@ -77,7 +79,8 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.USER_PROFILE,
-        page: () => const ProfileScreen()
+        binding: ProfileBinding(),
+        page: () => const UserProfileScreen()
     )
   ];
 }

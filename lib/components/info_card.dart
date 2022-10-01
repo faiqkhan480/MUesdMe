@@ -118,7 +118,7 @@ class InfoCard extends StatelessWidget {
               color: AppColors.lightGrey,
               weight: FontWeight.normal,
             ),
-            TextWidget(index == 0 ? "${user?.followers}" : index == 1 ? "${user?.followings}" : "null",
+            TextWidget(index == 0 ? "${user?.followers}" : index == 1 ? "${user?.followings}" : "0",
               size: 22,
               weight: FontWeight.normal,
             ),

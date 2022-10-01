@@ -11,7 +11,7 @@ class SearchController extends GetxController {
   RxBool loading = false.obs;
   RxBool searchResult = false.obs;
 
-  final ProfileController _profile = Get.find<ProfileController>();
+  // final ProfileController _profile = Get.find<ProfileController>();
   final ApiService _service = Get.find<ApiService>();
 
 
@@ -27,8 +27,8 @@ class SearchController extends GetxController {
 
   // HANDLE ON CLICK USER
   void handleNavigation(User u) {
-    _profile.getProfileDetails(u.userId!);
-    Get.toNamed(AppRoutes.PROFILE, arguments: u);
+    // _profile.getProfileDetails(u.userId!);
+    Get.toNamed(AppRoutes.USER_PROFILE, arguments: u);
     // Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileScreen(profile: u),));
   }
 }

@@ -4,14 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:musedme/navigation/bottom_navigation.dart';
+import 'package:musedme/routes/app_routes.dart';
 import 'package:musedme/screens/auth/register_screen.dart';
 import 'package:musedme/utils/app_colors.dart';
 
 import '../../services/auth_service.dart';
 import '../../utils/assets.dart';
 import '../../utils/constants.dart';
-import '../../utils/di_setup.dart';
-import '../../widgets/button_widget.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/text_widget.dart';
 
@@ -29,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final AuthService _authService = Get.find<AuthService>();
-  // final ApiService _apiService = Get.find<ApiService>();
 
   bool loader = false;
   bool secure = true;
@@ -203,8 +201,9 @@ class _LoginScreenState extends State<LoginScreen> {
         bool res = await _authService.loginUser(emailController.text, passwordController.text);
         setState(() => loader = false);
         if(res) {
-          if(!mounted) return;
-          Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
+          Get.offAndToNamed(AppRoutes.ROOT);
+          // if(!mounted) return;
+          // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
         }
       }
       catch(e) {

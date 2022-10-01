@@ -15,15 +15,14 @@ import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../widgets/button_widget.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+class UserProfileScreen extends StatelessWidget {
+  const UserProfileScreen({Key? key}) : super(key: key);
 
-  ProfileController get _controller => Get.find<ProfileController>();
+  UserProfileController get _controller => Get.find<UserProfileController>();
 
   User? get args => Get.arguments;
 
-  User? get _user => args != null ? _controller.profile.value : _controller.user.value;
-  // User? get _user => null;
+  User? get _user => _controller.user.value;
   double get _toolbarHeight => _controller.toolbarHeight();
   bool get _loader => _controller.loading();
 
@@ -34,7 +33,7 @@ class ProfileScreen extends StatelessWidget {
       "Images",
       "Videos"
     ];
-    // _controller.check(id: args?.userId);
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -44,7 +43,7 @@ class ProfileScreen extends StatelessWidget {
               height: 500,
               width: double.infinity,
               // color: Colors.red,
-              child: (!_loader || _user != null) ?
+              child: (!_loader || _user?.userId != null) ?
               Align(
                 alignment: Alignment.topCenter,
                 child: Image.network(Constants.coverImage,
@@ -53,7 +52,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ) : null,
             ),
-            (_loader && _user == null) ?
+            (_loader && _user?.userId == null) ?
             Center(child: Lottie.asset(Assets.loader)):
             RefreshIndicator(
               onRefresh: _controller.getUserDetails,
