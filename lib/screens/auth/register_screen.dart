@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
@@ -41,7 +42,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final AuthService _authService = getIt<AuthService>();
+  final AuthService _authService = Get.find<AuthService>();
+  // final ApiService _apiService = Get.find<ApiService>();
+  // final AuthService _authService = getIt<AuthService>();
 
   static String countryCodeToEmoji(String countryCode) {
     // 0x41 is Letter A

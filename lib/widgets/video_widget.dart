@@ -1,7 +1,9 @@
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
+import '../controllers/feed_controller.dart';
 import '../utils/assets.dart';
 
 class VideoWidget extends StatefulWidget {
@@ -15,6 +17,7 @@ class VideoWidget extends StatefulWidget {
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
+  FeedController get _feedController => Get.find<FeedController>();
   late CachedVideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:musedme/navigation/bottom_navigation.dart';
 import 'package:musedme/screens/auth/register_screen.dart';
@@ -27,7 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final AuthService _authService = getIt<AuthService>();
+  final AuthService _authService = Get.find<AuthService>();
+  // final ApiService _apiService = Get.find<ApiService>();
 
   bool loader = false;
   bool secure = true;

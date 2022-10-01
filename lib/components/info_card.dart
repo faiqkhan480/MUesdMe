@@ -7,7 +7,6 @@ import '../models/auths/user_model.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
-import '../widgets/button_widget.dart';
 import '../widgets/text_widget.dart';
 
 class InfoCard extends StatelessWidget {
@@ -92,9 +91,15 @@ class InfoCard extends StatelessWidget {
             borderSide: const BorderSide(color: Colors.white),
             badgeColor: AppColors.successColor,
             child: CircleAvatar(
-              backgroundImage: NetworkImage("${Constants.IMAGE_URL}${user?.profilePic}"),
+              backgroundImage:
+              user?.profilePic == null || user!.profilePic!.isEmpty?
+              null :
+              NetworkImage("${Constants.IMAGE_URL}${user?.profilePic}"),
               radius: 50,
               backgroundColor: Colors.white,
+              child: user?.profilePic == null || user!.profilePic!.isEmpty?
+              const Icon(CupertinoIcons.person, size: 80,) :
+              null,
             ),
           ),
         ),

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../components/content_edit_card.dart';
@@ -14,6 +15,7 @@ import '../components/header.dart';
 import '../components/social_links.dart';
 import '../components/user_info.dart';
 import '../models/auths/user_model.dart';
+import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
@@ -30,7 +32,9 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   User? get _user => widget.user;
-  final AuthService _authService = getIt<AuthService>();
+
+  final AuthService _authService = Get.find<AuthService>();
+  final ApiService _apiService = Get.find<ApiService>();
 
   final ImagePicker _picker = ImagePicker();
   XFile? _file;

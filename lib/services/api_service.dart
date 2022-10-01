@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +12,7 @@ import '../utils/constants.dart';
 import '../utils/network.dart';
 
 
-class ApiService {
+class ApiService extends GetxService {
   final GetStorage _box = GetStorage();
 
   // GET USER FEEDS/POSTS

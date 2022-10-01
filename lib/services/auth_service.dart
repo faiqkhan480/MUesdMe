@@ -13,15 +13,30 @@ import '../utils/network.dart';
 
 // import 'package:http/http.dart' as http;
 
-class AuthService {
+class AuthService extends GetxService {
+  final GetStorage _box = GetStorage();
   User? _currentUser;
 
-  set setCurrentUser(User value) {
-    _currentUser = value;
+  User? get currentUser => _currentUser;
+
+  late final bool isAuthenticated;
+
+  Future<AuthService> init() async {
+    isAuthenticated = _box.read("token") != null;
+    _currentUser = User.fromJson(_box.read("user"));
+    return this;
   }
 
-  User? get currentUser => _currentUser;
-  final GetStorage _box = GetStorage();
+  // @override
+  // onInit() {
+  //   debugPrint(":::::::::::::::");
+  //   isAuthenticated = _box.read("token") != null;
+  //   return super.onInit();
+  // }
+
+  updateAuth() {
+    isAuthenticated = false;
+  }
 
 
   // USER LOGIN

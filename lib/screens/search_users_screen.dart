@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:musedme/widgets/shadowed_box.dart';
 
 import '../components/search_field.dart';
@@ -9,7 +10,6 @@ import '../services/api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
-import '../utils/di_setup.dart';
 import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
 import 'profile_screen.dart';
@@ -27,13 +27,13 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
   bool? searchResult;
   // TextEditingController search = TextEditingController();
 
-  final ApiService _apiService = getIt<ApiService>();
+  final ApiService _service = Get.find<ApiService>();
 
   // SEARCH USERS
   Future<void> getUsers(String? search) async {
 
     setState(() => loader = true);
-    List<User?> res = await _apiService.fetchUsers(search ?? "");
+    List<User?> res = await _service.fetchUsers(search ?? "");
     setState(() {
       _users = res;
       searchResult = res.isEmpty;
@@ -43,7 +43,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
 
   // HANDLE ON CLICK USER
   void handleClick(User? u) {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileScreen(profile: u),));
+    // Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileScreen(profile: u),));
   }
 
   @override

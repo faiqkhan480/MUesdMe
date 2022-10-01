@@ -1,103 +1,47 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:musedme/screens/edit_profile_screen.dart';
 import 'package:musedme/utils/constants.dart';
 
 import '../components/custom_header.dart';
 import '../components/feed_card.dart';
 import '../components/header.dart';
 import '../components/info_card.dart';
+import '../controllers/profile_controller.dart';
 import '../models/auths/user_model.dart';
-import '../services/api_service.dart';
-import '../services/auth_service.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
-import '../utils/di_setup.dart';
 import '../widgets/button_widget.dart';
-import '../widgets/text_widget.dart';
 
-class ProfileScreen extends StatefulWidget {
-  final User? profile;
-  const ProfileScreen({Key? key, this.profile}) : super(key: key);
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
 
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
+  ProfileController get _controller => Get.find<ProfileController>();
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  User? user;
-  bool loader = true;
+  User? get _user => _controller.user.value;
+  // User? get _user => null;
+  double get _toolbarHeight => _controller.toolbarHeight();
+  bool get _loader => _controller.loading();
 
-  final AuthService _authService = getIt<AuthService>();
-  final ApiService _apiService = getIt<ApiService>();
-
-  List<String> tabs = [
-    "My Feed",
-    "Images",
-    "Videos"
-  ];
-
-  double toolbarHeight = 35;
-
-  ScrollController controller = ScrollController();
-
-  void handleClick() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => EditProfileScreen(user: user),));
-  }
-
-  Future<void> getUser() async {
-    User? res = await _authService.getUser(uid: widget.profile?.userId);
-      setState(() {
-        user = res;
-        loader = false;
-      });
-  }
-
-  Future<void> handleFollow() async {
-    setState(() => loader = true);
-    User? res = await _apiService.followReq((user?.userId ?? "").toString(), user?.follow ?? 0);
-      setState(() {
-        if(res != null) {
-          user?.follow = user?.follow == 0 ? 1 : 0;
-          user?.followers = res.followers;
-        }
-        loader = false;
-      });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    controller.addListener(() {
-      if(controller.position.pixels > 540) {
-        setState(() {
-          toolbarHeight = 120;
-        });
-      } else if(controller.position.pixels < 620) {
-        setState(() {
-          toolbarHeight = 35;
-        });
-      }
-    });
-    getUser();
-  }
 
   @override
   Widget build(BuildContext context) {
+    List<String> tabs = [
+      "My Feed",
+      "Images",
+      "Videos"
+    ];
+    var profile;
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        body:
-        Stack(
+        body: Obx(() => Stack(
           children: [
             SizedBox(
               height: 500,
               width: double.infinity,
               // color: Colors.red,
-              child: (!loader || user != null) ?
+              child: (!_loader || _user != null) ?
               Align(
                 alignment: Alignment.topCenter,
                 child: Image.network(Constants.coverImage,
@@ -106,12 +50,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ) : null,
             ),
-            (loader && user == null) ?
+            (_loader && _user == null) ?
             Center(child: Lottie.asset(Assets.loader)):
             RefreshIndicator(
-              onRefresh: getUser,
+              onRefresh: _controller.getUserDetails,
               child: CustomScrollView(
-                controller: controller,
+                controller: _controller.scroll(),
                 slivers: [
                   // USER INFO
                   SliverAppBar(
@@ -133,14 +77,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.vertical(top: Radius.circular(20))
                         ),
                         child: InfoCard(
-                          user: user,
-                          button: (widget.profile != null) ?
+                          user: _user,
+                          button: (profile != null) ?
                           ButtonWidget(
-                            text: user?.follow == 0 ? "Follow" : "Un Follow",
-                            onPressed: handleFollow,
+                            text: _user?.follow == 0 ? "Follow" : "Un Follow",
+                            onPressed: _controller.sendFollowReq,
                             bgColor: AppColors.primaryColor,
                             textColor: Colors.white,
-                            loader: loader,
+                            loader: _loader,
                           ) : null,
                         ),
                       ),
@@ -152,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     pinned: true,
                     expandedHeight: 50,
                     // collapsedHeight: 0,
-                    toolbarHeight: toolbarHeight,
+                    toolbarHeight: _toolbarHeight,
                     bottom: PreferredSize(
                         preferredSize: const Size(double.infinity, 0),
                         child: Row(
@@ -191,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-            if(widget.profile != null)
+            if(profile != null)
               const SizedBox(
                   height: 100,
                   child: CustomHeader(
@@ -202,14 +146,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ))
             else
               Header(
-              title: "Profile",
-              isProfile: true,
-              showShadow: false,
-              action: handleClick,
-              height: 108,
-            ),
+                title: "Profile",
+                isProfile: true,
+                showShadow: false,
+                action: _controller.handleClick,
+                height: 108,
+              ),
           ],
-        ),
+        )),
       ),
     );
   }
