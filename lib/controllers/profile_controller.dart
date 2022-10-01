@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../models/auths/user_model.dart';
-import '../models/feed.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
@@ -12,6 +11,7 @@ class ProfileController extends GetxController {
   RxDouble toolbarHeight = 35.0.obs;
 
   Rx<User> user = User().obs;
+  Rx<User> profile = User().obs;
   final Rx<ScrollController> scroll = ScrollController().obs;
 
   final ApiService _service = Get.find<ApiService>();
@@ -34,16 +34,26 @@ class ProfileController extends GetxController {
 
   // FETCH FEEDS
   Future<void> getUserDetails({int? profileId}) async {
+    loading.value = true;
     User? res = await _authService.getUser(uid: profileId);
     user.value = res!;
     loading.value = false;
   }
 
+  // FETCH FEEDS
+  Future<void> getProfileDetails(int profileId) async {
+    loading.value = true;
+    User? res = await _authService.getUser(uid: profileId);
+    profile.value = res!;
+    loading.value = false;
+  }
+
   Future<void> sendFollowReq() async {
     loading.value = true;
-    User? res = await _service.followReq((user.value.userId ?? "").toString(), user.value.follow ?? 0);
-    user.value.follow = user.value.follow == 0 ? 1 : 0;
-    user.value.followers = res?.followers;
+    // debugPrint("UID ${profile.value.userId} FOLLOW${profile.value.follow}");
+    User? res = await _service.followReq((profile.value.userId ?? "").toString(), profile.value.follow ?? 0);
+    profile.value.follow = profile.value.follow == 0 ? 1 : 0;
+    profile.value.followers = res?.followers;
     loading.value = false;
   }
 

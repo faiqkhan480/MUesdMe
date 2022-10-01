@@ -18,11 +18,12 @@ class ProfileScreen extends StatelessWidget {
 
   ProfileController get _controller => Get.find<ProfileController>();
 
-  User? get _user => _controller.user.value;
+  User? get args => Get.arguments;
+
+  User? get _user => args != null ? _controller.profile.value : _controller.user.value;
   // User? get _user => null;
   double get _toolbarHeight => _controller.toolbarHeight();
   bool get _loader => _controller.loading();
-
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
       "Images",
       "Videos"
     ];
-    var profile;
+    // _controller.check(id: args?.userId);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -77,10 +78,12 @@ class ProfileScreen extends StatelessWidget {
                             borderRadius: BorderRadius.vertical(top: Radius.circular(20))
                         ),
                         child: InfoCard(
+                          // user: (args != null) ? _controller.profile.value : _controller.user.value,
                           user: _user,
-                          button: (profile != null) ?
+                          button: (args != null) ?
                           ButtonWidget(
                             text: _user?.follow == 0 ? "Follow" : "Un Follow",
+                            // text: "${_controller.profile.value.follow}",
                             onPressed: _controller.sendFollowReq,
                             bgColor: AppColors.primaryColor,
                             textColor: Colors.white,
@@ -135,7 +138,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
 
-            if(profile != null)
+            if(args != null)
               const SizedBox(
                   height: 100,
                   child: CustomHeader(

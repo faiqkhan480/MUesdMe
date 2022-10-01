@@ -35,7 +35,7 @@ class FeedController extends GetxController {
   }
 
   void handleNavigation() {
-    Get.to(AppRoutes.SEARCH, transition: Transition.leftToRight);
+    Get.toNamed(AppRoutes.SEARCH);
     // Navigator.push(context, CupertinoPageRoute(builder: (context) => const SearchUserScreen()));
   }
 }

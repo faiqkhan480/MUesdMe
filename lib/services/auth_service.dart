@@ -27,13 +27,6 @@ class AuthService extends GetxService {
     return this;
   }
 
-  // @override
-  // onInit() {
-  //   debugPrint(":::::::::::::::");
-  //   isAuthenticated = _box.read("token") != null;
-  //   return super.onInit();
-  // }
-
   updateAuth() {
     isAuthenticated = false;
   }
@@ -128,6 +121,7 @@ class AuthService extends GetxService {
         "UserId":  (uid ?? User.fromJson(_box.read("user")).userId).toString(),
       };
       final json = await Network.post(url: Constants.USER_DETAILS, payload: payload, headers: header);
+      debugPrint("JSON  $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.user != null) {

@@ -9,6 +9,7 @@ class AppRoutes {
   static const String INFO = "/messages";
   static const String CHAT = "/chat";
   static const String PROFILE = "/profile";
+  static const String USER_PROFILE = "/profile_user";
   static const String PROFILE_EDIT = "/profile_edit";
   static const String PICKER = "/picker";
   static const String SEARCH = "/search";

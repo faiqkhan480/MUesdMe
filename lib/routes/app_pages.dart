@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
-import 'package:musedme/screens/auth/login_screen.dart';
-import 'package:musedme/screens/auth/register_screen.dart';
 
 // SCREENS
-import '../bindings/profile_binding.dart';
+import '../bindings/search_binding.dart';
 import '../bindings/root_bindings.dart';
 import '../navigation/bottom_navigation.dart';
+import '../navigation/profile_middle.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/register_screen.dart';
 import '../screens/edit_profile_screen.dart';
 import '../screens/feed_screen.dart';
 import '../screens/live_screen.dart';
@@ -49,7 +50,7 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.SEARCH,
-        // binding: HomeBindings(),
+        binding: SearchBinding(),
         page: () => const SearchUserScreen()
     ),
     GetPage(
@@ -71,7 +72,11 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.PROFILE,
-        binding: ProfileBinding(),
+        middlewares: [ProfileMiddle()],
+        page: () => const ProfileScreen()
+    ),
+    GetPage(
+        name: AppRoutes.USER_PROFILE,
         page: () => const ProfileScreen()
     )
   ];

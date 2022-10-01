@@ -2,6 +2,8 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:musedme/routes/app_routes.dart';
 import 'package:musedme/screens/live_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -85,14 +87,15 @@ class Header extends StatelessWidget {
                   ),
                 const SizedBox(width: 15),
                 SmallButton(
-                  onPressed: action ?? () => handleLive(context),
+                  onPressed: action ?? handleLive,
                   title: isProfile ? "Edit Profile" : "Go Live",
                   icon: SvgPicture.asset(isProfile ? Assets.iconsEditProfile : Assets.iconsLive),
                 ),
                 if(isProfile)...[
                   const SizedBox(width: 10),
                   TextButton(
-                      onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const SettingScreen(),)),
+                      onPressed: () => Get.toNamed(AppRoutes.SETTINGS),
+                      // Navigator.push(context, CupertinoPageRoute(builder: (context) => const SettingScreen(),)),
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -120,7 +123,7 @@ class Header extends StatelessWidget {
                 return InkWell(
                   onTap: () =>
                   // index == 0 ?
-                  presentEditor(context, index),
+                  presentEditor(index),
                   // Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),)) :
                   // null,
                   child: Column(
@@ -184,16 +187,18 @@ class Header extends StatelessWidget {
     );
   }
 
-  Future handleLive (context) async {
+  Future handleLive () async {
     await [Permission.camera, Permission.microphone].request();
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => const LiveScreen(),));
+    Get.toNamed(AppRoutes.LIVE);
+    // Navigator.push(context, CupertinoPageRoute(builder: (context) => const LiveScreen(),));
   }
 
 
 
-  void presentEditor(context, index) async {
+  void presentEditor(index) async {
     if(index == 0) {
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),));
+      Get.toNamed(AppRoutes.PROFILE_EDIT);
+      // Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),));
     }
   }
 }

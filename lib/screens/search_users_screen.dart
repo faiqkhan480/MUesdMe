@@ -2,17 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:musedme/widgets/shadowed_box.dart';
 
 import '../components/search_field.dart';
+import '../controllers/search_controller.dart';
 import '../models/auths/user_model.dart';
-import '../services/api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 import '../widgets/loader.dart';
+import '../widgets/shadowed_box.dart';
 import '../widgets/text_widget.dart';
-import 'profile_screen.dart';
 
 class SearchUserScreen extends StatefulWidget {
   const SearchUserScreen({Key? key}) : super(key: key);
@@ -22,29 +21,11 @@ class SearchUserScreen extends StatefulWidget {
 }
 
 class _SearchUserScreenState extends State<SearchUserScreen> {
-  List<User?> _users = [];
-  bool loader = false;
-  bool? searchResult;
-  // TextEditingController search = TextEditingController();
+  SearchController get _controller => Get.find<SearchController>();
 
-  final ApiService _service = Get.find<ApiService>();
-
-  // SEARCH USERS
-  Future<void> getUsers(String? search) async {
-
-    setState(() => loader = true);
-    List<User?> res = await _service.fetchUsers(search ?? "");
-    setState(() {
-      _users = res;
-      searchResult = res.isEmpty;
-      loader = false;
-    });
-  }
-
-  // HANDLE ON CLICK USER
-  void handleClick(User? u) {
-    // Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileScreen(profile: u),));
-  }
+  List<User?> get _users => _controller.users;
+  bool get loader => _controller.loading();
+  bool? get searchResult => _controller.searchResult();
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +47,9 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
               child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
           ),
         ),
-        title: SearchField(onSubmit: getUsers),
+        title: SearchField(onSubmit: _controller.getUsers),
       ),
-      body: Padding(
+      body: Obx(() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -100,7 +81,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                   itemBuilder: (context, index) => ShadowedBox(
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: InkWell(
-                      onTap: () => handleClick(_users.elementAt(index)),
+                      onTap: () => _controller.handleNavigation(_users.elementAt(index)!),
                       child: Column(
                         children: [
                           CircleAvatar(
@@ -129,7 +110,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
             )
           ],
         ),
-      ),
+      )),
     );
   }
 }
