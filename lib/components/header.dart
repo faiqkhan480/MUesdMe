@@ -4,13 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:musedme/routes/app_routes.dart';
-import 'package:musedme/screens/live_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
-import '../screens/live_screen.dart';
-import '../screens/picker_screen.dart';
-import '../screens/settings_screen.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';

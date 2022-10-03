@@ -1,7 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../components/message_input.dart';
 import '../components/message_tile.dart';

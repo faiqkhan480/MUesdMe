@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:musedme/utils/constants.dart';
 
 import '../utils/app_colors.dart';
-import 'loader.dart';
 import 'text_widget.dart';
 
 class ButtonWidget extends StatelessWidget {

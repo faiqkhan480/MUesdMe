@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:musedme/utils/app_colors.dart';
 
 import '../utils/assets.dart';
-import '../utils/constants.dart';
 
 class ImageWidget extends StatelessWidget {
   final String url;

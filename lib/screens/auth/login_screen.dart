@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:musedme/navigation/bottom_navigation.dart';
 import 'package:musedme/routes/app_routes.dart';
 import 'package:musedme/screens/auth/register_screen.dart';
 import 'package:musedme/utils/app_colors.dart';

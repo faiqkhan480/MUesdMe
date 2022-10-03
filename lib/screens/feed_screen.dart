@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
@@ -8,7 +7,6 @@ import '../components/header.dart';
 import '../models/feed.dart';
 import '../controllers/feed_controller.dart';
 import '../widgets/loader.dart';
-import 'search_users_screen.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({Key? key}) : super(key: key);

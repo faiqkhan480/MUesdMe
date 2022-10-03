@@ -7,7 +7,6 @@ import '../../controllers/profile_controller.dart';
 import '../../models/auths/user_model.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
-import '../../utils/constants.dart';
 import 'profile_body.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
@@ -39,14 +38,6 @@ class ProfileScreen extends GetView<ProfileController> {
               ) : null,
               height: 300,
               width: double.infinity,
-              // child: (!_loading || _user != null) ?
-              // Align(
-              //   alignment: Alignment.topCenter,
-              //   child: Image.network(Constants.coverImage,
-              //     height: 400,
-              //     fit: BoxFit.cover,
-              //   ),
-              // ) : null,
             ),
             (_loading && _user == null) ?
             Center(child: Lottie.asset(Assets.loader)):

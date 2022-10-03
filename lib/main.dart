@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:musedme/services/auth_service.dart';
 
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'utils/di_setup.dart' as di;
-import 'utils/di_setup.dart';
 
 void main() async {
   await di.initServices(); /// AWAIT SERVICES INITIALIZATION.();

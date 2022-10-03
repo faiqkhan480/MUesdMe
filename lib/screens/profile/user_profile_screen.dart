@@ -7,7 +7,6 @@ import '../../controllers/user_profile_controller.dart';
 import '../../models/auths/user_model.dart';
 import '../../utils/assets.dart';
 import '../../utils/app_colors.dart';
-import '../../utils/constants.dart';
 import '../../widgets/button_widget.dart';
 
 import 'profile_body.dart';

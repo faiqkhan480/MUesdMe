@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:musedme/widgets/text_widget.dart';
 
 import '../components/custom_header.dart';
 import '../controllers/settings_controller.dart';
 import '../utils/app_colors.dart';
+import '../widgets/text_widget.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({Key? key}) : super(key: key);

@@ -5,7 +5,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-import '../models/file_model.dart';
 
 class Grids extends StatelessWidget {
   // final bool images;

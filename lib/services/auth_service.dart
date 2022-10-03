@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,8 +9,6 @@ import 'package:musedme/utils/constants.dart';
 import '../models/auths/user_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/network.dart';
-
-// import 'package:http/http.dart' as http;
 
 class AuthService extends GetxService {
   final GetStorage _box = GetStorage();

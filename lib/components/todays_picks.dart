@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:musedme/utils/assets.dart';
-import 'package:musedme/widgets/button_widget.dart';
 
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';

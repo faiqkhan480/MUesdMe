@@ -4,9 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_storage_path/flutter_storage_path.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
-// import 'package:imgly_sdk/imgly_sdk.dart' show Configuration, Sticker, StickerCategory, StickerOptions, AudioOptions;
 import 'package:imgly_sdk/imgly_sdk.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';

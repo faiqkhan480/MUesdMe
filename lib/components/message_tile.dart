@@ -22,7 +22,7 @@ class MessageTile extends StatelessWidget {
                 radius: 28,
                 backgroundImage: NetworkImage(Constants.albumArt)),
             if(message.messageType == "sender")
-              SizedBox(width: 30,),
+              const SizedBox(width: 30,),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -43,7 +43,7 @@ class MessageTile extends StatelessWidget {
               ),
             ),
             if(message.messageType == "receiver")
-              SizedBox(width: 30,),
+              const SizedBox(width: 30,),
             if(message.messageType == "sender")
               const CircleAvatar(
                   backgroundColor: Colors.white,

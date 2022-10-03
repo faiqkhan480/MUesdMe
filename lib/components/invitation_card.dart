@@ -5,7 +5,6 @@ import 'package:musedme/widgets/text_widget.dart';
 
 import '../utils/assets.dart';
 import '../utils/constants.dart';
-import '../widgets/button_widget.dart';
 
 class InvitationCard extends StatelessWidget {
   const InvitationCard({Key? key}) : super(key: key);

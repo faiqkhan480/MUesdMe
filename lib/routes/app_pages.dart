@@ -19,7 +19,6 @@ import '../screens/settings_screen.dart';
 // ROUTE NAMES
 import '../screens/profile/user_profile_screen.dart';
 import 'app_routes.dart';
-import 'auth_gard.dart';
 
 class AppPages {
   static var list = [

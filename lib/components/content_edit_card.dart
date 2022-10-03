@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:musedme/widgets/text_widget.dart';
 
 import '../utils/app_colors.dart';
-import '../utils/constants.dart';
 import '../widgets/shadowed_box.dart';
 
 class ContentEditCard extends StatelessWidget {
