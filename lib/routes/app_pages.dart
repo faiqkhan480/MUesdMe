@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:musedme/bindings/edit_profile_binding.dart';
 
 // SCREENS
 import '../bindings/profile_binding.dart';
@@ -60,6 +61,7 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.PROFILE_EDIT,
+        binding: EditProfileBinding(),
         page: () => const EditProfileScreen()
     ),
 
