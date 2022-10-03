@@ -30,6 +30,9 @@ class AuthService extends GetxService {
     isAuthenticated = false;
   }
 
+  setUser(User? u) {
+    _currentUser = u;
+  }
 
   // USER LOGIN
   Future<bool> loginUser(String email, String pass) async {
@@ -52,7 +55,7 @@ class AuthService extends GetxService {
         else {
           Get.snackbar("Failed!", res.message ?? "",
               backgroundColor: AppColors.pinkColor,
-            colorText: Colors.white
+              colorText: Colors.white
           );
           return false;
         }
@@ -66,14 +69,14 @@ class AuthService extends GetxService {
 
   // USER SIGNUP
   Future registerUser(
-    String firstName,
-    String lastName,
-    String userName,
-    String email,
-    String gender,
-    String country,
-    String dob,
-    String password,
+      String firstName,
+      String lastName,
+      String userName,
+      String email,
+      String gender,
+      String country,
+      String dob,
+      String password,
       ) async {
     try {
       var payload = {
@@ -154,6 +157,8 @@ class AuthService extends GetxService {
       String lastName,
       String userName,
       String phone,
+      String location,
+      String postalCode,
       String aboutMe,
       {String? profilePic,}) async {
     try {
@@ -165,8 +170,9 @@ class AuthService extends GetxService {
         "FirstName": firstName,
         "LastName": lastName,
         "UserName": userName,
-        // "ProfilePic": profilePic,
         "Phone": phone,
+        "Location": location,
+        "PostalCode": postalCode,
         "AboutMe": aboutMe,
       };
       if(profilePic != null && profilePic.isNotEmpty) {
