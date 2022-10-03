@@ -156,10 +156,9 @@ class AuthService extends GetxService {
       String firstName,
       String lastName,
       String userName,
-      String profilePic,
       String phone,
-      String aboutMe
-      ) async {
+      String aboutMe,
+      {String? profilePic,}) async {
     try {
       var header = {
         "Authorization": "Bearer ${_box.read("token")}",
@@ -169,10 +168,13 @@ class AuthService extends GetxService {
         "FirstName": firstName,
         "LastName": lastName,
         "UserName": userName,
-        "ProfilePic": profilePic,
+        // "ProfilePic": profilePic,
         "Phone": phone,
         "AboutMe": aboutMe,
       };
+      if(profilePic != null && profilePic.isNotEmpty) {
+        payload.addAll({"ProfilePic": profilePic});
+      }
       final json = await Network.post(url: Constants.UPDATE_USER, payload: payload, headers: header);
 
       if(json != null) {

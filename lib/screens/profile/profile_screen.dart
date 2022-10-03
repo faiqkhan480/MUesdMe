@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import '../../components/header.dart';
 import '../../controllers/profile_controller.dart';
 import '../../models/auths/user_model.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/constants.dart';
 import 'profile_body.dart';
@@ -24,17 +25,28 @@ class ProfileScreen extends GetView<ProfileController> {
       child: Scaffold(
         body: Obx(() => Stack(
           children: [
-            SizedBox(
-              height: 500,
-              width: double.infinity,
-              child: (!_loading || _user != null) ?
-              Align(
-                alignment: Alignment.topCenter,
-                child: Image.network(Constants.coverImage,
-                  height: 400,
-                  fit: BoxFit.cover,
-                ),
+            Container(
+              decoration: (!_loading || _user?.userId != null) ? const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.orange,
+                      AppColors.primaryColor,
+                      AppColors.pinkColor,
+                    ],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  )
               ) : null,
+              height: 300,
+              width: double.infinity,
+              // child: (!_loading || _user != null) ?
+              // Align(
+              //   alignment: Alignment.topCenter,
+              //   child: Image.network(Constants.coverImage,
+              //     height: 400,
+              //     fit: BoxFit.cover,
+              //   ),
+              // ) : null,
             ),
             (_loading && _user == null) ?
             Center(child: Lottie.asset(Assets.loader)):

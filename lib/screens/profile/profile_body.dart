@@ -51,18 +51,8 @@ class ProfileBody extends StatelessWidget {
                     borderRadius: BorderRadius.vertical(top: Radius.circular(20))
                 ),
                 child: InfoCard(
-                  // user: (args != null) ? _controller.profile.value : _controller.user.value,
                   user: user,
                   button: button
-                  // (args != null) ?
-                  // ButtonWidget(
-                  //   text: user?.follow == 0 ? "Follow" : "Un Follow",
-                  //   // text: "${_controller.profile.value.follow}",
-                  //   onPressed: _controller.sendFollowReq,
-                  //   bgColor: AppColors.primaryColor,
-                  //   textColor: Colors.white,
-                  //   loader: loader,
-                  // ) : null,
                 ),
               ),
             ),
@@ -72,7 +62,6 @@ class ProfileBody extends StatelessWidget {
           SliverAppBar(
             pinned: true,
             expandedHeight: 50,
-            // collapsedHeight: 0,
             toolbarHeight: toolbarHeight,
             bottom: PreferredSize(
                 preferredSize: const Size(double.infinity, 0),
@@ -95,6 +84,11 @@ class ProfileBody extends StatelessWidget {
                 )
             ),
           ),
+
+          // SliverPersistentHeader(
+          //   pinned: true,
+          //   delegate: SliverPersistentH,
+          // ),
 
           // FEEDS LIST
           SliverList(

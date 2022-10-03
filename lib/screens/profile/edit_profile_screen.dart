@@ -147,9 +147,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> handleSubmit() async {
+    // debugPrint(_file);
     FocusScope.of(context).unfocus();
     setState(() => loader = true);
-    String base64Image = _user!.profilePic!;
+    String? base64Image;
     if(_file != null) {
       Uint8List imageBytes =  File(_file!.path).readAsBytesSync();
       base64Image = base64Encode(imageBytes);
@@ -159,9 +160,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _firstName.text,
         _lastName.text,
         _userName.text,
-      base64Image,
         _phone.text,
-      _aboutMe.text
+      _aboutMe.text,
+      profilePic: base64Image,
     );
     if(res) {
       await _controller.getUserDetails();

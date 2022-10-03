@@ -28,18 +28,28 @@ class UserProfileScreen extends GetView<UserProfileController> {
       child: Scaffold(
         body: Obx(() => Stack(
           children: [
-            SizedBox(
+            Container(
               height: 500,
               width: double.infinity,
-              // color: Colors.red,
-              child: (!_loading || _user?.userId != null) ?
-              Align(
-                alignment: Alignment.topCenter,
-                child: Image.network(Constants.coverImage,
-                  height: 400,
-                  fit: BoxFit.cover,
-                ),
+              decoration: (!_loading || _user?.userId != null) ? const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.orange,
+                      AppColors.primaryColor,
+                      AppColors.pinkColor,
+                    ],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  )
               ) : null,
+              // child: (!_loading || _user?.userId != null) ?
+              // Align(
+              //   alignment: Alignment.topCenter,
+              //   child: Image.network(Constants.coverImage,
+              //     height: 400,
+              //     fit: BoxFit.cover,
+              //   ),
+              // ) : null,
             ),
             (_loading && _user?.userId == null) ?
             Center(child: Lottie.asset(Assets.loader)):
