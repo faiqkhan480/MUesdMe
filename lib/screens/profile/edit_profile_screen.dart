@@ -8,18 +8,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../components/content_edit_card.dart';
-import '../components/custom_header.dart';
-import '../components/email_pass_card.dart';
-import '../components/social_links.dart';
-import '../components/user_info.dart';
-import '../controllers/profile_controller.dart';
-import '../models/auths/user_model.dart';
-import '../services/api_service.dart';
-import '../services/auth_service.dart';
-import '../utils/app_colors.dart';
-import '../utils/assets.dart';
-import '../utils/constants.dart';
+import '../../components/content_edit_card.dart';
+import '../../components/custom_header.dart';
+import '../../components/email_pass_card.dart';
+import '../../components/social_links.dart';
+import '../../components/user_info.dart';
+import '../../controllers/profile_controller.dart';
+import '../../models/auths/user_model.dart';
+import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/assets.dart';
+import '../../utils/constants.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User? user;

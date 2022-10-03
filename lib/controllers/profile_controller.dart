@@ -11,7 +11,6 @@ class ProfileController extends GetxController {
   RxDouble toolbarHeight = 35.0.obs;
 
   Rx<User> user = User().obs;
-  Rx<User> profile = User().obs;
   final Rx<ScrollController> scroll = ScrollController().obs;
 
   final ApiService _service = Get.find<ApiService>();
@@ -32,28 +31,11 @@ class ProfileController extends GetxController {
     getUserDetails();
   }
 
-  // FETCH FEEDS
+  // FETCH USER DETAILS
   Future<void> getUserDetails({int? profileId}) async {
     loading.value = true;
     User? res = await _authService.getUser(uid: profileId);
     user.value = res!;
-    loading.value = false;
-  }
-
-  // FETCH FEEDS
-  Future<void> getProfileDetails(int profileId) async {
-    loading.value = true;
-    User? res = await _authService.getUser(uid: profileId);
-    profile.value = res!;
-    loading.value = false;
-  }
-
-  Future<void> sendFollowReq() async {
-    loading.value = true;
-    // debugPrint("UID ${profile.value.userId} FOLLOW${profile.value.follow}");
-    User? res = await _service.followReq((profile.value.userId ?? "").toString(), profile.value.follow ?? 0);
-    profile.value.follow = profile.value.follow == 0 ? 1 : 0;
-    profile.value.followers = res?.followers;
     loading.value = false;
   }
 

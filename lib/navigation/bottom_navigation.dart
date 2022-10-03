@@ -9,7 +9,7 @@ import '../controllers/root_controller.dart';
 import '../screens/library_screen.dart';
 import '../screens/messages_screen.dart';
 import '../utils/assets.dart';
-import '../screens/profile_screen.dart';
+import '../screens/profile/profile_screen.dart';
 import '../screens/videos_screen.dart';
 
 class BottomNavigation extends StatefulWidget {

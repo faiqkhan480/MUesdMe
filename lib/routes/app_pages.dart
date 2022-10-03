@@ -8,16 +8,16 @@ import '../navigation/bottom_navigation.dart';
 import '../navigation/profile_middle.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
-import '../screens/edit_profile_screen.dart';
+import '../screens/profile/edit_profile_screen.dart';
 import '../screens/feed_screen.dart';
 import '../screens/live_screen.dart';
 import '../screens/picker_screen.dart';
-import '../screens/profile_screen.dart';
+import '../screens/profile/profile_screen.dart';
 import '../screens/search_users_screen.dart';
 import '../screens/settings_screen.dart';
 
 // ROUTE NAMES
-import '../screens/user_profile_screen.dart';
+import '../screens/profile/user_profile_screen.dart';
 import 'app_routes.dart';
 import 'auth_gard.dart';
 
