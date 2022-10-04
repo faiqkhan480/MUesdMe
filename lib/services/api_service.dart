@@ -25,6 +25,7 @@ class ApiService extends GetxService {
         "UserID": User.fromJson(_box.read("user")).userId.toString(),
       };
       final json = await Network.post(url: Constants.FEEDS, headers: header, payload: payload);
+      debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.message != null && res.message!.isNotEmpty) {

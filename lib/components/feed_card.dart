@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import '../controllers/comment_controller.dart';
 import '../controllers/feed_controller.dart';
@@ -69,10 +70,23 @@ class FeedCard extends StatelessWidget {
             subtitle: TextWidget("@${post?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                TextWidget("3 min ago", color: AppColors.lightGrey, size: 12),
-                SizedBox(width: 10,),
-                Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey)
+              children:[
+                TextWidget(post?.feedDate != null ?timeago.format(post!.feedDate!) : "", color: AppColors.lightGrey, size: 12),
+                const SizedBox(width: 10,),
+                PopupMenuButton<String>(
+                    padding: const EdgeInsets.only(left: 10, right: 0),
+                    onSelected: handleOption,
+                    icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                      const PopupMenuItem<String>(
+                        value: "0",
+                        child: Text('Add to watch later'),
+                      ),
+                      const PopupMenuItem<String>(
+                        value: "1",
+                        child: Text("Download"),
+                      ),
+                    ]),
               ],
             ),
           ),
@@ -99,6 +113,7 @@ class FeedCard extends StatelessWidget {
                 Obx(() => VideoWidget(
                     url: "${Constants.FEEDS_URL}${post?.feedPath}",
                     controller: _controller.videos.first!,
+                    // controller: _controller.videos.f,
                     play: isInView
                 )) :
                 ImageWidget(
@@ -149,6 +164,12 @@ class FeedCard extends StatelessWidget {
     );
   }
 
+  handleOption(String item) {
+    if(item == "1") {
+      _controller.handleDownload(post?.feedPath ?? "",  post?.feedType == "Video");
+    }
+  }
+
   // SEARCH SHEET
   handleComment() {
     Get.create(() => CommentController(feedId: 0.toString()));
@@ -197,7 +218,7 @@ class CommentSheet extends GetWidget<CommentController> {
                             padding: const EdgeInsets.all(12.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                              children: const  [
                                 TextWidget(
                                   "profileName",
                                   weight: FontWeight.w800,

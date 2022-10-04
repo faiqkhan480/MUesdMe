@@ -1,9 +1,12 @@
 import 'package:cached_video_player/cached_video_player.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 import '../models/feed.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
 class FeedController extends GetxController {
@@ -23,6 +26,7 @@ class FeedController extends GetxController {
 
   // FETCH FEEDS
   Future<void> getFeeds() async {
+    feeds.clear();
     List res = await _service.fetchPosts();
     if(res.isNotEmpty) {
       feeds.addAll(res as List<Feed?>);
@@ -41,5 +45,34 @@ class FeedController extends GetxController {
   void handleNavigation() {
     Get.toNamed(AppRoutes.SEARCH);
     // Navigator.push(context, CupertinoPageRoute(builder: (context) => const SearchUserScreen()));
+  }
+
+  // DOWNLOAD MEDIA
+  void handleDownload(String url, bool isVideo) {
+    String path = "${Constants.FEEDS_URL}$url";
+    if(isVideo) {
+      _saveNetworkVideo(path);
+    }
+    else {
+      _saveNetworkImage(path);
+    }
+  }
+
+  // SAVE/DOWNLOAD IMAGE
+  void _saveNetworkVideo(String path) async {
+    GallerySaver.saveVideo(path).then((bool? success) {
+      if(success!) {
+        Get.snackbar("Success", "Image is saved to your device!", backgroundColor: AppColors.successColor, colorText: Colors.white);
+      }
+    });
+  }
+
+  // SAVE/DOWNLOAD VIDEO
+  void _saveNetworkImage(String path) async {
+    GallerySaver.saveImage(path).then((bool? success) {
+      if(success!) {
+        Get.snackbar("Success", "Video saved is to your device!", backgroundColor: AppColors.successColor, colorText: Colors.white);
+      }
+    });
   }
 }

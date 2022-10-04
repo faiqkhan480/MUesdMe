@@ -18,6 +18,7 @@ class Feed {
     required this.postShares,
     required this.postComments,
     required this.feedType,
+    required this.feedDate,
   });
 
   @JsonKey(name: 'UserID')
@@ -52,6 +53,9 @@ class Feed {
 
   @JsonKey(name: 'FeedType')
   final String? feedType;
+
+  @JsonKey(name: 'FeedDate')
+  final DateTime? feedDate;
 
   factory Feed.fromJson(Map<String, dynamic> json) => _$FeedFromJson(json);
 
