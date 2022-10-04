@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 
+import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_storage_path/flutter_storage_path.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:imgly_sdk/imgly_sdk.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
 
 import '../components/grids.dart';
@@ -23,7 +23,7 @@ class EditorScreen extends StatefulWidget {
 }
 
 class _EditorScreenState extends State<EditorScreen> {
-  late VideoPlayerController _controller;
+  late CachedVideoPlayerController _controller;
   List<FileModel?> imageFiles = [];
   List<VideoFile?> videoFiles = [];
   FileModel? selectedImage;
@@ -112,7 +112,7 @@ class _EditorScreenState extends State<EditorScreen> {
       videoFiles = videos.map<VideoFile>((e) => VideoFile.fromJson(e)).toList();
       if (videoFiles.isNotEmpty) {
         debugPrint(videoFiles.first!.files!.first.path!);
-        _controller = VideoPlayerController.file(File(videoFiles.first!.files!.first.path!));
+        _controller = CachedVideoPlayerController.file(File(videoFiles.first!.files!.first.path!));
         await _controller.initialize();
         _controller.play();
         setState(() {
@@ -229,7 +229,7 @@ class _EditorScreenState extends State<EditorScreen> {
                     child: _controller.value.isInitialized ?
                     AspectRatio(
                       aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
+                      child: CachedVideoPlayer(_controller),
                     ) : const SizedBox.shrink(),
                   ) :
                   const SizedBox.shrink()
@@ -255,7 +255,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       Grids(
                         onTap: (int i, {String? path}) async {
                           await _controller.dispose();
-                          _controller = VideoPlayerController.file(File(path!));
+                          _controller = CachedVideoPlayerController.file(File(path!));
                           await _controller.initialize();
                           _controller.play();
                           setState(() {

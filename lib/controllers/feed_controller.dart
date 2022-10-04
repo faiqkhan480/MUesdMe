@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../models/feed.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
+import '../utils/constants.dart';
 
 class FeedController extends GetxController {
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
@@ -11,7 +12,7 @@ class FeedController extends GetxController {
 
   final ApiService _service = Get.find<ApiService>();
 
-  // RxList<CachedVideoPlayerController?> _controller = List<CachedVideoPlayerController?>.empty(growable: true).obs;
+  RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
 
   @override
   void onInit() {
@@ -25,11 +26,14 @@ class FeedController extends GetxController {
     List res = await _service.fetchPosts();
     if(res.isNotEmpty) {
       feeds.addAll(res as List<Feed?>);
-      // feeds.forEach((f) {
-      //   if(f?.feedType == "Video") {
-      //
-      //   }
-      // });
+      for (var f in feeds) {
+        if(f?.feedType == "Video") {
+          CachedVideoPlayerController _C = CachedVideoPlayerController.network("${Constants.FEEDS_URL}${f?.feedPath}");
+          await _C.initialize();
+          videos.add(_C);
+        }
+      }
+      update();
     }
     loading.value = false;
   }

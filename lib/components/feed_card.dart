@@ -1,7 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
+import '../controllers/comment_controller.dart';
+import '../controllers/feed_controller.dart';
 import '../models/feed.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
@@ -24,6 +27,8 @@ class FeedCard extends StatelessWidget {
     this.isInView = false,
     this.post
   }) : super(key: key);
+
+  FeedController get _controller => Get.find<FeedController>();
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +96,11 @@ class FeedCard extends StatelessWidget {
                 ),
                 elevation: 0,
                 child: post?.feedType == "Video" ?
-                VideoWidget(
+                Obx(() => VideoWidget(
                     url: "${Constants.FEEDS_URL}${post?.feedPath}",
+                    controller: _controller.videos.first!,
                     play: isInView
-                ) :
+                )) :
                 ImageWidget(
                   url: "${Constants.FEEDS_URL}${post?.feedPath}",
                   height: 250,
@@ -110,10 +116,10 @@ class FeedCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20,),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextWidget("There’s nothing better drive on Golden Gate Bridge the wide strait connecting. #Golden #Bridge more"),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.all(8.0),
+          //   child: TextWidget("There’s nothing better drive on Golden Gate Bridge the wide strait connecting. #Golden #Bridge more"),
+          // ),
           Padding(
             padding: const EdgeInsets.only(left: 0.0, right: 8.0),
             child: Row(
@@ -124,7 +130,7 @@ class FeedCard extends StatelessWidget {
                   icon: Assets.iconsHeart,
                 ),
                 ButtonWidget(
-                  onPressed: () => null,
+                  onPressed: handleComment,
                   text: "${post?.postComments ?? ""} comments",
                   icon: Assets.iconsComment,
                 ),
@@ -138,83 +144,105 @@ class FeedCard extends StatelessWidget {
               ],
             ),
           ),
-
-          // CommentBox(
-          //   image: Image.network(
-          //     Constants.dummyImage,
-          //     height: 40,
-          //     width: 40,
-          //   ),
-          //   controller: TextEditingController(),
-          //   onImageRemoved: (){
-          //     //on image removed
-          //   },
-          //   onSend: (){
-          //     //on send button pressed
-          //   },
-          // ),
         ],
       ),
     );
   }
-}
 
-class CommentBox extends StatefulWidget {
-  final Widget? image;
-  final TextEditingController? controller;
-  final BorderRadius? inputRadius;
-  final Function()? onSend,onImageRemoved;
-
-  const CommentBox({Key? key, this.image, this.controller, this.inputRadius, this.onSend , this.onImageRemoved }) : super(key: key);
-
-  @override
-  _CommentBoxState createState() => _CommentBoxState();
-}
-
-class _CommentBoxState extends State<CommentBox> {
-  Widget? image;
-
-  @override
-  void initState() {
-    image = widget.image;
-    super.initState();
+  // SEARCH SHEET
+  handleComment() {
+    Get.create(() => CommentController(feedId: 0.toString()));
+    Get.bottomSheet(
+        const CommentSheet(),
+        // isDismissible: true,
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        // isScrollControlled: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
   }
+}
+
+class CommentSheet extends GetWidget<CommentController> {
+  const CommentSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(
-          height: 1,
-          color: Colors.grey[300],
-          thickness: 1,
+    return SafeArea(
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))
         ),
-        const SizedBox(height: 20),
-        // if (image != null)
-        //   _removable(
-        //     context,
-        //     _imageView(context),
-        //   ),
-        if(widget.controller!=null) TextFormField(
-          controller: widget.controller,
-          decoration: InputDecoration(
-            suffixIcon: IconButton(
-              icon: Icon(Icons.send,color: Theme.of(context).primaryColor,),
-              onPressed: widget.onSend,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: ListView.builder(
+                itemBuilder: (context, index) => Row(
+                  children: [
+                    _imageView(),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE9F1FE),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextWidget(
+                                  "profileName",
+                                  weight: FontWeight.w800,
+                                ),
+                                TextWidget(
+                                  "postComment",
+                                  // weight: FontWeight.bold,
+                                  size: 16.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                // separatorBuilder: separatorBuilder,
+                itemCount: 2
+            )),
+            const SizedBox(height: 20),
+
+            TextFormField(
+              // controller: widget.controller,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.send,color: Theme.of(context).primaryColor,),
+                  onPressed: () => null,
+                ),
+                filled: true,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(32),
+                ),
+              ),
             ),
-            filled: true,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: widget.inputRadius ?? BorderRadius.circular(32),
-            ),
-          ),
+
+            const SizedBox(height: 20),
+          ],
         ),
-      ],
+      ),
     );
   }
 
-  Widget _removable(BuildContext context, Widget child) {
+  Widget _removable(Widget child) {
     return Stack(
       alignment: Alignment.topRight,
       children: [
@@ -222,22 +250,27 @@ class _CommentBoxState extends State<CommentBox> {
         IconButton(
           icon: const Icon(Icons.clear),
           onPressed: () {
-            setState(() {
-              image = null;
-              // widget?.onImageRemoved();
-            });
+            // setState(() {
+            //   image = null;
+            //   // widget?.onImageRemoved();
+            // });
           },
         )
       ],
     );
   }
 
-  Widget _imageView(BuildContext context) {
+  Widget _imageView() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: image,
+        borderRadius: BorderRadius.circular(100),
+        child: Image.network(
+          Constants.dummyImage,
+          fit: BoxFit.cover,
+          height: 50,
+          width: 50,
+        ),
       ),
     );
   }
