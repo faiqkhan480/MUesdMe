@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 
@@ -10,6 +11,7 @@ import '../components/trending_card.dart';
 import '../controllers/feed_controller.dart';
 import '../models/feed.dart';
 import '../utils/app_colors.dart';
+import '../utils/assets.dart';
 import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
 
@@ -23,6 +25,7 @@ class VideosScreen extends StatelessWidget {
 // class _VideosScreenState extends State<VideosScreen> {
 
   FeedController get _controller => Get.find<FeedController>();
+
   bool get _loading => _controller.loading();
   List<Feed?> get _feeds => _controller.feeds;
   List<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList();
@@ -41,7 +44,7 @@ class VideosScreen extends StatelessWidget {
       child: Scaffold(
         body: Column(
           children: [
-            const Header(title: "Media videos",),
+            Header(title: "Media videos", handleSearch: _controller.handleNavigation),
             const SizedBox(height: 20,),
             TabBar(
               labelColor: AppColors.primaryColor,
@@ -83,7 +86,7 @@ class VideosScreen extends StatelessWidget {
                         itemCount: _videos.length
                     ),
                   ),
-                    Container(),
+                    SvgPicture.asset(Assets.searchUsers),
                     RefreshIndicator(
                     onRefresh: _controller.getFeeds,
                     child: InViewNotifierList(
@@ -107,7 +110,7 @@ class VideosScreen extends StatelessWidget {
                         itemCount: _videos.length
                     ),
                   ),
-                    Container(),
+                    SvgPicture.asset(Assets.searchUsers),
                   ],
                 )
             ),),

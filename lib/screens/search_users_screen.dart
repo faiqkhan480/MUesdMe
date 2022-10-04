@@ -75,6 +75,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                       childAspectRatio: 0.9,
+                      // childAspectRatio: 0.9,
                     ),
                   itemCount: _users.length,
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -90,17 +91,21 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                             backgroundColor: Colors.white,
                           ),
                           const SizedBox(height: 10),
-                          TextWidget(
-                            "${_users.elementAt(index)?.firstName} ${_users.elementAt(index)?.lastName}",
-                            size: 22,
-                            weight: FontWeight.w500,
+                          Flexible(
+                            child: TextWidget(
+                              "${_users.elementAt(index)?.firstName} ${_users.elementAt(index)?.lastName}",
+                              size: Get.textScaleFactor * 20.0,
+                              weight: FontWeight.w500,
+                            ),
                           ),
                           const SizedBox(height: 10),
-                          TextWidget(
-                            "@${_users.elementAt(index)?.userName}",
-                            size: 18,
-                            color: AppColors.lightGrey,
-                            weight: FontWeight.w500,
+                          Flexible(
+                            child: TextWidget(
+                              "@${_users.elementAt(index)?.userName}",
+                              size: Get.textScaleFactor * 16.0,
+                              color: AppColors.lightGrey,
+                              weight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),

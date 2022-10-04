@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:musedme/models/api_res.dart';
-import 'package:musedme/utils/constants.dart';
 
+import '../models/api_res.dart';
 import '../models/auths/user_model.dart';
 import '../utils/app_colors.dart';
+import '../utils/constants.dart';
 import '../utils/network.dart';
 
 class AuthService extends GetxService {
@@ -24,8 +24,8 @@ class AuthService extends GetxService {
     if(_box.read("token") != null && _box.read("user") != null) {
       isAuthenticated = _box.read("token") != null;
       _currentUser = User.fromJson(_box.read("user"));
+      getTokens();
     }
-    getTokens();
     return this;
   }
 
@@ -184,6 +184,7 @@ class AuthService extends GetxService {
           _currentUser = User.fromJson(res.user);
           _box.write("user", res.user);
           _box.write("token", _currentUser?.token);
+          await getTokens();
           return true;
         }
         else {

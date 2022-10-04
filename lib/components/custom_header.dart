@@ -18,6 +18,7 @@ class CustomHeader extends StatelessWidget {
     this.showRecentWatches = false,
     this.loader = false,
     this.showSearch = false,
+    this.showBack = true,
     this.showSave = true,
     this.buttonColor,
     this.img,
@@ -30,6 +31,7 @@ class CustomHeader extends StatelessWidget {
   final bool showBottom;
   final bool loader;
   final bool showSave;
+  final bool showBack;
   final bool showRecentWatches;
   final Color? buttonColor;
   final bool showSearch;
@@ -57,21 +59,23 @@ class CustomHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
-                          ),
-                          // padding: const EdgeInsets.symmetric(vertical: 18),
-                          minimumSize: const Size(45, 0),
-                          textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
-                      ),
-                      child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
-                  ),
-                  const SizedBox(width: 15,),
+                  if(showBack)...[
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
+                            ),
+                            // padding: const EdgeInsets.symmetric(vertical: 18),
+                            minimumSize: const Size(45, 0),
+                            textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+                        ),
+                        child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
+                    ),
+                    const SizedBox(width: 15,),
+                  ],
                   Text(
                     title,
                     style: const TextStyle(
