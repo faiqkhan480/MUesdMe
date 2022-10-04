@@ -10,6 +10,8 @@ class Constants {
   static const String REGISTER = "$BASE_URL/api/Users/SignUp";
   static const String USER_DETAILS = "$BASE_URL/api/Users/BindUserDetails";
   static const String UPDATE_USER = "$BASE_URL/api/Users/UpdateUser";
+  static const String GET_RTM = "$BASE_URL/api/Agora/GetRTMToken";
+  static const String GET_RTC = "$BASE_URL/api/Agora/GetRTCToken";
 
 
   // POSTS

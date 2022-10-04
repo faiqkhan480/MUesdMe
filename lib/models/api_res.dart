@@ -11,6 +11,7 @@ class ApiRes {
     required this.users,
     required this.user,
     required this.feeds,
+    required this.token,
   });
 
   @JsonKey(name: 'Code')
@@ -27,6 +28,9 @@ class ApiRes {
 
   @JsonKey(name: 'Feeds')
   final dynamic feeds;
+
+  @JsonKey(name: 'Token')
+  final dynamic token;
 
   factory ApiRes.fromJson(Map<String, dynamic> json) => _$ApiResFromJson(json);
 

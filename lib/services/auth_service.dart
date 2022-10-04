@@ -13,6 +13,8 @@ import '../utils/network.dart';
 class AuthService extends GetxService {
   final GetStorage _box = GetStorage();
   User? _currentUser;
+  String? rtc;
+  String? rtm;
 
   User? get currentUser => _currentUser;
 
@@ -23,7 +25,23 @@ class AuthService extends GetxService {
       isAuthenticated = _box.read("token") != null;
       _currentUser = User.fromJson(_box.read("user"));
     }
+    getTokens();
     return this;
+  }
+
+  Future getTokens() async {
+    if(_box.read("rtc") != null) {
+      rtc = _box.read("rtc");
+    }
+    else {
+      getRTM().then((value) => rtc = value);
+    }
+    if(_box.read("rtm") != null) {
+      rtm = _box.read("rtm");
+    }
+    else {
+      getRTM().then((value) => rtm = value);
+    }
   }
 
   updateAuth() {
@@ -50,6 +68,7 @@ class AuthService extends GetxService {
           // debugPrint("::::::::: ${_currentUser?.userName}");
           _box.write("user", res.user);
           _box.write("token", _currentUser?.token);
+          await getTokens();
           return true;
         }
         else {
@@ -64,6 +83,74 @@ class AuthService extends GetxService {
     } catch (e) {
       debugPrint("ERROR >>>>>>>>>> $e");
       return false;
+    }
+  }
+
+  // GET RTM TOKEN
+  Future<String?> getRTM() async {
+    try {
+      var header = {
+        "Authorization": "Bearer ${_box.read("token")}",
+      };
+      var payload = {
+        "UserId": currentUser?.userId,
+      };
+      final json = await Network.post(url: Constants.GET_RTM, payload: payload, headers: header);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.token != null) {
+          _box.write("rtm", res.token);
+          return res.token;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return null;
+        }
+      }
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      Get.snackbar("Error!", "$e",
+          backgroundColor: AppColors.pinkColor,
+          colorText: Colors.white
+      );
+      return null;
+    }
+  }
+
+  // GET RTC TOKEN
+  Future<String?> getRTC() async {
+    try {
+      var header = {
+        "Authorization": "Bearer ${_box.read("token")}",
+      };
+      var payload = {
+        "UserId": currentUser?.userId,
+      };
+      final json = await Network.post(url: Constants.GET_RTC, payload: payload, headers: header);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.token != null) {
+          _box.write("rtc", res.token);
+          return res.token;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return null;
+        }
+      }
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      Get.snackbar("Error!", "$e",
+          backgroundColor: AppColors.pinkColor,
+          colorText: Colors.white
+      );
+      return null;
     }
   }
 
