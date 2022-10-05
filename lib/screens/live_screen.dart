@@ -22,12 +22,12 @@ import '../widgets/text_widget.dart';
 class LiveScreen extends StatelessWidget {
   const LiveScreen({Key? key}) : super(key: key);
 
-  LiveController get controller => Get.find<LiveController>();
-  List get comments => controller.comments;
-  bool get isBroadcaster => controller.isBroadcaster();
-  bool get loading => controller.loading();
-  bool get flash => controller.flash();
-  bool get muted => controller.muted();
+  LiveController get _controller => Get.find<LiveController>();
+  List get comments => _controller.comments;
+  bool get isBroadcaster => _controller.isBroadcaster();
+  bool get loading => _controller.loading();
+  bool get flash => _controller.flash();
+  bool get muted => _controller.muted();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class LiveScreen extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextButton(
-              onPressed: controller.onCallEnd,
+              onPressed: _controller.onCallEnd,
               style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -62,7 +62,7 @@ class LiveScreen extends StatelessWidget {
           FractionallySizedBox(
             heightFactor: .7,
             child: TextButton(
-              onPressed: controller.onCallEnd,
+              onPressed: _controller.onCallEnd,
               style: TextButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   foregroundColor: Colors.white,
@@ -91,7 +91,7 @@ class LiveScreen extends StatelessWidget {
         ],
       ),
 
-      body: Stack(
+      body: Obx(() => Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: <Widget>[
           // Container(
@@ -101,14 +101,14 @@ class LiveScreen extends StatelessWidget {
           // ),
           _broadcastView(),
 
-          if(loading)
+          if(_controller.loading())
             Lottie.asset(Assets.loader)
           else ...[
             _toolbar(),
             _commentsView(),
           ],
         ],
-      ),
+      )),
 
       bottomNavigationBar: InkWell(
         onTap: _handleBottomSheet,
@@ -168,7 +168,7 @@ class LiveScreen extends StatelessWidget {
       child: Column(
         children: [
           RawMaterialButton(
-            onPressed: controller.onToggleFlash,
+            onPressed: _controller.onToggleFlash,
             shape: const CircleBorder(),
             elevation: 2.0,
             fillColor: Colors.white,
@@ -181,7 +181,7 @@ class LiveScreen extends StatelessWidget {
           ),
           const SizedBox(height: 5,),
           RawMaterialButton(
-            onPressed: controller.onSwitchCamera,
+            onPressed: _controller.onSwitchCamera,
             shape: const CircleBorder(),
             elevation: 2.0,
             fillColor: Colors.white,
@@ -194,7 +194,7 @@ class LiveScreen extends StatelessWidget {
           ),
           const SizedBox(height: 5,),
           RawMaterialButton(
-            onPressed: controller.onToggleMute,
+            onPressed: _controller.onToggleMute,
             shape: const CircleBorder(),
             elevation: 2.0,
             fillColor: Colors.white,
@@ -226,7 +226,7 @@ class LiveScreen extends StatelessWidget {
             Flexible(
               flex: 4,
               child: AnimatedList(
-                key: controller.key,
+                key: _controller.key,
                   padding: const EdgeInsets.only(left: 20, right: 50),
                   reverse: true,
                   itemBuilder: (context, index, animation) => CommentTile(comments.elementAt(index), animation: animation),
@@ -244,11 +244,11 @@ class LiveScreen extends StatelessWidget {
                       shape: BoxShape.rectangle,
                       child: TextField(
                         autofocus: false,
-                        controller: controller.chatController,
-                        onSubmitted: controller.handleSubmit,
+                        controller: _controller.chatController,
+                        onSubmitted: _controller.handleSubmit,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
-                              onPressed: controller.handleSubmit,
+                              onPressed: _controller.handleSubmit,
                               color: Colors.white,
                               iconSize: 30,
                               icon: const Icon(Icons.send,)
@@ -290,7 +290,7 @@ class LiveScreen extends StatelessWidget {
     if (isBroadcaster) {
       list.add(const RtcLocalView.SurfaceView(channelId: "firstChannel",));
     }
-    for (var uid in controller.users) {
+    for (var uid in _controller.users) {
       list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "firstChannel"));
     }
     return list;

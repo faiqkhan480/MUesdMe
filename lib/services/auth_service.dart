@@ -34,7 +34,7 @@ class AuthService extends GetxService {
       rtc = _box.read("rtc");
     }
     else {
-      getRTM().then((value) => rtc = value);
+      getRTC().then((value) => rtc = value);
     }
     if(_box.read("rtm") != null) {
       rtm = _box.read("rtm");
@@ -293,8 +293,9 @@ class AuthService extends GetxService {
   }
 
   Future clearUser() async {
-    _box.write("token", null);
-    _box.write("user", null);
+    await _box.erase();
+    // _box.write("token", null);
+    // _box.write("user", null);
     _currentUser = null;
   }
 }

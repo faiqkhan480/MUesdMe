@@ -24,7 +24,7 @@ class LiveController extends GetxController {
 
   RxBool isBroadcaster = true.obs;
   int? streamId;
-  String userId = "abc";
+  // String userId = "abc";
 
   RxList comments = [].obs;
   // The key of the list
@@ -85,7 +85,7 @@ class LiveController extends GetxController {
       },
     ));
 
-    await engine?.joinChannel(_service.rtc, Constants.testChanel, null, 0);
+    await engine?.joinChannel(_service.rtc, "MusedByMe_${_service.currentUser?.userId}", null, 0);
   }
 
   // <----------------START RTC------------------> //
@@ -164,19 +164,20 @@ class LiveController extends GetxController {
   }
 
   Future _login() async {
-    debugPrint('Login :::::::::::::');
     try {
-      await _client?.login(_service.rtm, userId);
+      await _client?.login(_service.rtm, "MusedByMe_${_service.currentUser?.userId}");
       loading.value = false;
+      Get.snackbar("Success", "Login success!", backgroundColor: Colors.green, colorText: Colors.white);
       _joinChannel();
     } catch (errorCode) {
       debugPrint('Login error:::: $errorCode');
+      Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 
   Future _joinChannel() async {
     try {
-      _channel = await _createChannel(Constants.testChanel);
+      _channel = await _createChannel("MusedByMe_${_service.currentUser?.userId}");
       debugPrint('Join channel success.');
       await _channel?.join();
       // logController.addLog('Join channel success.');
