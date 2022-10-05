@@ -185,7 +185,7 @@ class Header extends StatelessWidget {
 
   Future handleLive () async {
     await [Permission.camera, Permission.microphone].request();
-    Get.toNamed(AppRoutes.LIVE);
+    Get.toNamed(AppRoutes.LIVE, arguments: {"isBroadcaster": true});
     // Navigator.push(context, CupertinoPageRoute(builder: (context) => const LiveScreen(),));
   }
 

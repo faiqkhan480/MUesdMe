@@ -10,7 +10,7 @@ class VideoWidget extends StatelessWidget {
 // class VideoWidget extends StatefulWidget {
   final String url;
   final bool play;
-  final CachedVideoPlayerController controller;
+  final CachedVideoPlayerController? controller;
   const VideoWidget({Key? key, required this.url, required this.play, required this.controller});
 //       : super(key: key);
 //   @override
@@ -19,7 +19,7 @@ class VideoWidget extends StatelessWidget {
 //
 // class _VideoWidgetState extends State<VideoWidget> {
 //   FeedController get _feedController => Get.find<FeedController>();
-  CachedVideoPlayerController get _controller => controller;
+  CachedVideoPlayerController? get _video => controller;
   // late Future<void> _initializeVideoPlayerFuture;
 
   // @override
@@ -62,23 +62,29 @@ class VideoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<FeedController>(
       builder: (controller) {
-        return _controller.value.isInitialized ?
+        if(_video == null) {
+          return SizedBox(
+            height: 250,
+            child: Icon(Icons.video_file_outlined)
+          );
+        }
+        return _video!.value.isInitialized ?
         SizedBox(
           height: 250,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: CachedVideoPlayer(_controller)),
+                aspectRatio: _video!.value.aspectRatio,
+                child: CachedVideoPlayer(_video!)),
           )) :
         Lottie.asset(Assets.loader);
         },
       didUpdateWidget: (oldWidget, state) {
         if (play) {
-            _controller.play();
-            _controller.setLooping(true);
+            _video!.play();
+            _video!.setLooping(true);
           } else {
-            _controller.pause();
+            _video!.pause();
           }
       },
 

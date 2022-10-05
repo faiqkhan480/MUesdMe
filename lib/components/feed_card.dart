@@ -54,17 +54,14 @@ class FeedCard extends StatelessWidget {
               position: BadgePosition.topEnd(top: -1, end: 4),
               elevation: 0,
               borderSide: const BorderSide(color: Colors.white, width: .7),
-              // child: ImageWidget(
-              //   url: "${Constants.IMAGE_URL}${post?.profilePic}",
-              //   borderRadius: 100,
-              //   height: 80,
-              // ),
               child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 25,
-                  backgroundImage: NetworkImage(post?.profilePic != null ? "${Constants.IMAGE_URL}${post?.profilePic}" : Constants.dummyImage,
-                  )
-              ),
+                  backgroundImage: NetworkImage(
+                  post?.profilePic != null && post!.profilePic!.isNotEmpty ?
+                  "${Constants.IMAGE_URL}${post?.profilePic}" :
+                  Constants.dummyImage,
+              ),),
             ),
             title: TextWidget(post?.fullName ??  "", weight: FontWeight.w800),
             subtitle: TextWidget("@${post?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
@@ -110,12 +107,7 @@ class FeedCard extends StatelessWidget {
                 ),
                 elevation: 0,
                 child: post?.feedType == "Video" ?
-                Obx(() => VideoWidget(
-                    url: "${Constants.FEEDS_URL}${post?.feedPath}",
-                    controller: _controller.videos.first!,
-                    // controller: _controller.videos.f,
-                    play: isInView
-                )) :
+                Obx(_video) :
                 ImageWidget(
                   url: "${Constants.FEEDS_URL}${post?.feedPath}",
                   height: 250,
@@ -161,6 +153,15 @@ class FeedCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _video() {
+    return VideoWidget(
+        url: "${Constants.FEEDS_URL}${post?.feedPath}",
+        controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == post?.feedPath),
+        // controller: _controller.videos.first!,
+        play: isInView
     );
   }
 
@@ -242,7 +243,6 @@ class CommentSheet extends GetWidget<CommentController> {
             const SizedBox(height: 20),
 
             TextFormField(
-              // controller: widget.controller,
               decoration: InputDecoration(
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send,color: Theme.of(context).primaryColor,),

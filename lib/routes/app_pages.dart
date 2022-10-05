@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
-import 'package:musedme/bindings/edit_profile_binding.dart';
 
 // SCREENS
+import '../bindings/edit_profile_binding.dart';
+import '../bindings/live_binding.dart';
 import '../bindings/profile_binding.dart';
 import '../bindings/search_binding.dart';
 import '../bindings/root_bindings.dart';
@@ -67,6 +68,7 @@ class AppPages {
 
     GetPage(
         name: AppRoutes.LIVE,
+        binding: LiveBinding(),
         page: () => const LiveScreen()
     ),
     GetPage(

@@ -26,15 +26,23 @@ class FeedController extends GetxController {
 
   // FETCH FEEDS
   Future<void> getFeeds() async {
-    feeds.clear();
+    // videos.clear();
     List res = await _service.fetchPosts();
     if(res.isNotEmpty) {
-      feeds.addAll(res as List<Feed?>);
+      if(feeds.isEmpty) {
+        feeds.addAll(res as List<Feed?>);
+      }
+      else {
+        feeds.replaceRange(0, (feeds.length-1), res as List<Feed?>);
+      }
       for (var f in feeds) {
         if(f?.feedType == "Video") {
-          CachedVideoPlayerController _C = CachedVideoPlayerController.network("${Constants.FEEDS_URL}${f?.feedPath}");
-          await _C.initialize();
-          videos.add(_C);
+          String url = "${Constants.FEEDS_URL}${f?.feedPath}";
+          if(videos.isEmpty || videos.any((v) => v?.dataSource != url)) {
+            CachedVideoPlayerController c = CachedVideoPlayerController.network(url);
+            await c.initialize();
+            videos.add(c);
+          }
         }
       }
       update();
