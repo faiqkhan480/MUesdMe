@@ -58,7 +58,7 @@ class AuthService extends GetxService {
       var payload = {
         "Email": email,
         "Password": pass,
-        "FCMToken": ""
+        "FCMToken": _box.read("fcm")
       };
       final json = await Network.post(url: Constants.LOGIN, payload: payload);
       if(json != null) {
@@ -175,6 +175,7 @@ class AuthService extends GetxService {
         "Country": country,
         "DOB": dob,
         "Gender": gender,
+        "FCMToken": _box.read("fcm")
       };
       final json = await Network.post(url: Constants.REGISTER, payload: payload);
       debugPrint("JSON:::::::::: ${json}");

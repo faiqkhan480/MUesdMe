@@ -12,9 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+#  AGORA packages user for video/audio call & chat
   agora_rtc_engine: ^5.3.0
   agora_rtm: ^1.1.1
+
   badges: ^2.0.3
+
   cached_video_player: ^2.0.3
   callkeep: ^0.3.2
   country_picker: ^2.0.16
@@ -22,9 +25,17 @@ dependencies:
   flutter_storage_path: ^1.0.3
   flutter_svg: ^1.1.5
   flutter_vector_icons: ^1.0.0
-  gallery_saver: ^2.3.2
+
+# Firebase used for push notification
+  firebase_core: ^1.24.0
+  firebase_messaging: ^13.0.4
+
+#  Used for state management
   get: ^4.6.5
   get_storage: ^2.0.3
+
+  gallery_saver: ^2.3.2
+
   http: ^0.13.5
   image_picker: ^0.8.5+3
   intl: ^0.17.0
@@ -32,10 +43,13 @@ dependencies:
   lottie: ^1.4.3
   path_provider: ^2.0.11
   permission_handler: ^10.0.0
-  photo_editor_sdk: ^2.7.0
   popover: ^0.2.6+3
-  timeago: ^3.3.0
+
+#  IMGLY Photo & Video editor
+  photo_editor_sdk: ^2.7.0
   video_editor_sdk: ^2.7.0
+
+  timeago: ^3.3.0
   video_player: ^2.4.7
   video_thumbnail: ^0.5.3
 
