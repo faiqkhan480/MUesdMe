@@ -3,6 +3,7 @@ import 'package:musedme/screens/chat_screen.dart';
 import 'package:musedme/screens/messages_screen.dart';
 
 // SCREENS
+import '../bindings/call_binding.dart';
 import '../bindings/chat_bindings.dart';
 import '../bindings/edit_profile_binding.dart';
 import '../bindings/live_binding.dart';
@@ -13,6 +14,7 @@ import '../navigation/bottom_navigation.dart';
 import '../navigation/profile_middle.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
+import '../screens/call_screen.dart';
 import '../screens/profile/edit_profile_screen.dart';
 import '../screens/feed_screen.dart';
 import '../screens/live_screen.dart';
@@ -97,6 +99,11 @@ class AppPages {
         name: AppRoutes.CHAT,
         binding: ChatBinding(),
         page: () => const ChatScreen()
+    ),
+    GetPage(
+        name: AppRoutes.CALL,
+        binding: CallBinding(),
+        page: () => const CallScreen()
     ),
   ];
 }

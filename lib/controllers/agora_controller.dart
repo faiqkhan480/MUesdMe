@@ -41,6 +41,7 @@ class AgoraController extends GetxController {
 
   // AGORA LOGIN
   Future _login() async {
+    debugPrint("LOGIN AGORA:::: MusedByMe_${_service.currentUser?.userId}");
     try {
       await client?.login(_service.rtm, "MusedByMe_${_service.currentUser?.userId}");
       Get.snackbar("Success", "Login success!", backgroundColor: Colors.green, colorText: Colors.white);

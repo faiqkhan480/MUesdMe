@@ -8,6 +8,7 @@ class AppRoutes {
   static const String FAVORITE = "/fav";
   static const String MESSAGES = "/messages";
   static const String CHAT = "/chat";
+  static const String CALL = "/call";
   static const String PROFILE = "/profile";
   static const String USER_PROFILE = "/profile_user";
   static const String PROFILE_EDIT = "/profile_edit";

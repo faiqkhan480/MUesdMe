@@ -102,11 +102,8 @@ class UserProfileScreen extends GetView<UserProfileController> {
         controller.navigateToChat();
         break;
       case 1:
-      // do something else
+        controller.navigateToCall();
         break;
     }
-    // if(item == "1") {
-    //   _controller.handleDownload(post?.feedPath ?? "",  post?.feedType == "Video");
-    // }
   }
 }

@@ -275,11 +275,6 @@ class AuthService extends GetxService {
             backgroundColor: res.code != 200 ? AppColors.pinkColor : AppColors.green,
             colorText: Colors.white
         );
-        // if(res.code == 200) {
-        //   await getUser();
-        //   // _currentUser = User.fromJson(res.users);
-        //   // _box.write("user", res.users);
-        // }
         return res.code == 200;
       }
       return false;
