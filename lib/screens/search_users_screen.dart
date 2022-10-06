@@ -82,7 +82,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                   itemBuilder: (context, index) => ShadowedBox(
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: InkWell(
-                      onTap: () => _controller.handleNavigation(_users.elementAt(index)!),
+                      onTap: () => _controller.gotoProfile(_users.elementAt(index)!),
                       child: Column(
                         children: [
                           CircleAvatar(

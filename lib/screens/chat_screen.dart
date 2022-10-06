@@ -1,25 +1,23 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../components/message_input.dart';
 import '../components/message_tile.dart';
+import '../controllers/chat_controller.dart';
+import '../models/auths/user_model.dart';
+import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 
-final List<ChatMessage> messages = [
-  ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
-  ChatMessage(messageContent: "How have you been?", messageType: "receiver"),
-  ChatMessage(messageContent: "Hey Kriss, I am doing fine dude. wbu?", messageType: "sender"),
-  ChatMessage(messageContent: "Hey Kriss, I am doing fine dude. wbu? Hey Kriss, I am doing fine dude. wbu?Hey Kriss, I am doing fine dude. wbu?", messageType: "sender"),
-  ChatMessage(messageContent: "ehhhh, doing OK.", messageType: "receiver"),
-  ChatMessage(messageContent: "Is there any thing wrong?", messageType: "sender"),
-];
 
-class ChatScreen extends StatelessWidget {
-  final String title;
-  const ChatScreen({Key? key, required this.title}) : super(key: key);
+class ChatScreen extends GetView<ChatController> {
+  const ChatScreen({Key? key}) : super(key: key);
+
+  User? get chatUser => controller.user.value;
+  AuthService get _authService => Get.find<AuthService>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +42,25 @@ class ChatScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             Padding(
+            Padding(
               padding: const EdgeInsets.all(8.0),
               child: Badge(
                 badgeColor: AppColors.successColor,
                 position: BadgePosition.topEnd(top: -1, end: 4),
                 elevation: 0,
                 borderSide: const BorderSide(color: Colors.white, width: .7),
-                child: const CircleAvatar(
+                child: CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 18,
-                    backgroundImage: NetworkImage(Constants.albumArt)),
+                    backgroundImage: NetworkImage(
+                        chatUser?.profilePic != null ?
+                        Constants.IMAGE_URL + chatUser!.profilePic! :
+                        Constants.dummyImage
+                    ),
+                ),
               ),
             ),
-            Text(title, style: const TextStyle(fontFamily: Constants.fontFamily)),
+            Text(chatUser?.firstName ?? "", style: const TextStyle(fontFamily: Constants.fontFamily)),
           ],
         ),
         actions: [
@@ -68,15 +71,21 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
       body: Stack(
-        // alignment: AlignmentDirectional.bottomCenter,
         children: [
-          ListView.builder(
-            itemCount: messages.length,
-            shrinkWrap: true,
+          Obx(() => ListView.builder(
+            itemCount: controller.comments.length,
+            physics: const BouncingScrollPhysics(),
+            reverse: true,
             padding: const EdgeInsets.only(top: 10,bottom: 60),
             // physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => MessageTile(message: messages.elementAt(index)),
-          ),
+            itemBuilder: (context, index) {
+              return MessageTile(
+                message: controller.comments.elementAt(index),
+                senderImage: _authService.currentUser?.profilePic,
+                receiverImage: chatUser?.profilePic,
+              );
+            },
+          )),
 
           Align(
             alignment: Alignment.bottomLeft,
@@ -106,10 +115,10 @@ class ChatScreen extends StatelessWidget {
                           iconSize: 30,
                           icon: Image.asset(Assets.iconsSmileyFace)
                       ),
-                      const Expanded(child: MessageInput()),
+                      Expanded(child: MessageInput(controller.message)),
                       const SizedBox(width: 5,),
                       IconButton(
-                          onPressed: () => null,
+                          onPressed: controller.sendMessage,
                           color: AppColors.primaryColor,
                           iconSize: 30,
                           icon: const Icon(Icons.send,)
@@ -124,11 +133,5 @@ class ChatScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class ChatMessage{
-  String messageContent;
-  String messageType;
-  ChatMessage({required this.messageContent, required this.messageType});
 }
 

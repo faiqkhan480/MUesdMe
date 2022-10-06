@@ -52,4 +52,8 @@ class UserProfileController extends GetxController {
   void handleClick() {
     Get.to(AppRoutes.PROFILE_EDIT, transition: Transition.leftToRight);
   }
+
+  navigateToChat() {
+    Get.toNamed(AppRoutes.CHAT, arguments: user.value);
+  }
 }

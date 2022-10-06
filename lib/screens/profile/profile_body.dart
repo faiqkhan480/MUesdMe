@@ -13,6 +13,7 @@ class ProfileBody extends StatelessWidget {
   final Future Function() onRefresh;
   final ScrollController? controller;
   final Widget? button;
+  final Widget? options;
   const ProfileBody({
     Key? key,
     this.user,
@@ -20,7 +21,8 @@ class ProfileBody extends StatelessWidget {
     this.loader = false,
     required this.onRefresh,
     this.toolbarHeight = 0,
-    this.button
+    this.button,
+    this.options,
   }) : super(key: key);
 
   @override
@@ -52,7 +54,8 @@ class ProfileBody extends StatelessWidget {
                 ),
                 child: InfoCard(
                   user: user,
-                  button: button
+                  button: button,
+                  action: options,
                 ),
               ),
             ),

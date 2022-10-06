@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 
 class MessageInput extends StatelessWidget {
-  const MessageInput({Key? key}) : super(key: key);
+  final TextEditingController controller;
+  const MessageInput(this.controller, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       autofocus: false,
+      controller: controller,
       decoration: InputDecoration(
         suffixIcon: IconButton(
             onPressed: () => null,

@@ -25,8 +25,8 @@ class SearchController extends GetxController {
     loading.value = false;
   }
 
-  // HANDLE ON CLICK USER
-  void handleNavigation(User u) {
+  // NAVIGATE TO USER'S PROFILE
+  void gotoProfile(User u) {
     // _profile.getProfileDetails(u.userId!);
     Get.toNamed(AppRoutes.USER_PROFILE, arguments: u);
     // Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileScreen(profile: u),));

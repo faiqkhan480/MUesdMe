@@ -12,18 +12,22 @@ class Chat {
   Chat({
     required this.uid,
     required this.message,
+    this.type,
   });
 
   String uid;
   String message;
+  String? type;
 
   factory Chat.fromJson(Map<String, dynamic> json) => Chat(
     uid: json["uid"],
     message: json["message"],
+    type: json["type"],
   );
 
   Map<String, dynamic> toJson() => {
     "uid": uid,
     "message": message,
+    "type": type,
   };
 }

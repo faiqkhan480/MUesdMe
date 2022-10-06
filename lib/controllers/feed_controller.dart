@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
+import '../models/auths/user_model.dart';
 import '../models/feed.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
+import 'agora_controller.dart';
 
 class FeedController extends GetxController {
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
@@ -82,5 +84,10 @@ class FeedController extends GetxController {
         Get.snackbar("Success", "Video saved is to your device!", backgroundColor: AppColors.successColor, colorText: Colors.white);
       }
     });
+  }
+
+  // NAVIGATE TO USER'S PROFILE
+  void gotoProfile(User u) {
+    Get.toNamed(AppRoutes.USER_PROFILE, arguments: u);
   }
 }

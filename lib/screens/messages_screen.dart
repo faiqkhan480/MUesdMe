@@ -145,7 +145,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   handleNavigation(String title) {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => ChatScreen(title: title),));
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen(),));
   }
 
   void handleClick() {

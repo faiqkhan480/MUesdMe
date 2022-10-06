@@ -116,28 +116,20 @@ class LiveController extends GetxController {
       },
       joinChannelSuccess: (channel, uid, elapsed) {
         debugPrint('joinChannelSuccess $channel $uid $elapsed');
-        // setState(() {
         //   isJoined = true;
-        // });
       },
       userJoined: (uid, elapsed) {
         debugPrint('userJoined  $uid $elapsed');
-        // setState(() {
         //   remoteUid.add(uid);
-        // });
       },
       userOffline: (uid, reason) {
         debugPrint('userOffline  $uid $reason');
-        // setState(() {
         //   remoteUid.removeWhere((element) => element == uid);
-        // });
       },
       leaveChannel: (stats) {
         debugPrint('leaveChannel ${stats.toJson()}');
-        // setState(() {
         //   isJoined = false;
         //   remoteUid.clear();
-        // });
       },
     ));
   }
@@ -151,7 +143,7 @@ class LiveController extends GetxController {
 
     _client?.onMessageReceived = (AgoraRtmMessage message, String peerId) {
       // logController.addLog("Private Message from " + peerId + ": " + message.text);
-      comments.add(Chat(uid: peerId, message: message.text));
+      comments.add(Chat(uid: peerId, message: message.text, type: "receiver"));
     };
     _client?.onConnectionStateChanged = (int state, int reason) {
       debugPrint('Connection state changed::::::::::: $state, reason: $reason');
@@ -207,7 +199,7 @@ class LiveController extends GetxController {
       };
       channel.onMessageReceived = (AgoraRtmMessage message, AgoraRtmMember member) {
         debugPrint(":::::::::::: RECIEVED MESSAGE");
-        comments.insert(0, Chat(uid: member.userId, message: message.text));
+        comments.insert(0, Chat(uid: member.userId, message: message.text, type: "receiver"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
       };
     }
