@@ -34,13 +34,13 @@ class VideosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> tabs = [
       "All videos",
-      "Playlists",
+      // "Playlists",
       "Trending",
       "What's new?"
     ];
 
     return DefaultTabController(
-      length: 4,
+      length: 3,
       child: Scaffold(
         body: Column(
           children: [
@@ -86,7 +86,7 @@ class VideosScreen extends StatelessWidget {
                         itemCount: _videos.length
                     ),
                   ),
-                    SvgPicture.asset(Assets.searchUsers),
+                    // SvgPicture.asset(Assets.searchUsers),
                     RefreshIndicator(
                     onRefresh: _controller.getFeeds,
                     child: InViewNotifierList(

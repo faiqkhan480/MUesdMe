@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import '../../components/header.dart';
 import '../../controllers/profile_controller.dart';
 import '../../models/auths/user_model.dart';
+import '../../models/feed.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import 'profile_body.dart';
@@ -16,6 +17,7 @@ class ProfileScreen extends GetView<ProfileController> {
 
   double get _toolbarHeight => controller.toolbarHeight();
   bool get _loading => controller.loading();
+  List<Feed?> get _feeds => controller.feeds;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,9 @@ class ProfileScreen extends GetView<ProfileController> {
               loader: _loading,
               controller: controller.scroll(),
               user: _user,
+              feeds: _feeds,
               toolbarHeight: _toolbarHeight,
+              fetchingFeeds: controller.feedsLoading(),
               // button: ,
             ),
 

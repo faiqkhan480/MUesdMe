@@ -15,7 +15,7 @@ import '../utils/network.dart';
 class ApiService extends GetxService {
   final GetStorage _box = GetStorage();
 
-  // GET USER FEEDS/POSTS
+  // GET FEEDS/POSTS
   Future<List<Feed?>> fetchPosts() async {
     try {
       var header = {
@@ -25,6 +25,37 @@ class ApiService extends GetxService {
         "UserID": User.fromJson(_box.read("user")).userId.toString(),
       };
       final json = await Network.post(url: Constants.FEEDS, headers: header, payload: payload);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.message != null && res.message!.isNotEmpty) {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+        if(res.code == 200 && res.feeds != null) {
+          List<Feed> feeds = feedFromJson(jsonEncode(res.feeds));
+          return feeds;
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return [];
+    }
+  }
+
+  // GET FEEDS/POSTS AGAINST USER
+  Future<List<Feed?>> fetchUserPosts(String uid) async {
+    try {
+      var header = {
+        "Authorization": "Bearer ${_box.read("token")}",
+      };
+      var payload = {
+        "UserID": uid,
+      };
+      final json = await Network.post(url: Constants.USERS_FEEDS, headers: header, payload: payload);
       debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));

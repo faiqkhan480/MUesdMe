@@ -16,9 +16,14 @@ class Constants {
 
   // POSTS
   static const String FEEDS = "$BASE_URL/api/Feed/GetAllFeeds";
+  static const String USERS_FEEDS = "$BASE_URL/api/Feed/GetMyFeeds";
+  static const String UPLOAD_FEED = "$BASE_URL/api/Feed/UploadFeed";
   static const String SERACH_USER = "$BASE_URL/api/Users/BindUserByName";
   static const String FOLLOW_USER = "$BASE_URL/api/Users/FollowUser";
   static const String UN_FOLLOW_USER = "$BASE_URL/api/Users/UnFollowUser";
+  static const String LIKE_POST = "$BASE_URL/api/Feed/LikePost";
+  static const String ADD_COMMENT = "$BASE_URL/api/Feed/AddFeedComments";
+  static const String GET_COMMENTS = "$BASE_URL/api/Feed/GetFeedComments";
 
   static const String fontFamily = "Larsseit";
   static const String dummyImage = "https://cdn.hswstatic.com/gif/play/0b7f4e9b-f59c-4024-9f06-b3dc12850ab7-1920-1080.jpg";
@@ -28,5 +33,6 @@ class Constants {
 
   // AGORA CREDENTIALS
   // static const String testChanel = "demo";
+  static const String agoraBaseId = "MusedByMe_";
   static const String appId = 'd7c60d2d306241c49386d0f998fffb4f';
 }

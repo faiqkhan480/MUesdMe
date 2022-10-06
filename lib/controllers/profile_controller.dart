@@ -1,20 +1,28 @@
+import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../models/auths/user_model.dart';
+import '../models/feed.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../utils/constants.dart';
 
 class ProfileController extends GetxController {
   RxBool loading = true.obs;
-  RxDouble toolbarHeight = 35.0.obs;
+  RxDouble toolbarHeight = 10.0.obs;
+
+  RxBool feedsLoading = true.obs;
 
   Rx<User> user = User().obs;
   final Rx<ScrollController> scroll = ScrollController().obs;
 
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
+
+  RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
+  RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
 
   @override
   void onInit() {
@@ -29,6 +37,7 @@ class ProfileController extends GetxController {
       }
     });
     getUserDetails();
+    getFeeds();
   }
 
   // FETCH USER DETAILS
@@ -37,6 +46,33 @@ class ProfileController extends GetxController {
     User? res = await _authService.getUser(uid: profileId);
     user.value = res!;
     loading.value = false;
+  }
+
+  // FETCH USER'S FEEDS
+  Future<void> getFeeds() async {
+    User? args = Get.arguments;
+    // videos.clear();
+    List res = await _service.fetchUserPosts(_authService.currentUser!.userId.toString());
+    if(res.isNotEmpty) {
+      if(feeds.isEmpty) {
+        feeds.addAll(res as List<Feed?>);
+      }
+      else {
+        feeds.replaceRange(0, (feeds.length-1), res as List<Feed?>);
+      }
+      for (var f in feeds) {
+        if(f?.feedType == "Video") {
+          String url = "${Constants.FEEDS_URL}${f?.feedPath}";
+          if(videos.isEmpty || videos.any((v) => v?.dataSource != url)) {
+            CachedVideoPlayerController c = CachedVideoPlayerController.network(url);
+            await c.initialize();
+            videos.add(c);
+          }
+        }
+      }
+      update();
+    }
+    feedsLoading.value = false;
   }
 
   void handleClick() {

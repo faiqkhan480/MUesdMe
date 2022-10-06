@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import '../../components/custom_header.dart';
 import '../../controllers/user_profile_controller.dart';
 import '../../models/auths/user_model.dart';
+import '../../models/feed.dart';
 import '../../utils/assets.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/button_widget.dart';
@@ -19,6 +20,7 @@ class UserProfileScreen extends GetView<UserProfileController> {
   User? get _user => controller.user.value;
   double get _toolbarHeight => controller.toolbarHeight();
   bool get _loading => controller.loading();
+  List<Feed?> get _feeds => controller.feeds;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,9 @@ class UserProfileScreen extends GetView<UserProfileController> {
               loader: _loading,
               controller: controller.scroll(),
               user: _user,
+              feeds: _feeds,
               toolbarHeight: _toolbarHeight,
+              fetchingFeeds: controller.feedsLoading(),
               options: PopupMenuButton<int>(
                   padding: const EdgeInsets.only(left: 10, right: 0),
                   onSelected: handleOption,
@@ -71,7 +75,8 @@ class UserProfileScreen extends GetView<UserProfileController> {
                       value: 1,
                       child: Text("Call"),
                     ),
-                  ]),
+                  ]
+              ),
               button: ButtonWidget(
                 text: _user?.follow == 0 ? "Follow" : "Un Follow",
                 onPressed: controller.sendFollowReq,
