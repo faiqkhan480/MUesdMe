@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/comment_controller.dart';
+import '../models/comment.dart';
 import '../utils/constants.dart';
+import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
 
 class CommentSheet extends GetWidget<CommentController> {
   const CommentSheet({Key? key}) : super(key: key);
+
+  List<Comment?> get _comments => controller.comments;
+  bool get _loading => controller.loading();
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +25,15 @@ class CommentSheet extends GetWidget<CommentController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: ListView.builder(
-                itemBuilder: (context, index) => Row(
-                  children: [
-                    _imageView(),
-
-                    Column(
+            Obx(() =>
+            Expanded(
+                child: (_loading) ?
+                const Loader() :
+                ListView.builder(itemBuilder: (context, index) =>
+                    Row(
+                      children: [
+                        _imageView(_comments.elementAt(index)?.profilePic),
+                        Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
@@ -37,13 +45,13 @@ class CommentSheet extends GetWidget<CommentController> {
                             padding: const EdgeInsets.all(12.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const  [
+                              children: [
                                 TextWidget(
-                                  "profileName",
+                                  _comments.elementAt(index)?.fullName ?? "",
                                   weight: FontWeight.w800,
                                 ),
                                 TextWidget(
-                                  "postComment",
+                                  _comments.elementAt(index)?.comment ?? "",
                                   // weight: FontWeight.bold,
                                   size: 16.0,
                                 ),
@@ -53,11 +61,11 @@ class CommentSheet extends GetWidget<CommentController> {
                         ),
                       ],
                     )
-                  ],
-                ),
-                // separatorBuilder: separatorBuilder,
-                itemCount: 2
-            )),
+                      ],
+                    ),
+                    itemCount: _comments.length
+                )),
+            ),
             const SizedBox(height: 20),
 
             TextFormField(
@@ -99,13 +107,13 @@ class CommentSheet extends GetWidget<CommentController> {
     );
   }
 
-  Widget _imageView() {
+  Widget _imageView([String? url]) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(100),
         child: Image.network(
-          Constants.dummyImage,
+          url != null && url.isNotEmpty ? "${Constants.IMAGE_URL}$url" : Constants.dummyImage,
           fit: BoxFit.cover,
           height: 50,
           width: 50,

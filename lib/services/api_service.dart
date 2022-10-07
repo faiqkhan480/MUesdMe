@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 
 import '../models/api_res.dart';
 import '../models/auths/user_model.dart';
+import '../models/comment.dart';
 import '../models/feed.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -181,6 +182,34 @@ class ApiService extends GetxService {
           colorText: Colors.white
       );
       return false;
+    }
+  }
+
+  //GET FEED COMMENTS
+  Future<List<Comment?>> fetchComments(String feedId) async {
+    try {
+      var payload = {
+        "FeedID": feedId,
+      };
+      final json = await Network.post(url: Constants.GET_COMMENTS, headers: _header, payload: payload);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        // if(res.message != null && res.message!.isNotEmpty) {
+        //   Get.snackbar("Failed!", res.message ?? "",
+        //       backgroundColor: AppColors.pinkColor,
+        //       colorText: Colors.white
+        //   );
+        // }
+        if(res.code == 200 && res.feedComments != null) {
+          List<Comment> comments = commentFromJson(jsonEncode(res.feedComments));
+          return comments;
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return [];
     }
   }
 }

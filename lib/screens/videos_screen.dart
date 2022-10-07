@@ -111,7 +111,7 @@ class VideosScreen extends StatelessWidget {
                   commentsCount: items.elementAt(index)?.postComments ?? 0,
                   likeCount: items.elementAt(index)?.postLikes ?? 0,
                   onLikeTap: (value) => handleLikeTap(index, items.elementAt(index)!),
-                  onCommentTap: (value) =>   handleComment(index, items.elementAt(index)!),
+                  onCommentTap: () =>   handleComment(index, items.elementAt(index)!),
                   onShareTap: () {},
                 ),
               ),

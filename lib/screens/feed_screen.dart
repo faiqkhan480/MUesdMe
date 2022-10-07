@@ -10,7 +10,6 @@ import '../controllers/comment_controller.dart';
 import '../models/auths/user_model.dart';
 import '../models/feed.dart';
 import '../controllers/feed_controller.dart';
-import '../widgets/button_widget.dart';
 import '../widgets/loader.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -61,7 +60,7 @@ class FeedScreen extends StatelessWidget {
                               commentsCount: _feeds.elementAt(index)?.postComments ?? 0,
                               likeCount: _feeds.elementAt(index)?.postLikes ?? 0,
                               onLikeTap: handleLikeTap,
-                              onCommentTap:  handleComment,
+                              onCommentTap: () =>  handleComment(_feeds.elementAt(index)!.feedId!),
                               onShareTap: () {},
                             )),
                         ),
@@ -78,9 +77,9 @@ class FeedScreen extends StatelessWidget {
   }
 
   // COMMENT SHEET
-  handleComment(int index) {
-    Get.create(() => CommentController(feedId: _feeds.elementAt(index)?.feedId.toString()));
-    Get.bottomSheet(
+  handleComment(int feedId) async {
+    Get.create(() => CommentController(feedId: feedId.toString()));
+    await Get.bottomSheet(
         const CommentSheet(),
         clipBehavior: Clip.antiAlias,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
@@ -88,6 +87,7 @@ class FeedScreen extends StatelessWidget {
         persistent: true,
         ignoreSafeArea: false
     );
+    Get.delete<CommentController>(force: true);
   }
 
   // GOTO PROFILE

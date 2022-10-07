@@ -100,7 +100,6 @@ class FeedController extends GetxController {
     String? status = feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked;
     int count = feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes ?? 0;
     bool res = await _service.sendLike(feedId.toString());
-    // debugPrint("::::::::::: ${feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked}");
     if(res) {
       feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked = (status == "Like") ? "Liked" : "Like";
       feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes = (status == "Like") ? count+1 : count-1;

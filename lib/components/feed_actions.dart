@@ -23,7 +23,7 @@ class FeedActions extends StatelessWidget {
   final bool liked;
   final bool loader;
   final ValueChanged<int>? onLikeTap;
-  final ValueChanged<int>? onCommentTap;
+  final VoidCallback? onCommentTap;
   final VoidCallback? onShareTap;
 
   @override
@@ -37,7 +37,7 @@ class FeedActions extends StatelessWidget {
           icon: liked ? Assets.iconsHeart : Assets.iconsUnlikeHeart,
         ),
         ButtonWidget(
-          onPressed: () => onCommentTap!(index),
+          onPressed: onCommentTap,
           // onPressed: handleComment,
           text: "${commentsCount ?? 0} comments",
           icon: Assets.iconsComment,
