@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_storage_path/flutter_storage_path.dart';
+import 'package:get/get.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:imgly_sdk/imgly_sdk.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
@@ -14,6 +15,7 @@ import '../models/file_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../widgets/button_widget.dart';
+import 'upload_screen.dart';
 
 class EditorScreen extends StatefulWidget {
   const EditorScreen({Key? key}) : super(key: key);
@@ -80,8 +82,10 @@ class _EditorScreenState extends State<EditorScreen> {
 
   // PICKED SELECTED IMAGE & MOVE TO EDITOR
   handleImage() async {
-    var result = await PESDK.openEditor(image: image, configuration: createConfiguration());
-    debugPrint(result.toString());
+    PhotoEditorResult? result = await PESDK.openEditor(image: image, configuration: createConfiguration());
+    if(result != null) {
+      Get.to(UploadScreen(post: result,));
+    }
   }
 
   handleVideo() async {
