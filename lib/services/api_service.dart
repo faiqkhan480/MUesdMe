@@ -15,16 +15,16 @@ import '../utils/network.dart';
 class ApiService extends GetxService {
   final GetStorage _box = GetStorage();
 
+  // REQUEST AUTHORIZATION HEADER
+  Map<String, String> get _header => {"Authorization": "Bearer ${_box.read("token")}",};
+
   // GET FEEDS/POSTS
   Future<List<Feed?>> fetchPosts() async {
     try {
-      var header = {
-        "Authorization": "Bearer ${_box.read("token")}",
-      };
       var payload = {
         "UserID": User.fromJson(_box.read("user")).userId.toString(),
       };
-      final json = await Network.post(url: Constants.FEEDS, headers: header, payload: payload);
+      final json = await Network.post(url: Constants.FEEDS, headers: _header, payload: payload);
       debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
@@ -49,22 +49,19 @@ class ApiService extends GetxService {
   // GET FEEDS/POSTS AGAINST USER
   Future<List<Feed?>> fetchUserPosts(String uid) async {
     try {
-      var header = {
-        "Authorization": "Bearer ${_box.read("token")}",
-      };
       var payload = {
         "UserID": uid,
       };
-      final json = await Network.post(url: Constants.USERS_FEEDS, headers: header, payload: payload);
+      final json = await Network.post(url: Constants.USERS_FEEDS, headers: _header, payload: payload);
       debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        if(res.message != null && res.message!.isNotEmpty) {
-          Get.snackbar("Failed!", res.message ?? "",
-              backgroundColor: AppColors.pinkColor,
-              colorText: Colors.white
-          );
-        }
+        // if(res.message != null && res.message!.isNotEmpty) {
+        //   Get.snackbar("Failed!", res.message ?? "",
+        //       backgroundColor: AppColors.pinkColor,
+        //       colorText: Colors.white
+        //   );
+        // }
         if(res.code == 200 && res.feeds != null) {
           List<Feed> feeds = feedFromJson(jsonEncode(res.feeds));
           return feeds;
@@ -80,14 +77,11 @@ class ApiService extends GetxService {
   // GET USERS FROM SEARCH
   Future<List<User?>> fetchUsers(String search) async {
     try {
-      var header = {
-        "Authorization": "Bearer ${_box.read("token")}",
-      };
       var payload = {
         "UserID": User.fromJson(_box.read("user")).userId.toString(),
         "Name": search,
       };
-      final json = await Network.post(url: Constants.SERACH_USER, headers: header, payload: payload);
+      final json = await Network.post(url: Constants.SERACH_USER, headers: _header, payload: payload);
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.message != null && res.message!.isNotEmpty) {
@@ -111,14 +105,11 @@ class ApiService extends GetxService {
   // SEND FOLLOW REQUEST
   Future<User?> followReq(String followId, int type) async {
     try {
-      var header = {
-        "Authorization": "Bearer ${_box.read("token")}",
-      };
       var payload = {
         "UserID": followId,
         "FollowedBy": User.fromJson(_box.read("user")).userId.toString(),
       };
-      final json = await Network.post(url: type == 0 ? Constants.FOLLOW_USER : Constants.UN_FOLLOW_USER, headers: header, payload: payload);
+      final json = await Network.post(url: type == 0 ? Constants.FOLLOW_USER : Constants.UN_FOLLOW_USER, headers: _header, payload: payload);
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.message != null && res.message!.isNotEmpty) {
@@ -142,14 +133,11 @@ class ApiService extends GetxService {
   // SEND UN FOLLOW REQUEST
   Future<User?> unFollowReq(String followId) async {
     try {
-      var header = {
-        "Authorization": "Bearer ${_box.read("token")}",
-      };
       var payload = {
         "UserID": followId,
         "FollowedBy": User.fromJson(_box.read("user")).userId.toString(),
       };
-      final json = await Network.post(url: Constants.UN_FOLLOW_USER, headers: header, payload: payload);
+      final json = await Network.post(url: Constants.UN_FOLLOW_USER, headers: _header, payload: payload);
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.message != null && res.message!.isNotEmpty) {
@@ -167,6 +155,32 @@ class ApiService extends GetxService {
     } catch (e) {
       debugPrint("ERROR >>>>>>>>>> $e");
       return null;
+    }
+  }
+
+  // SEND LIKE REQUEST AGAINST FEED
+  Future<bool> sendLike(String feedId) async {
+    try {
+      var payload = {
+        "UserID": User.fromJson(_box.read("user")).userId.toString(),
+        "FeedID": feedId,
+      };
+      final json = await Network.post(url: Constants.LIKE_POST, headers: _header, payload: payload);
+      // debugPrint("CALLED:::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      Get.snackbar("Exception!", e.toString(),
+          backgroundColor: AppColors.pinkColor,
+          colorText: Colors.white
+      );
+      return false;
     }
   }
 }

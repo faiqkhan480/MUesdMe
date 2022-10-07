@@ -36,6 +36,8 @@ class FeedCard extends StatelessWidget {
 
   AgoraController get _agora => Get.find<AgoraController>();
 
+  int get _currIndex => _controller.currIndex.value;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
@@ -142,9 +144,10 @@ class FeedCard extends StatelessWidget {
                 child: Row(
                   children:  [
                     ButtonWidget(
-                      onPressed: () => null,
+                      onPressed: handleLikeTap,
                       text: "${post?.postLikes ?? ""}",
-                      icon: Assets.iconsHeart,
+                      loader: _controller.loading() && _currIndex == index,
+                      icon: post?.postLiked == "Liked" ? Assets.iconsHeart : Assets.iconsUnlikeHeart,
                     ),
                     ButtonWidget(
                       onPressed: handleComment,
@@ -202,5 +205,11 @@ class FeedCard extends StatelessWidget {
   void onTap() {
     User u = User(userId: post?.userId,);
     _controller.gotoProfile(u);
+  }
+
+  handleLikeTap() {
+    if(post?.feedId != null) {
+      _controller.handleLike(index, post!.feedId!);
+    }
   }
 }

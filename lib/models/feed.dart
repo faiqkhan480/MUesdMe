@@ -44,7 +44,7 @@ class Feed {
   final int? postViews;
 
   @JsonKey(name: 'PostLikes')
-  final int? postLikes;
+  int? postLikes;
 
   @JsonKey(name: 'PostShares')
   final int? postShares;
@@ -59,7 +59,7 @@ class Feed {
   final DateTime? feedDate;
 
   @JsonKey(name: 'PostLiked')
-  final String? postLiked;
+  String? postLiked;
 
   factory Feed.fromJson(Map<String, dynamic> json) => _$FeedFromJson(json);
 

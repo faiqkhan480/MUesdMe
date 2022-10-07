@@ -24,7 +24,7 @@ class FeedScreen extends StatelessWidget {
           Header(title: "Live Feed", showLives: true, handleSearch: _controller.handleNavigation),
           // const SizedBox(height: 20,),
           Obx(() =>
-          (_loading) ?
+          (_loading && _feeds.isEmpty) ?
           const Loader() :
           Expanded(
               child: RefreshIndicator(

@@ -15,6 +15,8 @@ class FeedController extends GetxController {
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
   RxBool loading = true.obs;
 
+  RxInt currIndex = 0.obs;
+
   final ApiService _service = Get.find<ApiService>();
 
   RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
@@ -89,5 +91,15 @@ class FeedController extends GetxController {
   // NAVIGATE TO USER'S PROFILE
   void gotoProfile(User u) {
     Get.toNamed(AppRoutes.USER_PROFILE, arguments: u);
+  }
+
+  handleLike(int index, int feedId) async {
+    currIndex.value = index;
+    loading.value = true;
+    bool res = await _service.sendLike(feedId.toString());
+    if(true) {
+      feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked = "Liked";
+    }
+    loading.value = false;
   }
 }

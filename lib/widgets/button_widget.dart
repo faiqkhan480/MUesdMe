@@ -14,6 +14,7 @@ class ButtonWidget extends StatelessWidget {
     required this.onPressed,
     this.textColor,
     this.bgColor,
+    this.iconColor,
     this.loader = false,
   }) : super(key: key);
 
@@ -21,6 +22,7 @@ class ButtonWidget extends StatelessWidget {
   final String? icon;
   final Color? textColor;
   final Color? bgColor;
+  final Color? iconColor;
   final bool vertical;
   final bool loader;
   final VoidCallback? onPressed;
@@ -29,8 +31,7 @@ class ButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      style: TextButton.styleFrom(
-          backgroundColor: bgColor ?? Colors.transparent,
+      style: TextButton.styleFrom(backgroundColor: bgColor ?? Colors.transparent,
         textStyle: TextStyle(
           fontFamily: Constants.fontFamily,
           color: textColor,
@@ -42,7 +43,7 @@ class ButtonWidget extends StatelessWidget {
       Column(
         children: [
           if(icon != null)...[
-            SvgPicture.asset(icon!, height: 30),
+            SvgPicture.asset(icon!, height: 30, color: iconColor),
             const SizedBox(height: 5,),
           ],
           TextWidget(text,
@@ -56,11 +57,11 @@ class ButtonWidget extends StatelessWidget {
       const SizedBox (
           height: 20,
           width: 20,
-          child: Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 1.5,))) :
+          child: Center(child: CircularProgressIndicator(color: AppColors.pinkColor, strokeWidth: 1.5,))) :
       Row(
         children: [
           if(icon != null)...[
-            SvgPicture.asset(icon!),
+            SvgPicture.asset(icon!, color: iconColor),
             const SizedBox(width: 5,),
           ],
           TextWidget(text,
