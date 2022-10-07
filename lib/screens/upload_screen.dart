@@ -1,14 +1,18 @@
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 
 import '../components/custom_header.dart';
+import '../services/api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
@@ -23,28 +27,28 @@ class UploadScreen extends StatefulWidget {
 }
 
 class _UploadScreenState extends State<UploadScreen> {
-  bool loading = true;
-  File? file;
+  bool loading = false;
+  String get img => widget.post.image.substring(7);
   String value = "Public";
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getFile();
-  }
+  final ApiService _service = Get.find<ApiService>();
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   getFile();
+  // }
 
   getFile() async {
     debugPrint(":::::::::::: ${widget.post.toJson()}");
     final root = await getApplicationDocumentsDirectory();
-    debugPrint("Root:::::::::::: $root");
     final path = "$root/${widget.post.image}";
-    debugPrint("path:::::::::::: $path");
     File? f = await File(path).create(recursive: true);
-    setState(() {
-      file = f;
-      loading = false;
-    });
+    // setState(() {
+    //   file = f;
+    //   loading = false;
+    // });
   }
 
   @override
@@ -60,7 +64,7 @@ class _UploadScreenState extends State<UploadScreen> {
                 showBottom: false,
                 showSave: false
             ),
-            Flexible(child: Padding(
+            Flexible(child: SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +74,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Image.file(
                       // file:///data/user/0/com.gesolucions.musedme/cache/imgly_5123618383305505258.png
-                      File(widget.post.image.substring(7)),
+                      File(img),
                       height: MediaQuery.of(context).size.height * 0.45,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
@@ -93,9 +97,11 @@ class _UploadScreenState extends State<UploadScreen> {
                         },
                         value: value,
                       )),
-                  const Spacer(),
+                  if(loading)
+                    const Loader(),
+                  // const Spacer(),
                   TextButton(
-                    onPressed: getFile,
+                    onPressed: uploadFeed,
                     style: TextButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
                         foregroundColor: Colors.white,
@@ -123,5 +129,25 @@ class _UploadScreenState extends State<UploadScreen> {
         ),
       ),
     );
+  }
+
+  uploadFeed() async {
+
+    setState(() {
+      loading = true;
+    });
+    Uint8List imageBytes =  File(img).readAsBytesSync();
+    String base64Image = base64Encode(imageBytes);
+    // debugPrint(base64Image);
+    // String feedPath, String type, String privacy
+    var res = await _service.uploadFeed(base64Image, "Image", value);
+    if(res == true) {
+      Get.close(2);
+    }
+    setState(() {
+      loading = false;
+    });
+    // loading.value = false;
+    // Get.offNamed(Get.previousRoute);
   }
 }
