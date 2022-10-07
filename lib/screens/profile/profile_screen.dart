@@ -46,7 +46,7 @@ class ProfileScreen extends GetView<ProfileController> {
             ProfileBody(
               onRefresh: controller.getUserDetails,
               loader: _loading,
-              controller: controller.scroll(),
+              scrollController: controller.scroll(),
               user: _user,
               feeds: _feeds,
               toolbarHeight: _toolbarHeight,

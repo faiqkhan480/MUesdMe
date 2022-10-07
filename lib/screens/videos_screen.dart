@@ -3,12 +3,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 
+import '../components/comment_sheet.dart';
+import '../components/feed_actions.dart';
 import '../components/feed_card.dart';
 import '../components/header.dart';
 import '../components/title_row.dart';
 import '../components/todays_picks.dart';
 import '../components/trending_card.dart';
+import '../controllers/comment_controller.dart';
 import '../controllers/feed_controller.dart';
+import '../models/auths/user_model.dart';
 import '../models/feed.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
@@ -27,9 +31,12 @@ class VideosScreen extends StatelessWidget {
   FeedController get _controller => Get.find<FeedController>();
 
   bool get _loading => _controller.loading();
+  bool get _fetching => _controller.fetching();
+  int get _currIndex => _controller.currIndex.value;
   List<Feed?> get _feeds => _controller.feeds;
   List<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList();
   List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video").toList();
+
   @override
   Widget build(BuildContext context) {
     List<String> tabs = [
@@ -63,53 +70,9 @@ class VideosScreen extends StatelessWidget {
             Expanded(
                 child: TabBarView(
                   children: [
-                    RefreshIndicator(
-                    onRefresh: _controller.getFeeds,
-                    child: InViewNotifierList(
-                        isInViewPortCondition:
-                            (double deltaTop, double deltaBottom, double viewPortDimension) {
-                          return deltaTop < (0.5 * viewPortDimension) &&
-                              deltaBottom > (0.5 * viewPortDimension);
-                        },
-                        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                        builder: (context, index) => InViewNotifierWidget(
-                          id: '$index',
-                          builder: (BuildContext context, bool isInView, Widget? child) => Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: FeedCard(
-                                index: index,
-                                isInView: isInView,
-                                post: _feeds.elementAt(index)),
-                          ),
-                        ),
-                        // separatorBuilder: (context, index) => const SizedBox(height: 20),
-                        itemCount: _videos.length
-                    ),
-                  ),
+                    _view(_videos),
                     // SvgPicture.asset(Assets.searchUsers),
-                    RefreshIndicator(
-                    onRefresh: _controller.getFeeds,
-                    child: InViewNotifierList(
-                        isInViewPortCondition:
-                            (double deltaTop, double deltaBottom, double viewPortDimension) {
-                          return deltaTop < (0.5 * viewPortDimension) &&
-                              deltaBottom > (0.5 * viewPortDimension);
-                        },
-                        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                        builder: (context, index) => InViewNotifierWidget(
-                          id: '$index',
-                          builder: (BuildContext context, bool isInView, Widget? child) => Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: FeedCard(
-                                index: index,
-                                isInView: isInView,
-                                post: _feeds.elementAt(index)),
-                          ),
-                        ),
-                        // separatorBuilder: (context, index) => const SizedBox(height: 20),
-                        itemCount: _videos.length
-                    ),
-                  ),
+                    _view(_trending),
                     SvgPicture.asset(Assets.searchUsers),
                   ],
                 )
@@ -120,46 +83,69 @@ class VideosScreen extends StatelessWidget {
     );
   }
 
-  _oldBody() {
-    return Expanded(
-      child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        children: const [
-          FeedCard(horizontalSpace: 10, index: 0,),
-
-          TitleRow(title: "Trending videos"),
-
-          TrendingCard(horizontalSpace: 10),
-
-          SizedBox(height: 20,),
-
-          TrendingCard(horizontalSpace: 10),
-
-          SizedBox(height: 20,),
-
-          FeedCard(horizontalSpace: 10, index: 0),
-
-          SizedBox(height: 20,),
-
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 5),
-            child: ListTile(
-              title: TextWidget("Today's Picks", weight: FontWeight.w800, size: 20),
-              subtitle: Padding(
-                padding: EdgeInsets.only(top: 5.0),
-                child: TextWidget("Selected for you based on your recent activity",
-                  color: AppColors.lightGrey,
-                  size: 14,
+  Widget _view(List<Feed?> items) {
+    return RefreshIndicator(
+      onRefresh: _controller.getFeeds,
+      child: InViewNotifierList(
+          isInViewPortCondition:
+              (double deltaTop, double deltaBottom, double viewPortDimension) {
+            return deltaTop < (0.5 * viewPortDimension) &&
+                deltaBottom > (0.5 * viewPortDimension);
+          },
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+          builder: (context, index) => InViewNotifierWidget(
+            id: '$index',
+            builder: (BuildContext context, bool isInView, Widget? child) => Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: FeedCard(
+                index: index,
+                isInView: isInView,
+                post: items.elementAt(index),
+                onDownload: _controller.handleDownload,
+                handleNavigate: () => onTap(index, items.elementAt(index)!),
+                controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == items.elementAt(index)?.feedPath),
+                actions: FeedActions(
+                  index: index,
+                  loader: _fetching && _currIndex == index,
+                  liked: items.elementAt(index)?.postLiked == "Liked",
+                  commentsCount: items.elementAt(index)?.postComments ?? 0,
+                  likeCount: items.elementAt(index)?.postLikes ?? 0,
+                  onLikeTap: (value) => handleLikeTap(index, items.elementAt(index)!),
+                  onCommentTap: (value) =>   handleComment(index, items.elementAt(index)!),
+                  onShareTap: () {},
                 ),
               ),
             ),
           ),
-
-          SizedBox(height: 20,),
-
-          TodayPicks(),
-        ],
+          // separatorBuilder: (context, index) => const SizedBox(height: 20),
+          itemCount: items.length
       ),
     );
+  }
+
+  // COMMENT SHEET
+  handleComment(int index, Feed item) {
+    Get.create(() => CommentController(feedId: item.feedId.toString()));
+    Get.bottomSheet(
+        const CommentSheet(),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
+  }
+
+  // GOTO PROFILE
+  void onTap(int index, Feed item) {
+    User u = User(userId: item.userId,);
+    _controller.gotoProfile(u);
+  }
+
+  // ON LIKE TAP
+  handleLikeTap(index, Feed item) {
+    if(item.feedId != null) {
+      _controller.handleLike(index, item.feedId!);
+    }
   }
 }

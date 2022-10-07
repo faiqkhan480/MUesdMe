@@ -1,5 +1,7 @@
+import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:musedme/widgets/loader.dart';
 
 import '../../components/feed_card.dart';
@@ -16,21 +18,25 @@ class ProfileBody extends StatelessWidget {
   final bool loader;
   final bool fetchingFeeds;
   final Future Function() onRefresh;
-  final ScrollController? controller;
+  final ScrollController? scrollController;
   final Widget? button;
   final Widget? options;
+  final Widget? actions;
   final List<Feed?>? feeds;
+  final CachedVideoPlayerController? video;
   const ProfileBody({
     Key? key,
     this.user,
-    this.controller,
+    this.scrollController,
     this.loader = false,
     this.fetchingFeeds = true,
     required this.onRefresh,
     this.toolbarHeight = 0,
     this.button,
     this.options,
-    this.feeds
+    this.feeds,
+    this.actions,
+    this.video,
   }) : super(key: key);
 
   @override
@@ -44,7 +50,7 @@ class ProfileBody extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: NestedScrollView(
-        controller: controller,
+        controller: scrollController,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
@@ -126,95 +132,10 @@ class ProfileBody extends StatelessWidget {
           horizontalSpace: 10,
           index: index,
           post: data.elementAt(index),
+          onDownload: (p0, p1) => null,
         ),
         separatorBuilder: (context, index) => const SizedBox(height: 20),
         itemCount: data.length
     );
   }
 }
-
-// slivers: [
-//   // USER INFO
-//   SliverAppBar(
-//     pinned: false,
-//     expandedHeight: 300.0,
-//     automaticallyImplyLeading: false,
-//     toolbarHeight: 300,
-//     backgroundColor: Colors.transparent,
-//     bottom: PreferredSize(
-//       preferredSize: const Size(double.infinity, 180),
-//       child: Container(
-//         decoration: const BoxDecoration(
-//             color: Colors.white,
-//             borderRadius: BorderRadius.vertical(top: Radius.circular(20))
-//         ),
-//         child: InfoCard(
-//           user: user,
-//           button: button,
-//           action: options,
-//         ),
-//       ),
-//     ),
-//   ),
-//
-//   if(!fetchingFeeds)...[
-//     // TAB BAR
-//     SliverAppBar(
-//       pinned: true,
-//       expandedHeight: 50,
-//       toolbarHeight: toolbarHeight,
-//       bottom: PreferredSize(
-//           preferredSize: const Size(double.infinity, 0),
-//           child: Row(
-//             children: [
-//               TabBar(
-//                   labelColor: AppColors.primaryColor,
-//                   unselectedLabelColor: Colors.black,
-//                   isScrollable: true,
-//                   indicatorSize: TabBarIndicatorSize.label,
-//                   labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-//                   indicator: const UnderlineTabIndicator(
-//                       borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
-//                       insets: EdgeInsets.symmetric(horizontal: 35.0)),
-//                   tabs: List.generate(tabs.length, (index) => Tab(
-//                     text: tabs.elementAt(index),
-//                   ))
-//               ),
-//             ],
-//           )
-//       ),
-//     ),
-//
-//     // FEEDS LIST
-//     SliverFillRemaining(
-//       child: TabBarView(
-//         children: [
-//           listing(feeds ?? []),
-//           listing(feeds ?? []),
-//           listing(feeds ?? []),
-//         ],
-//       ),
-//     ),
-//     // SliverList(
-//     //   delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-//     //     return TabBarView(
-//     //       children: [
-//     //
-//     //       ],
-//     //     );
-//     //   },
-//     //     childCount: feeds?.length ?? 0,
-//     //   ),
-//     // ),
-//   ]
-//
-//   else
-//     SliverFillRemaining(
-//       child: Container(
-//           color: Colors.white,
-//           child: (!fetchingFeeds && feeds!.isEmpty) ?
-//           SvgPicture.asset(Assets.searchUsers) :
-//           const Loader(),
-//       ),
-//     ),
-// ],

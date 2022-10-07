@@ -14,6 +14,7 @@ import 'agora_controller.dart';
 class FeedController extends GetxController {
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
   RxBool loading = true.obs;
+  RxBool fetching = false.obs;
 
   RxInt currIndex = 0.obs;
 
@@ -95,11 +96,15 @@ class FeedController extends GetxController {
 
   handleLike(int index, int feedId) async {
     currIndex.value = index;
-    loading.value = true;
+    fetching.value = true;
+    String? status = feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked;
+    int count = feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes ?? 0;
     bool res = await _service.sendLike(feedId.toString());
-    if(true) {
-      feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked = "Liked";
+    // debugPrint("::::::::::: ${feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked}");
+    if(res) {
+      feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked = (status == "Like") ? "Liked" : "Like";
+      feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes = (status == "Like") ? count+1 : count-1;
     }
-    loading.value = false;
+    fetching.value = false;
   }
 }

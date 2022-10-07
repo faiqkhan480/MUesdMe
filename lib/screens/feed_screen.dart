@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 
+import '../components/comment_sheet.dart';
+import '../components/feed_actions.dart';
 import '../components/feed_card.dart';
 import '../components/header.dart';
+import '../controllers/comment_controller.dart';
+import '../models/auths/user_model.dart';
 import '../models/feed.dart';
 import '../controllers/feed_controller.dart';
+import '../widgets/button_widget.dart';
 import '../widgets/loader.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -14,7 +19,9 @@ class FeedScreen extends StatelessWidget {
   FeedController get _controller => Get.find<FeedController>();
 
   bool get _loading => _controller.loading();
+  bool get _fetching => _controller.fetching();
   List<Feed?> get _feeds => _controller.feeds;
+  int get _currIndex => _controller.currIndex.value;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +31,7 @@ class FeedScreen extends StatelessWidget {
           Header(title: "Live Feed", showLives: true, handleSearch: _controller.handleNavigation),
           // const SizedBox(height: 20,),
           Obx(() =>
-          (_loading && _feeds.isEmpty) ?
+          (_loading) ?
           const Loader() :
           Expanded(
               child: RefreshIndicator(
@@ -43,7 +50,21 @@ class FeedScreen extends StatelessWidget {
                         child: FeedCard(
                             index: index,
                             isInView: isInView,
-                            post: _feeds.elementAt(index)),
+                            post: _feeds.elementAt(index),
+                            onDownload: _controller.handleDownload,
+                            handleNavigate: () => onTap(index),
+                            controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == _feeds.elementAt(index)?.feedPath),
+                            actions: Obx(() => FeedActions(
+                              index: index,
+                              loader: _fetching && _currIndex == index,
+                              liked: _feeds.elementAt(index)?.postLiked == "Liked",
+                              commentsCount: _feeds.elementAt(index)?.postComments ?? 0,
+                              likeCount: _feeds.elementAt(index)?.postLikes ?? 0,
+                              onLikeTap: handleLikeTap,
+                              onCommentTap:  handleComment,
+                              onShareTap: () {},
+                            )),
+                        ),
                       ),
                     ),
                     // separatorBuilder: (context, index) => const SizedBox(height: 20),
@@ -54,5 +75,31 @@ class FeedScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // COMMENT SHEET
+  handleComment(int index) {
+    Get.create(() => CommentController(feedId: _feeds.elementAt(index)?.feedId.toString()));
+    Get.bottomSheet(
+        const CommentSheet(),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
+  }
+
+  // GOTO PROFILE
+  void onTap(int index) {
+    User u = User(userId: _feeds.elementAt(index)?.userId,);
+    _controller.gotoProfile(u);
+  }
+
+  // ON LIKE TAP
+  handleLikeTap(int index) {
+    if(_feeds.elementAt(index)?.feedId != null) {
+      _controller.handleLike(index, _feeds.elementAt(index)!.feedId!);
+    }
   }
 }

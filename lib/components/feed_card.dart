@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -24,19 +25,23 @@ class FeedCard extends StatelessWidget {
   final int index;
   final bool isInView;
   final Feed? post;
+  final Widget? actions;
+  final Function(String, bool) onDownload;
+  final VoidCallback? handleNavigate;
+  final CachedVideoPlayerController? controller;
   const FeedCard({
     Key? key,
     this.horizontalSpace,
     required this.index,
     this.isInView = false,
-    this.post
+    this.post,
+    this.actions,
+    this.handleNavigate,
+    this.controller,
+    required this.onDownload
   }) : super(key: key);
 
-  FeedController get _controller => Get.find<FeedController>();
-
   AgoraController get _agora => Get.find<AgoraController>();
-
-  int get _currIndex => _controller.currIndex.value;
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +79,8 @@ class FeedCard extends StatelessWidget {
                     ),),
                 ),
                 title: GestureDetector(
-                    onTap: onTap,
-                    child: TextWidget(post?.fullName ??  "", weight: FontWeight.w800)),
+                onTap: handleNavigate,
+                child: TextWidget(post?.fullName ??  "", weight: FontWeight.w800)),
                 subtitle: TextWidget("@${post?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -119,7 +124,7 @@ class FeedCard extends StatelessWidget {
                     ),
                     elevation: 0,
                     child: post?.feedType == "Video" ?
-                    Obx(_video) :
+                    _video() :
                     ImageWidget(
                       url: "${Constants.FEEDS_URL}${post?.feedPath}",
                       height: 250,
@@ -139,31 +144,11 @@ class FeedCard extends StatelessWidget {
               //   padding: EdgeInsets.all(8.0),
               //   child: TextWidget("There’s nothing better drive on Golden Gate Bridge the wide strait connecting. #Golden #Bridge more"),
               // ),
+
               Padding(
                 padding: const EdgeInsets.only(left: 0.0, right: 8.0),
-                child: Row(
-                  children:  [
-                    ButtonWidget(
-                      onPressed: handleLikeTap,
-                      text: "${post?.postLikes ?? ""}",
-                      loader: _controller.loading() && _currIndex == index,
-                      icon: post?.postLiked == "Liked" ? Assets.iconsHeart : Assets.iconsUnlikeHeart,
-                    ),
-                    ButtonWidget(
-                      onPressed: handleComment,
-                      text: "${post?.postComments ?? ""} comments",
-                      icon: Assets.iconsComment,
-                    ),
-                    const Spacer(),
-                    ButtonWidget(
-                      onPressed: () => null,
-                      text: "Share",
-                      textColor: AppColors.primaryColor,
-                      icon: Assets.iconsShare,
-                    ),
-                  ],
-                ),
-              ),
+                child: actions,
+              )
             ],
           ),
         );
@@ -174,7 +159,7 @@ class FeedCard extends StatelessWidget {
   Widget _video() {
     return VideoWidget(
         url: "${Constants.FEEDS_URL}${post?.feedPath}",
-        controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == post?.feedPath),
+        controller: controller,
         // controller: _controller.videos.first!,
         play: isInView
     );
@@ -182,34 +167,7 @@ class FeedCard extends StatelessWidget {
 
   handleOption(String item) {
     if(item == "1") {
-      _controller.handleDownload(post?.feedPath ?? "",  post?.feedType == "Video");
-    }
-  }
-
-  // SEARCH SHEET
-  handleComment() {
-    Get.create(() => CommentController(feedId: 0.toString()));
-    Get.bottomSheet(
-        const CommentSheet(),
-        // isDismissible: true,
-        clipBehavior: Clip.antiAlias,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
-        enableDrag: true,
-        // isScrollControlled: true,
-        persistent: true,
-        ignoreSafeArea: false
-    );
-  }
-
-  // GOTO PROFILE
-  void onTap() {
-    User u = User(userId: post?.userId,);
-    _controller.gotoProfile(u);
-  }
-
-  handleLikeTap() {
-    if(post?.feedId != null) {
-      _controller.handleLike(index, post!.feedId!);
+      onDownload(post?.feedPath ?? "",  post?.feedType == "Video");
     }
   }
 }

@@ -63,7 +63,7 @@ class VideoWidget extends StatelessWidget {
     return GetBuilder<FeedController>(
       builder: (controller) {
         if(_video == null) {
-          return SizedBox(
+          return const SizedBox(
             height: 250,
             child: Icon(Icons.video_file_outlined)
           );
@@ -80,12 +80,14 @@ class VideoWidget extends StatelessWidget {
         Lottie.asset(Assets.loader);
         },
       didUpdateWidget: (oldWidget, state) {
-        if (play) {
+        if(_video!.value.isInitialized) {
+          if (play) {
             _video!.play();
             _video!.setLooping(true);
           } else {
             _video!.pause();
           }
+        }
       },
 
       // dispose: (state) {
