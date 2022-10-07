@@ -18,15 +18,16 @@ class ApiService extends GetxService {
 
   // REQUEST AUTHORIZATION HEADER
   Map<String, String> get _header => {"Authorization": "Bearer ${_box.read("token")}",};
+  String get _userId => User.fromJson(_box.read("user")).userId.toString();
 
   // GET FEEDS/POSTS
   Future<List<Feed?>> fetchPosts() async {
     try {
       var payload = {
-        "UserID": User.fromJson(_box.read("user")).userId.toString(),
+        "UserID": _userId,
       };
       final json = await Network.post(url: Constants.FEEDS, headers: _header, payload: payload);
-      debugPrint("json::::::$json");
+      // debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.message != null && res.message!.isNotEmpty) {
@@ -79,7 +80,7 @@ class ApiService extends GetxService {
   Future<List<User?>> fetchUsers(String search) async {
     try {
       var payload = {
-        "UserID": User.fromJson(_box.read("user")).userId.toString(),
+        "UserID": _userId,
         "Name": search,
       };
       final json = await Network.post(url: Constants.SERACH_USER, headers: _header, payload: payload);
@@ -108,7 +109,7 @@ class ApiService extends GetxService {
     try {
       var payload = {
         "UserID": followId,
-        "FollowedBy": User.fromJson(_box.read("user")).userId.toString(),
+        "FollowedBy": _userId,
       };
       final json = await Network.post(url: type == 0 ? Constants.FOLLOW_USER : Constants.UN_FOLLOW_USER, headers: _header, payload: payload);
       if(json != null) {
@@ -136,7 +137,7 @@ class ApiService extends GetxService {
     try {
       var payload = {
         "UserID": followId,
-        "FollowedBy": User.fromJson(_box.read("user")).userId.toString(),
+        "FollowedBy": _userId,
       };
       final json = await Network.post(url: Constants.UN_FOLLOW_USER, headers: _header, payload: payload);
       if(json != null) {
@@ -163,7 +164,7 @@ class ApiService extends GetxService {
   Future<bool> sendLike(String feedId) async {
     try {
       var payload = {
-        "UserID": User.fromJson(_box.read("user")).userId.toString(),
+        "UserID": _userId,
         "FeedID": feedId,
       };
       final json = await Network.post(url: Constants.LIKE_POST, headers: _header, payload: payload);
@@ -192,6 +193,36 @@ class ApiService extends GetxService {
         "FeedID": feedId,
       };
       final json = await Network.post(url: Constants.GET_COMMENTS, headers: _header, payload: payload);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        // if(res.message != null && res.message!.isNotEmpty) {
+        //   Get.snackbar("Failed!", res.message ?? "",
+        //       backgroundColor: AppColors.pinkColor,
+        //       colorText: Colors.white
+        //   );
+        // }
+        if(res.code == 200 && res.feedComments != null) {
+          List<Comment> comments = commentFromJson(jsonEncode(res.feedComments));
+          return comments;
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return [];
+    }
+  }
+
+  // POST COMMENT
+  Future<List<Comment?>> postComments(String feedId, String comment) async {
+    try {
+      var payload = {
+        "UserID": _userId,
+        "FeedID": feedId,
+        "Comment": comment,
+      };
+      final json = await Network.post(url: Constants.ADD_COMMENT, headers: _header, payload: payload);
       debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));

@@ -10,6 +10,9 @@ class CommentController extends GetxController {
 
   RxList<Comment?> comments = List<Comment?>.empty(growable: true).obs;
   RxBool loading = true.obs;
+  RxBool fetching = false.obs;
+
+  TextEditingController comment = TextEditingController();
 
   final ApiService _service = Get.find<ApiService>();
 
@@ -24,7 +27,6 @@ class CommentController extends GetxController {
   // FETCH COMMENTS DATA
   Future<void> getComments() async {
     // videos.clear();
-    update();
     List res = await _service.fetchComments(feedId!);
     if(res.isNotEmpty) {
       if(comments.isEmpty) {
@@ -38,9 +40,24 @@ class CommentController extends GetxController {
     loading.value = false;
   }
 
-  @override
-  void onClose() {
-    // TODO: implement onClose
-    super.onClose();
+  Future<void> postComment() async {
+    comment.text.trim();
+    if(comment.text.isNotEmpty) {
+      fetching.value = true;
+      List res = await _service.postComments(feedId!, comment.text);
+      if(res.isNotEmpty) {
+        comment.clear();
+        if(comments.isNotEmpty) {
+          debugPrint(":::::::::::");
+          comments.clear();
+          comments.addAll(res as List<Comment?>);
+        }
+        else {
+          comments.addAll(res as List<Comment?>);
+        }
+        update();
+      }
+      fetching.value = false;
+    }
   }
 }

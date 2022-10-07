@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../controllers/comment_controller.dart';
 import '../models/comment.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
@@ -68,11 +69,17 @@ class CommentSheet extends GetWidget<CommentController> {
             ),
             const SizedBox(height: 20),
 
-            TextFormField(
+            Obx(() => TextFormField(
+              controller: controller.comment,
               decoration: InputDecoration(
-                suffixIcon: IconButton(
+                suffixIcon: controller.fetching() ?
+                const SizedBox(
+                    height: 2,
+                    width: 2,
+                    child: Center(child: CircularProgressIndicator(color: AppColors.primaryColor, strokeWidth: 2,))) :
+                IconButton(
                   icon: Icon(Icons.send,color: Theme.of(context).primaryColor,),
-                  onPressed: () => null,
+                  onPressed: controller.postComment,
                 ),
                 filled: true,
                 border: OutlineInputBorder(
@@ -80,7 +87,7 @@ class CommentSheet extends GetWidget<CommentController> {
                   borderRadius: BorderRadius.circular(32),
                 ),
               ),
-            ),
+            )),
 
             const SizedBox(height: 20),
           ],
