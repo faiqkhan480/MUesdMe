@@ -3,6 +3,7 @@ import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:musedme/widgets/shadowed_box.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../controllers/agora_controller.dart';
@@ -45,6 +46,7 @@ class FeedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isShared = post?.shareUser?.userId != 0;
     return FutureBuilder<bool>(
       future: _agora.isUserOnline(post?.userId.toString() ?? ""),
       builder: (context, AsyncSnapshot<bool> snapshot) {
@@ -105,39 +107,70 @@ class FeedCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10,),
-              Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  Badge(
-                    showBadge: post?.postViews != null && post!.postViews! > 0,
-                    shape: BadgeShape.square,
-                    // badgeColor: Colors.black26,
-                    borderRadius: BorderRadius.circular(8),
-                    position: BadgePosition.topEnd(top: 12, end: 12),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    badgeContent: Row(
-                      children: [
-                        SvgPicture.asset(Assets.iconsEye),
-                        const SizedBox(width: 5,),
-                        TextWidget("${post?.postViews} views", color: Colors.white, weight: FontWeight.w300,),
-                      ],
-                    ),
-                    elevation: 0,
-                    child: post?.feedType == "Video" ?
-                    _video() :
-                    ImageWidget(
-                      url: "${Constants.FEEDS_URL}${post?.feedPath}",
-                      height: 250,
-                    ),
-                  ),
+              ShadowedBox(
+                shadow: isShared,
+                padding: EdgeInsets.all(isShared ? 10 : 0),
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Badge(
+                      showBadge: post?.postViews != null && post!.postViews! > 0,
+                      shape: BadgeShape.square,
+                      // badgeColor: Colors.black26,
+                      borderRadius: BorderRadius.circular(8),
+                      position: BadgePosition.topEnd(top: 12, end: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      badgeContent: Row(
+                        children: [
+                          SvgPicture.asset(Assets.iconsEye),
+                          const SizedBox(width: 5,),
+                          TextWidget("${post?.postViews} views", color: Colors.white, weight: FontWeight.w300,),
+                        ],
+                      ),
+                      elevation: 0,
+                      child: Column(
+                        children: [
+                          if(isShared)
+                            ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                            leading: Badge(
+                              badgeColor: snapshot.hasData && snapshot.data! ? AppColors.successColor : AppColors.lightGrey,
+                              position: BadgePosition.topEnd(top: -1, end: 4),
+                              elevation: 0,
+                              borderSide: const BorderSide(color: Colors.white, width: .7),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                radius: 25,
+                                backgroundImage: NetworkImage(
+                                  post?.shareUser?.profilePic != null && post!.shareUser!.profilePic!.isNotEmpty ?
+                                  "${Constants.IMAGE_URL}${post?.shareUser?.profilePic}" :
+                                  Constants.dummyImage,
+                                ),),
+                            ),
+                            title: GestureDetector(
+                                onTap: handleNavigate,
+                                child: TextWidget(post?.shareUser?.fullName ??  "", weight: FontWeight.w800)),
+                            subtitle: TextWidget("@${post?.shareUser?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
+                          ),
 
-                  if(post?.feedType == "Video")
-                    const GlassMorphism(
-                      start: 0.3,
-                      end: 0.3,
-                      child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 60),
-                    )
-                ],
+                          post?.feedType == "Video" ?
+                          _video() :
+                          ImageWidget(
+                            url: "${Constants.FEEDS_URL}${post?.feedPath}",
+                            height: 250,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    if(post?.feedType == "Video")
+                      const GlassMorphism(
+                        start: 0.3,
+                        end: 0.3,
+                        child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 60),
+                      )
+                  ],
+                ),
               ),
               const SizedBox(height: 20,),
               // const Padding(

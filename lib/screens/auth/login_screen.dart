@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,16 @@ class _LoginScreenState extends State<LoginScreen> {
   bool secure = true;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(kDebugMode) {
+      emailController.text = "abc1@yopmail.com";
+      passwordController.text = "123456";
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -42,7 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  Image.asset(Assets.iconsLogo, fit: BoxFit.cover,),
+                  // Image.asset(Assets.iconsLogo, fit: BoxFit.cover,), // PNG LOGO
+                  SvgPicture.asset(Assets.logoSvg, fit: BoxFit.cover,), // SVG LOGO
                   const SizedBox(height: 50,),
                   // EMAIL FIELD
                   InputField(

@@ -33,22 +33,11 @@ class _UploadScreenState extends State<UploadScreen> {
 
   final ApiService _service = Get.find<ApiService>();
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   getFile();
-  // }
-
   getFile() async {
     debugPrint(":::::::::::: ${widget.post.toJson()}");
     final root = await getApplicationDocumentsDirectory();
     final path = "$root/${widget.post.image}";
     File? f = await File(path).create(recursive: true);
-    // setState(() {
-    //   file = f;
-    //   loading = false;
-    // });
   }
 
   @override
@@ -138,7 +127,6 @@ class _UploadScreenState extends State<UploadScreen> {
     });
     Uint8List imageBytes =  File(img).readAsBytesSync();
     String base64Image = base64Encode(imageBytes);
-    // debugPrint(base64Image);
     // String feedPath, String type, String privacy
     var res = await _service.uploadFeed(base64Image, "Image", value);
     if(res == true) {
@@ -147,7 +135,5 @@ class _UploadScreenState extends State<UploadScreen> {
     setState(() {
       loading = false;
     });
-    // loading.value = false;
-    // Get.offNamed(Get.previousRoute);
   }
 }

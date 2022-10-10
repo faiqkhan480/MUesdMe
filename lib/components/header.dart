@@ -55,7 +55,8 @@ class Header extends StatelessWidget {
             padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: showLives ? 0 : 10, top: 30),
             child: Row(
               children: [
-                Image.asset(Assets.iconsLogo, height: 40),
+                // Image.asset(Assets.iconsLogo, height: 40),
+                SvgPicture.asset(Assets.logoSvg, fit: BoxFit.cover, height: 40),
                 const SizedBox(width: 20,),
                 Text(title, style: const TextStyle(
                   color: Colors.black,

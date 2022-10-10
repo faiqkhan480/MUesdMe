@@ -22,6 +22,9 @@ Feed _$FeedFromJson(Map<String, dynamic> json) => Feed(
           ? null
           : DateTime.parse(json['FeedDate'] as String),
       postLiked: json['PostLiked'] as String?,
+      shareUser: json['ShareUser'] == null
+          ? null
+          : ShareUser.fromJson(json['ShareUser'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$FeedToJson(Feed instance) => <String, dynamic>{
@@ -38,4 +41,27 @@ Map<String, dynamic> _$FeedToJson(Feed instance) => <String, dynamic>{
       'FeedType': instance.feedType,
       'FeedDate': instance.feedDate?.toIso8601String(),
       'PostLiked': instance.postLiked,
+      'ShareUser': instance.shareUser,
+    };
+
+ShareUser _$ShareUserFromJson(Map<String, dynamic> json) => ShareUser(
+      userId: json['UserID'] as int?,
+      follow: json['Follow'] as int?,
+      followedBy: json['FollowedBy'] as int?,
+      followers: json['Followers'] as int?,
+      followings: json['Followings'] as int?,
+      fullName: json['FullName'] as String?,
+      profilePic: json['ProfilePic'] as String?,
+      userName: json['UserName'] as String?,
+    );
+
+Map<String, dynamic> _$ShareUserToJson(ShareUser instance) => <String, dynamic>{
+      'UserID': instance.userId,
+      'Follow': instance.follow,
+      'FollowedBy': instance.followedBy,
+      'Followers': instance.followers,
+      'Followings': instance.followings,
+      'FullName': instance.fullName,
+      'ProfilePic': instance.profilePic,
+      'UserName': instance.userName,
     };

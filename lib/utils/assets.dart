@@ -35,6 +35,7 @@ class Assets {
 
   // PNG IMAGES
   static const String iconsLogo = 'assets/icons/logo.png';
+  static const String logoSvg = 'assets/icons/logo.svg';
   static const String iconsSmileyFace = 'assets/icons/smiling_face.png';
 
   // LOTTIE ANIMATIONS

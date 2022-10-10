@@ -248,10 +248,10 @@ class ApiService extends GetxService {
   Future uploadFeed(String feedPath, String type, String privacy) async {
     try {
       var payload = {
-        "FeedPath": feedPath,
         "FeedType": type,
         "WHoCanSee": privacy,
         "UserID": _userId,
+        "FeedPath": feedPath,
       };
       final json = await Network.post(url: Constants.UPLOAD_FEED, headers: _header, payload: payload);
       debugPrint("json::::::$json");

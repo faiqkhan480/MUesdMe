@@ -7,9 +7,11 @@ import '../models/auths/user_model.dart';
 import '../models/feed.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import 'agora_controller.dart';
+import 'root_controller.dart';
 
 class FeedController extends GetxController {
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
@@ -19,6 +21,9 @@ class FeedController extends GetxController {
   RxInt currIndex = 0.obs;
 
   final ApiService _service = Get.find<ApiService>();
+  final AuthService _authService = Get.find<AuthService>();
+
+  final RootController _bottomNavigation = Get.find<RootController>();
 
   RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
 
@@ -93,7 +98,12 @@ class FeedController extends GetxController {
 
   // NAVIGATE TO USER'S PROFILE
   void gotoProfile(User u) {
-    Get.toNamed(AppRoutes.USER_PROFILE, arguments: u);
+    if(u.userId != _authService.currentUser?.userId) {
+      Get.toNamed(AppRoutes.USER_PROFILE, arguments: u);
+    }
+    else {
+      _bottomNavigation.handleTab(4);
+    }
   }
 
   handleLike(int index, int feedId) async {
