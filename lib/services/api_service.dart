@@ -244,7 +244,7 @@ class ApiService extends GetxService {
     }
   }
 
-  // UPLOAD FED
+  // UPLOAD FEED
   Future uploadFeed(String feedPath, String type, String privacy) async {
     try {
       var payload = {
@@ -271,6 +271,42 @@ class ApiService extends GetxService {
               colorText: Colors.white
           );
            return true;
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
+
+  // SHARE FEED
+  Future shareFeed(String feedID, String privacy) async {
+    try {
+      var payload = {
+        "FeedID": feedID,
+        "WHoCanSee": privacy,
+        "UserID": _userId,
+      };
+      final json = await Network.post(url: Constants.SHARE_FEED, headers: _header, payload: payload);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        // if(res.message != null && res.message!.isNotEmpty) {
+        //   Get.snackbar("Failed!", res.message ?? "",
+        //       backgroundColor: AppColors.pinkColor,
+        //       colorText: Colors.white
+        //   );
+        // }
+        if(res.code == 200 && res.message != null) {
+          //   List<Comment> comments = commentFromJson(jsonEncode(res.feedComments));
+          //   return comments;
+          Get.back();
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+          return true;
         }
       }
       return null;
