@@ -7,19 +7,14 @@ import 'package:musedme/widgets/shadowed_box.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../controllers/agora_controller.dart';
-import '../controllers/comment_controller.dart';
-import '../controllers/feed_controller.dart';
-import '../models/auths/user_model.dart';
 import '../models/feed.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
-import '../widgets/button_widget.dart';
 import '../widgets/glass_morphism.dart';
 import '../widgets/image_widget.dart';
 import '../widgets/text_widget.dart';
 import '../widgets/video_widget.dart';
-import 'comment_sheet.dart';
 
 class FeedCard extends StatelessWidget {
   final double? horizontalSpace;
@@ -47,8 +42,9 @@ class FeedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isShared = post?.shareUser?.userId != 0;
-    return FutureBuilder<bool>(
-      future: _agora.isUserOnline(post?.userId.toString() ?? ""),
+    return StreamBuilder<bool>(
+      stream: (_agora.checkStatus(post?.userId.toString() ?? "")),
+      // future: _agora.isUserOnline(post?.userId.toString() ?? ""),
       builder: (context, AsyncSnapshot<bool> snapshot) {
         return Container(
           decoration: BoxDecoration(

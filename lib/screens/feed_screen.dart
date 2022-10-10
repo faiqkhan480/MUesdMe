@@ -93,7 +93,6 @@ class FeedScreen extends StatelessWidget {
 
   // SHARE SHEET
   handleShare(Feed feed) async {
-    // Get.create(() => ShareController(feedId: feed.feedId.toString()));
     await Get.bottomSheet(
         ShareSheet(feed: feed),
         clipBehavior: Clip.antiAlias,
@@ -102,7 +101,6 @@ class FeedScreen extends StatelessWidget {
         persistent: true,
         ignoreSafeArea: false
     );
-    // Get.delete<CommentController>(force: true);
   }
 
   // GOTO PROFILE

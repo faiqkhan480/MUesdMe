@@ -7,6 +7,7 @@ import '../components/comment_sheet.dart';
 import '../components/feed_actions.dart';
 import '../components/feed_card.dart';
 import '../components/header.dart';
+import '../components/share_sheet.dart';
 import '../components/title_row.dart';
 import '../components/todays_picks.dart';
 import '../components/trending_card.dart';
@@ -33,6 +34,7 @@ class VideosScreen extends StatelessWidget {
   bool get _loading => _controller.loading();
   bool get _fetching => _controller.fetching();
   int get _currIndex => _controller.currIndex.value;
+  int get _currTab => _controller.currTab.value;
   List<Feed?> get _feeds => _controller.feeds;
   List<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList();
   List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video").toList();
@@ -70,10 +72,9 @@ class VideosScreen extends StatelessWidget {
             Expanded(
                 child: TabBarView(
                   children: [
-                    _view(_videos),
-                    // SvgPicture.asset(Assets.searchUsers),
-                    _view(_trending),
-                    SvgPicture.asset(Assets.searchUsers),
+                    _view(_videos, 0), // ALL VIDEOS
+                    _view(_trending, 1), // TRENDING VIDEOS
+                    SvgPicture.asset(Assets.searchUsers), // TODAY'S VIDEOS
                   ],
                 )
             ),),
@@ -83,7 +84,7 @@ class VideosScreen extends StatelessWidget {
     );
   }
 
-  Widget _view(List<Feed?> items) {
+  Widget _view(List<Feed?> items, int tab) {
     return RefreshIndicator(
       onRefresh: _controller.getFeeds,
       child: InViewNotifierList(
@@ -97,7 +98,7 @@ class VideosScreen extends StatelessWidget {
             id: '$index',
             builder: (BuildContext context, bool isInView, Widget? child) => Padding(
               padding: const EdgeInsets.only(top: 20),
-              child: FeedCard(
+              child:Obx(() => FeedCard(
                 index: index,
                 isInView: isInView,
                 post: items.elementAt(index),
@@ -106,28 +107,40 @@ class VideosScreen extends StatelessWidget {
                 controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == items.elementAt(index)?.feedPath),
                 actions: FeedActions(
                   index: index,
-                  loader: _fetching && _currIndex == index,
+                  loader: _fetching && _currIndex == index && _currTab == tab,
                   liked: items.elementAt(index)?.postLiked == "Liked",
                   commentsCount: items.elementAt(index)?.postComments ?? 0,
                   likeCount: items.elementAt(index)?.postLikes ?? 0,
-                  onLikeTap: (value) => handleLikeTap(index, items.elementAt(index)!),
+                  onLikeTap: (value) => handleLikeTap(index, items.elementAt(index)!, tab),
                   onCommentTap: () =>   handleComment(index, items.elementAt(index)!),
-                  onShareTap: () {},
+                  onShareTap: () => handleShare(items.elementAt(index)!),
                 ),
               ),
             ),
-          ),
-          // separatorBuilder: (context, index) => const SizedBox(height: 20),
+          )),
           itemCount: items.length
       ),
     );
   }
 
   // COMMENT SHEET
-  handleComment(int index, Feed item) {
+  handleComment(int index, Feed item) async {
     Get.create(() => CommentController(feedId: item.feedId.toString()));
-    Get.bottomSheet(
+    await Get.bottomSheet(
         const CommentSheet(),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
+    Get.delete<CommentController>(force: true);
+  }
+
+  // SHARE SHEET
+  handleShare(Feed feed) async {
+    Get.bottomSheet(
+        ShareSheet(feed: feed),
         clipBehavior: Clip.antiAlias,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
         enableDrag: true,
@@ -143,9 +156,9 @@ class VideosScreen extends StatelessWidget {
   }
 
   // ON LIKE TAP
-  handleLikeTap(index, Feed item) {
+  handleLikeTap(int index, Feed item, int tab) {
     if(item.feedId != null) {
-      _controller.handleLike(index, item.feedId!);
+      _controller.handleLike(index, item.feedId!, currentTab: tab);
     }
   }
 }

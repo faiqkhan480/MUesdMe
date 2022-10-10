@@ -19,6 +19,7 @@ class FeedController extends GetxController {
   RxBool fetching = false.obs;
 
   RxInt currIndex = 0.obs;
+  RxInt currTab = 0.obs;
 
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
@@ -106,8 +107,9 @@ class FeedController extends GetxController {
     }
   }
 
-  handleLike(int index, int feedId) async {
+  handleLike(int index, int feedId, {int? currentTab}) async {
     currIndex.value = index;
+    currTab.value = currentTab ?? 0;
     fetching.value = true;
     String? status = feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked;
     int count = feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes ?? 0;
