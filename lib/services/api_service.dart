@@ -6,8 +6,10 @@ import 'package:get_storage/get_storage.dart';
 
 import '../models/api_res.dart';
 import '../models/auths/user_model.dart';
+import '../models/chat.dart';
 import '../models/comment.dart';
 import '../models/feed.dart';
+import '../models/message.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../utils/network.dart';
@@ -313,6 +315,50 @@ class ApiService extends GetxService {
     } catch (e) {
       debugPrint("ERROR >>>>>>>>>> $e");
       return null;
+    }
+  }
+
+  //GET ALL CHATS
+  Future<List<Chat?>> getAllChats() async {
+    try {
+      var payload = {
+        "UserID": _userId,
+      };
+      final json = await Network.post(url: Constants.GET_CHAT, headers: _header, payload: payload);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.messages != null) {
+          List<Chat> chats = chatFromJson(jsonEncode(res.messages));
+          return chats;
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return [];
+    }
+  }
+
+  //GET ALL MESSAGES
+  Future<List<Message?>> getAllMessages(String feedId) async {
+    try {
+      var payload = {
+        "UserID": _userId,
+      };
+      final json = await Network.post(url: Constants.GET_MESSAGES, headers: _header, payload: payload);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.messages != null) {
+          List<Message> message = messageFromJson(jsonEncode(res.messages));
+          return message;
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return [];
     }
   }
 }

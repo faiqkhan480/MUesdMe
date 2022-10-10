@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../controllers/chat_controller.dart';
+import '../controllers/message_controller.dart';
 
 class ChatBinding extends Bindings {
   @override

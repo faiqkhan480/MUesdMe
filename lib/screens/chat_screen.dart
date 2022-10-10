@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import '../components/message_input.dart';
 import '../components/message_tile.dart';
-import '../controllers/chat_controller.dart';
+import '../controllers/message_controller.dart';
 import '../models/auths/user_model.dart';
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';

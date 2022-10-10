@@ -27,7 +27,9 @@ class AgoraController extends GetxController {
 
     client?.onMessageReceived = (AgoraRtmMessage message, String peerId) {
       debugPrint("Public Message from $peerId: ${message.text}");
-      comments.insert(0, Chat(uid: peerId, message: message.text, type: "receiver"));
+      int uid = int.parse(peerId.replaceAll("MusedByMe_", ""));
+      // comments.insert(0, Chat(userId: uid));
+      comments.insert(0, ChatMessage(uid: peerId, message: message.text, type: "receiver"));
     };
     client?.onConnectionStateChanged = (int state, int reason) {
       debugPrint('Connection state changed::::::::::: $state, reason: $reason');

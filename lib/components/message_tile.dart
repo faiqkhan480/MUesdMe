@@ -7,7 +7,7 @@ import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
 class MessageTile extends StatelessWidget {
-  final Chat message;
+  final ChatMessage message;
   final String? senderImage;
   final String? receiverImage;
   const MessageTile({Key? key, required this.message, this.senderImage, this.receiverImage}) : super(key: key);

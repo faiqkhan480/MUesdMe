@@ -5,7 +5,7 @@ import '../models/chat.dart';
 import '../widgets/text_widget.dart';
 
 class CommentTile extends StatelessWidget {
-  final Chat chat;
+  final ChatMessage chat;
   final Animation<double> animation;
   const CommentTile(this.chat, {Key? key, required this.animation}) : super(key: key);
 

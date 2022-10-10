@@ -143,7 +143,7 @@ class LiveController extends GetxController {
 
     _client?.onMessageReceived = (AgoraRtmMessage message, String peerId) {
       // logController.addLog("Private Message from " + peerId + ": " + message.text);
-      comments.add(Chat(uid: peerId, message: message.text, type: "receiver"));
+      comments.add(ChatMessage(uid: peerId, message: message.text, type: "receiver"));
     };
     _client?.onConnectionStateChanged = (int state, int reason) {
       debugPrint('Connection state changed::::::::::: $state, reason: $reason');
@@ -190,16 +190,16 @@ class LiveController extends GetxController {
     AgoraRtmChannel? channel = await _client?.createChannel(name);
     if(channel != null) {
       channel.onMemberJoined = (AgoraRtmMember member) {
-        comments.insert(0, Chat(uid: member.userId, message: "Member joined: ${member.userId}"));
+        comments.insert(0, ChatMessage(uid: member.userId, message: "Member joined: ${member.userId}"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
       };
       channel.onMemberLeft = (AgoraRtmMember member) {
-        comments.insert(0, Chat(uid: member.userId, message: "Member left: ${member.userId}"));
+        comments.insert(0, ChatMessage(uid: member.userId, message: "Member left: ${member.userId}"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
       };
       channel.onMessageReceived = (AgoraRtmMessage message, AgoraRtmMember member) {
         debugPrint(":::::::::::: RECIEVED MESSAGE");
-        comments.insert(0, Chat(uid: member.userId, message: message.text, type: "receiver"));
+        comments.insert(0, ChatMessage(uid: member.userId, message: message.text, type: "receiver"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
       };
     }
