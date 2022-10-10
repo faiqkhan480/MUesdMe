@@ -1,32 +1,40 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:musedme/controllers/chat_controller.dart';
+import 'package:popover/popover.dart';
 
-import '../components/message_input.dart';
-import '../components/message_tile.dart';
-import '../controllers/message_controller.dart';
-import '../models/auths/user_model.dart';
-import '../services/auth_service.dart';
+import '../components/search_field.dart';
+import '../models/chat.dart';
+import '../screens/message_screen.dart';
+import '../widgets/loader.dart';
+import '../widgets/text_widget.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 
+class ChatsScreen extends GetView<ChatController> {
+  const ChatsScreen({Key? key}) : super(key: key);
+//
+//   @override
+//   State<MessagesScreen> createState() => _MessagesScreenState();
+// }
+//
+// class _MessagesScreenState extends State<MessagesScreen> {
 
-class ChatScreen extends GetView<ChatController> {
-  const ChatScreen({Key? key}) : super(key: key);
-
-  User? get chatUser => controller.user.value;
-  AuthService get _authService => Get.find<AuthService>();
+  bool get _loading => controller.loading();
+  List<Chat?> get _chats => controller.chats;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(left: 8.0, top: 5),
           child: TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => (Navigator.canPop(context)) ? Navigator.pop(context) : null,
               style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -39,99 +47,162 @@ class ChatScreen extends GetView<ChatController> {
               child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
           ),
         ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        title: const SearchField(),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Badge(
-                badgeColor: AppColors.successColor,
-                position: BadgePosition.topEnd(top: -1, end: 4),
-                elevation: 0,
-                borderSide: const BorderSide(color: Colors.white, width: .7),
-                child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 18,
-                    backgroundImage: NetworkImage(
-                        chatUser?.profilePic != null ?
-                        Constants.IMAGE_URL + chatUser!.profilePic! :
-                        Constants.dummyImage
-                    ),
-                ),
-              ),
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10),
+              child: TextWidget("Messages", size: 28, weight: FontWeight.bold,),
             ),
-            Text(chatUser?.firstName ?? "", style: const TextStyle(fontFamily: Constants.fontFamily)),
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 20.0),
+            //   child: TextWidget("You have 2 new messages", color: AppColors.lightGrey, weight: FontWeight.normal,),
+            // ),
+
+            Obx(() => _loading ?
+                const Loader() :
+                Flexible(
+                    child: !_loading && _chats.isEmpty ?
+                    RefreshIndicator(
+                      onRefresh: controller.getChats,
+                      child: ListView(
+                        children: [
+                          SvgPicture.asset(Assets.searchUsers)
+                        ],
+                      ),
+                    ) :
+                    RefreshIndicator(
+                        onRefresh: controller.getChats,
+                        child: ListView.separated(
+                            padding: const EdgeInsets.only(top: 20, bottom: 0),
+                            itemBuilder: (context, index) => Container(
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      right: BorderSide(
+                                          color: index == 1 ? AppColors.progressColor : index == 5 ? AppColors.successColor : Colors.white,
+                                          width: 4
+                                      )
+                                  )
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  ListTile(
+                                    onTap: () => controller.navigateToChat(_chats.elementAt(index)!),
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                    leading: Badge(
+                                      badgeColor: AppColors.successColor,
+                                      position: BadgePosition.topEnd(top: -1, end: 4),
+                                      elevation: 0,
+                                      showBadge: index == 0 || index == 1 || index == 4,
+                                      borderSide: const BorderSide(color: Colors.white, width: .7),
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        radius: 25,
+                                        backgroundImage: NetworkImage(
+                                            _chats.elementAt(index)?.profilePic != null ?
+                                            Constants.IMAGE_URL + _chats.elementAt(index)!.profilePic! :
+                                            Constants.dummyImage
+                                        ),
+                                      ),
+                                      // child: const CircleAvatar(
+                                      //     backgroundColor: Colors.white,
+                                      //     radius: 25,
+                                      //     backgroundImage: NetworkImage(Constants.albumArt)),
+                                    ),
+                                    title: TextWidget(_chats.elementAt(index)?.fullName ?? "", weight: FontWeight.w800),
+                                    subtitle: TextWidget(_chats.elementAt(index)?.message ?? "", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
+                                    // trailing: GestureDetector(
+                                    //     onTap: () {
+                                    //       // showPopover(
+                                    //       //   context: context,
+                                    //       //   transitionDuration: const Duration(milliseconds: 150),
+                                    //       //   bodyBuilder: (context) => const ListItems(),
+                                    //       //   onPop: () => print('Popover was popped!'),
+                                    //       //   direction: PopoverDirection.top,
+                                    //       //   width: 200,
+                                    //       //   height: 400,
+                                    //       //   arrowHeight: 15,
+                                    //       //   arrowWidth: 30,
+                                    //       // );
+                                    //     },
+                                    //     child: SvgPicture.asset(Assets.iconsAdd)
+                                    // )
+                                  ),
+                                  if(index == 5)
+                                    const Divider(color: AppColors.grayScale, thickness: 1, height: 1),
+                                ],
+                              ),
+                            ),
+                            separatorBuilder: (context, index) => const Divider(color: AppColors.grayScale, thickness: 1, height: 1),
+                            itemCount: _chats.length
+                        )
+                    )
+            )),
           ],
         ),
-        actions: [
-          IconButton(
-              onPressed: () => null,
-              icon: const Icon(Icons.info_outline_rounded, color: AppColors.lightGrey,)
-          )
-        ],
       ),
-      body: Stack(
-        children: [
-          Obx(() => ListView.builder(
-            itemCount: controller.comments.length,
-            physics: const BouncingScrollPhysics(),
-            reverse: true,
-            padding: const EdgeInsets.only(top: 10,bottom: 60),
-            // physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return MessageTile(
-                message: controller.comments.elementAt(index),
-                senderImage: _authService.currentUser?.profilePic,
-                receiverImage: chatUser?.profilePic,
-              );
-            },
-          )),
+    );
+  }
 
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: AppColors.shadowColor,
-                        // spreadRadius: 3,
-                        blurRadius: 5
-                    )
-                  ]
-              ),
-              height: 64,
-              width: double.infinity,
-              child: Material(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: () => null,
-                          color: AppColors.primaryColor,
-                          iconSize: 30,
-                          icon: Image.asset(Assets.iconsSmileyFace)
-                      ),
-                      Expanded(child: MessageInput(controller.message)),
-                      const SizedBox(width: 5,),
-                      IconButton(
-                          onPressed: controller.sendMessage,
-                          color: AppColors.primaryColor,
-                          iconSize: 30,
-                          icon: const Icon(Icons.send,)
-                      ),
-                    ],
-                  ),
-                ),
+  handleNavigation(String title) {
+    // Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen(),));
+  }
+
+  void handleClick() {
+    // showPopover(
+    //   context: context,
+    //   transitionDuration: const Duration(milliseconds: 150),
+    //   bodyBuilder: (context) => const ListItems(),
+    //   onPop: () => print('Popover was popped!'),
+    //   direction: PopoverDirection.top,
+    //   width: 200,
+    //   height: 400,
+    //   arrowHeight: 15,
+    //   arrowWidth: 30,
+    // );
+  }
+}
+
+class ListItems extends StatelessWidget {
+  const ListItems({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scrollbar(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: ListView(
+          padding: const EdgeInsets.all(8),
+          children: [
+            InkWell(
+              onTap: () {
+              },
+              child: Container(
+                height: 50,
+                color: Colors.amber[100],
+                child: const Center(child: Text('Entry A')),
               ),
             ),
-          ),
-        ],
+            const Divider(),
+            Container(
+              height: 50,
+              color: Colors.amber[200],
+              child: const Center(child: Text('Entry B')),
+            ),
+            const Divider(),
+            Container(
+              height: 50,
+              color: Colors.amber[300],
+              child: const Center(child: Text('Entry C')),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-

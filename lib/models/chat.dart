@@ -13,12 +13,12 @@ List<Chat> chatFromJson(String str) => List<Chat>.from(json.decode(str).map((x) 
 @JsonSerializable()
 class Chat {
   Chat({
-    required this.userId,
-    required this.chatId,
-    required this.fullName,
-    required this.profilePic,
-    required this.message,
-    required this.messageDate,
+    this.userId,
+    this.chatId,
+    this.fullName,
+    this.profilePic,
+    this.message,
+    this.messageDate,
   });
 
   @JsonKey(name: 'UserID')

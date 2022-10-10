@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
+import 'package:musedme/screens/message_screen.dart';
 import 'package:musedme/screens/chat_screen.dart';
-import 'package:musedme/screens/messages_screen.dart';
 
 // SCREENS
 import '../bindings/call_binding.dart';
@@ -91,14 +91,13 @@ class AppPages {
         page: () => const UserProfileScreen()
     ),
     GetPage(
-        name: AppRoutes.MESSAGES,
-        // binding: MessagesBinding(),
-        page: () => const MessagesScreen()
+        name: AppRoutes.CHAT,
+        page: () => const ChatsScreen()
     ),
     GetPage(
-        name: AppRoutes.CHAT,
-        binding: ChatBinding(),
-        page: () => const ChatScreen()
+        name: AppRoutes.MESSAGES,
+        binding: MessageBinding(),
+        page: () => const MessageScreen()
     ),
     GetPage(
         name: AppRoutes.CALL,

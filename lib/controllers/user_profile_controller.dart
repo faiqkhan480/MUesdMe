@@ -101,7 +101,7 @@ class UserProfileController extends GetxController {
   }
 
   navigateToChat() {
-    Get.toNamed(AppRoutes.CHAT, arguments: user.value);
+    Get.toNamed(AppRoutes.MESSAGES, arguments: user.value);
   }
 
   navigateToCall() {

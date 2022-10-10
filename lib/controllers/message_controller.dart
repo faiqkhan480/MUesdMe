@@ -4,15 +4,18 @@ import 'package:get/get.dart';
 
 import '../models/auths/user_model.dart';
 import '../models/chat.dart';
+import '../models/message.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import 'agora_controller.dart';
 
-class ChatController extends GetxController {
+class MessageController extends GetxController {
   RxBool loading = true.obs;
 
-  Rx<User> user = User().obs;
+  // Rx<User> user = User().obs;
+  Rx<Chat> chat = Chat().obs;
   final TextEditingController message = TextEditingController();
+  RxList<Message?> messages = List<Message?>.empty(growable: true).obs;
 
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
@@ -32,9 +35,24 @@ class ChatController extends GetxController {
     super.onInit();
     if(args != null) {
       debugPrint(":::::: ${args}");
-      user.value = args;
-      loading.value = false;
+      chat.value = args;
     }
+    getMessages();
+  }
+
+  Future getMessages() async {
+    List res = await _service.getAllMessages(chat.value.chatId.toString());
+    if(res.isNotEmpty) {
+      if(messages.isEmpty) {
+        messages.addAll(res as List<Message?>);
+      }
+      else {
+        messages.clear();
+        messages.addAll(res as List<Message?>);
+      }
+      update();
+    }
+    loading.value = false;
   }
 
   Future<bool> _isUserOnline(String uid) async {
@@ -50,7 +68,7 @@ class ChatController extends GetxController {
   }
 
   void _addMessage() {
-    comments.insert(0, ChatMessage(uid: "MusedByMe_${user.value.userId}", message: message.text, type: "sender"));
+    comments.insert(0, ChatMessage(uid: "MusedByMe_${chat.value.userId}", message: message.text, type: "sender"));
     message.clear();
   }
 
@@ -63,10 +81,10 @@ class ChatController extends GetxController {
     if (message.text.isEmpty) {
       return;
     }
-    if(await _isUserOnline(user.value.userId.toString())) {
+    if(await _isUserOnline(chat.value.userId.toString())) {
       try {
         AgoraRtmMessage msg = AgoraRtmMessage.fromText(message.text);
-        await _agora.client?.sendMessageToPeer("MusedByMe_${user.value.userId}", msg, false);
+        await _agora.client?.sendMessageToPeer("MusedByMe_${chat.value.userId}", msg, false);
         _addMessage();
       } catch (errorCode) {
         debugPrint(message.text + errorCode.toString());

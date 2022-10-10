@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../models/chat.dart';
+import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 
 class ChatController extends GetxController {
@@ -19,7 +20,7 @@ class ChatController extends GetxController {
 
   Future<void> getChats() async {
     // videos.clear();
-    List res = await _service.fetchPosts();
+    List res = await _service.getAllChats();
     if(res.isNotEmpty) {
       if(chats.isEmpty) {
         chats.addAll(res as List<Chat?>);
@@ -32,5 +33,9 @@ class ChatController extends GetxController {
       update();
     }
     loading.value = false;
+  }
+
+  navigateToChat(Chat chat) {
+    Get.toNamed(AppRoutes.MESSAGES, arguments: chat);
   }
 }

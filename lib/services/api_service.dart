@@ -341,10 +341,10 @@ class ApiService extends GetxService {
   }
 
   //GET ALL MESSAGES
-  Future<List<Message?>> getAllMessages(String feedId) async {
+  Future<List<Message?>> getAllMessages(String chatId) async {
     try {
       var payload = {
-        "UserID": _userId,
+        "ChatID": chatId,
       };
       final json = await Network.post(url: Constants.GET_MESSAGES, headers: _header, payload: payload);
       debugPrint("json::::::$json");
