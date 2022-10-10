@@ -12,8 +12,13 @@ import '../utils/constants.dart';
 class UserProfileController extends GetxController {
   RxBool loading = true.obs;
   RxBool feedsLoading = true.obs;
-  RxDouble toolbarHeight = 10.0.obs;
 
+  RxBool fetching = false.obs;
+
+  RxInt currIndex = 0.obs;
+  RxInt currTab = 0.obs;
+
+  RxDouble toolbarHeight = 10.0.obs;
   Rx<User> user = User().obs;
   final Rx<ScrollController> scroll = ScrollController().obs;
 
@@ -37,12 +42,17 @@ class UserProfileController extends GetxController {
         toolbarHeight.value = 10;
       }
     });
-    getUserDetails();
-    getFeeds();
+    getData();
+  }
+
+  // FETCH DATA FROM SERVER
+  Future getData() async {
+    _getUserDetails();
+    _getFeeds();
   }
 
   // FETCH USER'S DATA
-  Future<void> getUserDetails({int? profileId}) async {
+  Future<void> _getUserDetails({int? profileId}) async {
     User? args = Get.arguments;
     loading.value = true;
     User? res = await _authService.getUser(uid: args?.userId, followedBy: _authService.currentUser?.userId);
@@ -51,7 +61,7 @@ class UserProfileController extends GetxController {
   }
 
   // FETCH USER'S FEEDS
-  Future<void> getFeeds() async {
+  Future<void> _getFeeds() async {
     User? args = Get.arguments;
     // videos.clear();
     List res = await _service.fetchUserPosts(args!.userId!.toString());
@@ -96,5 +106,20 @@ class UserProfileController extends GetxController {
 
   navigateToCall() {
     Get.toNamed(AppRoutes.CALL, arguments: user.value);
+  }
+
+  handleLike(int index, int feedId, {int? currentTab}) async {
+    currIndex.value = index;
+    currTab.value = currentTab ?? 0;
+    fetching.value = true;
+    String? status = feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked;
+    int count = feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes ?? 0;
+    bool res = await _service.sendLike(feedId.toString());
+
+    if(res) {
+      feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked = (status == "Like") ? "Liked" : "Like";
+      feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes = (status == "Like") ? count+1 : count-1;
+    }
+    fetching.value = false;
   }
 }

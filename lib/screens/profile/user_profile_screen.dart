@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+import 'package:lottie/lottie.dart';import '../../components/comment_sheet.dart';
+
 
 import '../../components/custom_header.dart';
+import '../../components/share_sheet.dart';
+import '../../controllers/comment_controller.dart';
 import '../../controllers/user_profile_controller.dart';
 import '../../models/auths/user_model.dart';
 import '../../models/feed.dart';
@@ -21,6 +24,10 @@ class UserProfileScreen extends GetView<UserProfileController> {
   double get _toolbarHeight => controller.toolbarHeight();
   bool get _loading => controller.loading();
   List<Feed?> get _feeds => controller.feeds;
+
+  bool get _fetching => controller.fetching();
+  int get _currIndex => controller.currIndex.value;
+  int get _currTab => controller.currTab.value;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +62,7 @@ class UserProfileScreen extends GetView<UserProfileController> {
             (_loading && _user?.userId == null) ?
             Center(child: Lottie.asset(Assets.loader)):
             ProfileBody(
-              onRefresh: controller.getUserDetails,
+              onRefresh: controller.getData,
               loader: _loading,
               scrollController: controller.scroll(),
               user: _user,
@@ -84,6 +91,12 @@ class UserProfileScreen extends GetView<UserProfileController> {
                 textColor: Colors.white,
                 loader: _loading,
               ),
+              currIndex: _currIndex,
+              currTab: _currTab,
+              fetching: _fetching,
+              likeTap: handleLikeTap,
+              onShareTap: handleShare,
+              onCommentTap: handleComment,
             ),
 
             const SizedBox(
@@ -110,5 +123,38 @@ class UserProfileScreen extends GetView<UserProfileController> {
         controller.navigateToCall();
         break;
     }
+  }
+
+  // ON LIKE TAP
+  handleLikeTap(int index, Feed item, int tab) {
+    if(item.feedId != null) {
+      controller.handleLike(index, item.feedId!, currentTab: tab);
+    }
+  }
+
+  // COMMENT SHEET
+  handleComment(int feedId) async {
+    Get.create(() => CommentController(feedId: feedId.toString()));
+    await Get.bottomSheet(
+        const CommentSheet(),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
+    Get.delete<CommentController>(force: true);
+  }
+
+  // SHARE SHEET
+  handleShare(Feed feed) async {
+    await Get.bottomSheet(
+        ShareSheet(feed: feed),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
   }
 }

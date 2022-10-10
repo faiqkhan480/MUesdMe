@@ -46,13 +46,7 @@ class InfoCard extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.centerRight,
-                    child: action
-                    // child: IconButton(
-                    //     onPressed: () => null,
-                    //     color: AppColors.lightGrey,
-                    //     iconSize: 30,
-                    //     icon: const Icon(CupertinoIcons.ellipsis)
-                    // ),
+                    child: action ?? const SizedBox(height: 30,)
                   ),
                   const SizedBox(height: 5,),
                   Row(

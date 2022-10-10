@@ -41,7 +41,7 @@ class FeedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isShared = post?.shareUser?.userId != 0;
+    bool isShared = post?.shareUser != null && post?.shareUser?.userId != 0;
     return StreamBuilder<bool>(
       stream: (_agora.checkStatus(post?.userId.toString() ?? "")),
       // future: _agora.isUserOnline(post?.userId.toString() ?? ""),
