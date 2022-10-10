@@ -73,7 +73,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                     const SizedBox(height: 20,),
 
                     TextButton(
-                      onPressed: () => null,
+                      onPressed: controller.deleteAccount,
                       style: TextButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
                           foregroundColor: Colors.white,

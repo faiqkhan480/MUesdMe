@@ -14,6 +14,7 @@ import 'profile_controller.dart';
 
 class EditProfileController extends GetxController {
   RxBool loading = false.obs;
+  RxBool fetching = false.obs;
 
   // INPUT CONTROLLERS
   final TextEditingController firstName = TextEditingController();
@@ -95,5 +96,15 @@ class EditProfileController extends GetxController {
     Get.offNamed(Get.previousRoute);
     // FocusScope.of(context).unfocus();
     // Get.toNamed(AppRoutes.PROFILE_EDIT);
+  }
+
+  // DELETE ACCOUNT
+  deleteAccount() async {
+    fetching.value = true;
+    var res = await _authService.deleteUser();
+    if(res == true) {
+      Get.offAllNamed(AppRoutes.LOGIN);
+    }
+    fetching.value = false;
   }
 }

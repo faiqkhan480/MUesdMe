@@ -294,4 +294,32 @@ class AuthService extends GetxService {
     // _box.write("user", null);
     _currentUser = null;
   }
+
+  Future deleteUser() async {
+    try {
+      var header = {
+        "Authorization": "Bearer ${_box.read("token")}",
+      };
+      var payload = {
+        "UserId":  User.fromJson(_box.read("user")).userId.toString(),
+      };
+      final json = await Network.post(url: Constants.DELETE_USER, payload: payload, headers: header);
+      debugPrint("JSON  $json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          await clearUser();
+          return true;
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
 }
