@@ -15,8 +15,10 @@ import 'root_controller.dart';
 
 class FeedController extends GetxController {
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
+  RxList<User?> users = List<User?>.empty(growable: true).obs;
   RxBool loading = true.obs;
   RxBool fetching = false.obs;
+  RxBool gettingUsers = true.obs;
 
   RxInt currIndex = 0.obs;
   RxInt currTab = 0.obs;
@@ -33,6 +35,7 @@ class FeedController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     getFeeds();
+    getActiveUsers();
   }
 
   // FETCH FEEDS
@@ -122,8 +125,16 @@ class FeedController extends GetxController {
   }
 
   updateCommentCount(int feedId, int count) {
-
     feeds.firstWhere((feed) => feed?.feedId == feedId)?.postComments = count;
     update();
+  }
+
+  // FETCH USERS
+  Future<void> getActiveUsers() async {
+    // users.clear();
+    gettingUsers.value = true;
+    List<User?> res = await _service.fetchActiveUsers();
+    users.addAll(res);
+    gettingUsers.value = false;
   }
 }

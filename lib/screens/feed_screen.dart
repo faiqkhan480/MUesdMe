@@ -30,7 +30,11 @@ class FeedScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Header(title: "Live Feed", showLives: true, handleSearch: _controller.handleNavigation),
+          Header(
+            title: "Live Feed",
+            showLives: true,
+            handleSearch: _controller.handleNavigation,
+          ),
           // const SizedBox(height: 20,),
           Obx(() =>
           (_loading) ?

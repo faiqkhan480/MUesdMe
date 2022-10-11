@@ -15,7 +15,7 @@ class SearchController extends GetxController {
   final ApiService _service = Get.find<ApiService>();
 
 
-  // FETCH FEEDS
+  // FETCH USERS
   Future<void> getUsers(String? search) async {
     if(search!.isNotEmpty) {
       users.clear();

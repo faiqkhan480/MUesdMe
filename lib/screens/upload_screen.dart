@@ -8,10 +8,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:musedme/controllers/feed_controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 
 import '../components/custom_header.dart';
+import '../controllers/profile_controller.dart';
 import '../services/api_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
@@ -32,6 +34,8 @@ class _UploadScreenState extends State<UploadScreen> {
   String value = "Public";
 
   final ApiService _service = Get.find<ApiService>();
+  final FeedController _feeds = Get.find<FeedController>();
+  final ProfileController _profile = Get.find<ProfileController>();
 
   getFile() async {
     debugPrint(":::::::::::: ${widget.post.toJson()}");
@@ -130,6 +134,8 @@ class _UploadScreenState extends State<UploadScreen> {
     // String feedPath, String type, String privacy
     var res = await _service.uploadFeed(base64Image, "Image", value);
     if(res == true) {
+      await _feeds.getFeeds();
+      await _profile.getData();
       Get.close(2);
     }
     setState(() {

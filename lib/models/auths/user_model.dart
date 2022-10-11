@@ -28,6 +28,7 @@ class User {
     this.followedBy,
     this.followers,
     this.followings,
+    this.posts,
   });
 
   @JsonKey(name: 'UserID')
@@ -89,6 +90,9 @@ class User {
 
   @JsonKey(name: 'Followings')
   final int? followings;
+
+  @JsonKey(name: 'Posts')
+  final int? posts;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

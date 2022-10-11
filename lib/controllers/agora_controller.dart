@@ -1,8 +1,10 @@
 import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:musedme/controllers/message_controller.dart';
 
 import '../models/chat.dart';
+import '../models/message.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
 
@@ -12,6 +14,8 @@ class AgoraController extends GetxController {
   final AuthService _service = Get.find<AuthService>();
 
   RxList comments = [].obs;
+
+  RxInt currentId = 0.obs;
 
   @override
   void onInit() {
@@ -23,13 +27,29 @@ class AgoraController extends GetxController {
   // CREATE AGORA CLIENT FOR USER
   Future _createClient() async {
     client = await AgoraRtmClient.createInstance(Constants.appId);
-    debugPrint("RTM Initialize::::::::");
 
-    client?.onMessageReceived = (AgoraRtmMessage message, String peerId) {
+    client?.onMessageReceived = (AgoraRtmMessage message, String peerId) async {
       debugPrint("Public Message from $peerId: ${message.text}");
       int uid = int.parse(peerId.replaceAll("MusedByMe_", ""));
-      // comments.insert(0, Chat(userId: uid));
-      comments.insert(0, ChatMessage(uid: peerId, message: message.text, type: "receiver"));
+      debugPrint("Public::::::::::: ${Get.isRegistered<MessageController>()}");
+      bool test = Get.isRegistered<MessageController>();
+      if(test) {
+        MessageController c = Get.find<MessageController>();
+        c.messages.insert(0, Message(
+          messageDate: DateTime.now(),
+          message: message.text,
+          chatId: c.chat.value.chatId,
+          userId: uid,
+        ));
+      }
+      // if(uid == currentId.value) {
+      //   comments.insert(0, Message(
+      //     messageDate: DateTime.now(),
+      //     message: message.text,
+      //     chatId: 0,
+      //     userId: uid,
+      //   ));
+      // }
     };
     client?.onConnectionStateChanged = (int state, int reason) {
       debugPrint('Connection state changed::::::::::: $state, reason: $reason');
@@ -46,10 +66,10 @@ class AgoraController extends GetxController {
     debugPrint("LOGIN AGORA:::: MusedByMe_${_service.currentUser?.userId}");
     try {
       await client?.login(_service.rtm, "MusedByMe_${_service.currentUser?.userId}");
-      Get.snackbar("Success", "Login success!", backgroundColor: Colors.green, colorText: Colors.white);
+      // Get.snackbar("Success", "Login success!", backgroundColor: Colors.green, colorText: Colors.white);
     } catch (errorCode) {
       debugPrint('Login error:::: $errorCode');
-      Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+      // Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
       client?.logout();
       await _login();
     }
@@ -79,5 +99,13 @@ class AgoraController extends GetxController {
       debugPrint('Query error: $errorCode');
       return false;
     }
+  }
+
+  setCurrentId(int id) {
+    currentId.value = id;
+  }
+
+  clearChat() {
+    comments.clear();
   }
 }

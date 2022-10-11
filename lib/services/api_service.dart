@@ -362,6 +362,7 @@ class ApiService extends GetxService {
     }
   }
 
+  // SAVE MESSAGE TO SERVER
   Future sendMessage(String chatId, String message, String chatWithUser) async {
     try {
       var payload = {
@@ -386,6 +387,27 @@ class ApiService extends GetxService {
     } catch (e) {
       debugPrint("ERROR >>>>>>>>>> $e");
       return null;
+    }
+  }
+
+  // GET USERS FROM SEARCH
+  Future<List<User?>> fetchActiveUsers() async {
+    try {
+      var payload = {
+        "UserID": _userId,
+      };
+      final json = await Network.post(url: Constants.ACTIVE_USERS, headers: _header, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.users != null) {
+          List<User> users = userFromJson(jsonEncode(res.users));
+          return users;
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return [];
     }
   }
 }

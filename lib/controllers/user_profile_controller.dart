@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../models/auths/user_model.dart';
+import '../models/chat.dart';
 import '../models/feed.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
+import 'chat_controller.dart';
 
 class UserProfileController extends GetxController {
   RxBool loading = true.obs;
@@ -101,7 +103,16 @@ class UserProfileController extends GetxController {
   }
 
   navigateToChat() {
-    Get.toNamed(AppRoutes.MESSAGES, arguments: user.value);
+    final ChatController _chat = Get.find<ChatController>();
+    Chat? c = _chat.chats.firstWhereOrNull((c) => c?.userId == user.value.userId);
+    Get.toNamed(AppRoutes.MESSAGES, arguments: c ?? Chat(
+      userId: user.value.userId,
+      chatId: 0,
+      fullName: "${user.value.firstName} ${user.value.lastName}",
+      message: "",
+      messageDate: DateTime.now(),
+      profilePic: user.value.profilePic,
+    ));
   }
 
   navigateToCall() {

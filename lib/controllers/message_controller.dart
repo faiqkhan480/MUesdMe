@@ -8,6 +8,7 @@ import '../models/message.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import 'agora_controller.dart';
+import 'chat_controller.dart';
 
 class MessageController extends GetxController {
   RxBool loading = true.obs;
@@ -35,13 +36,33 @@ class MessageController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    if(args != null) {
+    if(args != null && args is Chat) {
       chat.value = args;
+      getMessages();
     }
-    getMessages();
+
+    // comments.addListener(GetStream(
+    //   onListen: appendMsg,
+    // ));
+    // comments.listen((p) {
+    //   debugPrint(":::::T:::::: ${comments.length}");
+    //   int uid = int.parse(comments.first.uid.replaceAll("MusedByMe_", ""));
+    //
+    //   // messages.insert(0, Message(
+    //   //     userId: uid,
+    //   //     chatId: chat.value.chatId,
+    //   //     message: comments.first.message,
+    //   //     messageDate: DateTime.now())
+    //   // );
+    // });
+  }
+
+  appendMsg() {
+    // List<Message?> m = comments.where((msg) => msg?.userId == _authService.currentUser?.userId || msg?.userId == chat.value.userId).toList() as List<Message?>;
   }
 
   Future getMessages() async {
+    _agora.setCurrentId(chat.value.chatId!);
     List res = await _service.getAllMessages(chat.value.chatId.toString());
     if(res.isNotEmpty) {
       if(messages.isEmpty) {
@@ -69,8 +90,15 @@ class MessageController extends GetxController {
   }
 
   void _addMessage() {
-    comments.insert(0, ChatMessage(uid: "MusedByMe_${chat.value.userId}", message: message.text, type: "sender"));
+    comments.insert(0, Message(
+      messageDate: DateTime.now(),
+      message: message.text,
+      chatId: 0,
+      userId: chat.value.userId,
+    ));
+    // comments.insert(0, ChatMessage(uid: "MusedByMe_${chat.value.userId}", message: message.text, type: "sender"));
     messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: chat.value.chatId, message: message.text, messageDate: DateTime.now()));
+    _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString());
     message.clear();
   }
 
@@ -85,7 +113,7 @@ class MessageController extends GetxController {
         AgoraRtmMessage msg = AgoraRtmMessage.fromText(message.text);
         await _agora.client?.sendMessageToPeer("MusedByMe_${chat.value.userId}", msg, false);
         _addMessage();
-        await _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString());
+        fetching.value = false;
       } catch (errorCode) {
         debugPrint(message.text + errorCode.toString());
         fetching.value = false;
