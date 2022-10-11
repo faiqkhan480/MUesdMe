@@ -26,42 +26,64 @@ class CommentSheet extends GetWidget<CommentController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // HEADER
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.clear)),
+                const Spacer(flex: 2,),
+                const Text("Comments",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontFamily: 'Larsseit',
+                  fontWeight: FontWeight.w500,
+                ),),
+
+                // const SizedBox.shrink(),
+                const Spacer(flex: 3,),
+              ],
+            ),
             Obx(() =>
-            Expanded(
+            Flexible(
                 child: (_loading) ?
                 const Loader() :
-                ListView.builder(itemBuilder: (context, index) =>
+                ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    itemBuilder: (context, index) =>
                     Row(
                       children: [
                         _imageView(_comments.elementAt(index)?.profilePic),
+                        const SizedBox(width: 10,),
                         Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE9F1FE),
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextWidget(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE9F1FE),
+                                borderRadius: BorderRadius.circular(6.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextWidget(
                                   _comments.elementAt(index)?.fullName ?? "",
                                   weight: FontWeight.w800,
                                 ),
-                                TextWidget(
+                                    TextWidget(
                                   _comments.elementAt(index)?.comment ?? "",
                                   // weight: FontWeight.bold,
                                   size: 16.0,
                                 ),
-                              ],
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    )
+                          ],
+                        )
                       ],
                     ),
                     itemCount: _comments.length
@@ -72,6 +94,7 @@ class CommentSheet extends GetWidget<CommentController> {
             Obx(() => TextFormField(
               controller: controller.comment,
               decoration: InputDecoration(
+                hintText: "Type a comment...",
                 suffixIcon: controller.fetching() ?
                 const SizedBox(
                     height: 2,
@@ -115,16 +138,13 @@ class CommentSheet extends GetWidget<CommentController> {
   }
 
   Widget _imageView([String? url]) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(100),
-        child: Image.network(
-          url != null && url.isNotEmpty ? "${Constants.IMAGE_URL}$url" : Constants.dummyImage,
-          fit: BoxFit.cover,
-          height: 50,
-          width: 50,
-        ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(100),
+      child: Image.network(
+        url != null && url.isNotEmpty ? "${Constants.IMAGE_URL}$url" : Constants.dummyImage,
+        fit: BoxFit.cover,
+        height: 50,
+        width: 50,
       ),
     );
   }
