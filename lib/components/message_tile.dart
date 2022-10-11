@@ -19,12 +19,13 @@ class MessageTile extends StatelessWidget {
   AuthService get _auth => Get.find<AuthService>();
   @override
   Widget build(BuildContext context) {
+    bool isReceiver = message.userId != _auth.currentUser?.userId;
     return Container(
       padding: const EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
       child: Row(
-        mainAxisAlignment: (message.userId == _auth.currentUser?.userId ? MainAxisAlignment.start : MainAxisAlignment.end),
+        mainAxisAlignment: (isReceiver ? MainAxisAlignment.start : MainAxisAlignment.end),
           children: [
-            if(message.userId == _auth.currentUser?.userId)
+            if(isReceiver)
               CircleAvatar(
                 backgroundColor: Colors.white,
                 radius: 28,
@@ -35,30 +36,36 @@ class MessageTile extends StatelessWidget {
                 ),),
                 // backgroundImage: NetworkImage(
                 //     Constants.IMAGE_URL + receiverImage)),
-            if(message.userId != _auth.currentUser?.userId)
+            if(!isReceiver)
               const SizedBox(width: 30,),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(isReceiver ? 0 : 20),
+                    bottomRight: Radius.circular(!isReceiver ? 0 : 20),
+                    topLeft: const Radius.circular(20),
+                    topRight: const Radius.circular(20),
+                  ),
+                  // borderRadius: BorderRadius.circular(20),
                   color: (
-                      message.userId == _auth.currentUser?.userId ?
+                      isReceiver ?
                       const Color(0xFFF2F2F2) :
                       AppColors.primaryColor
                   ),
                 ),
                 padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.symmetric(horizontal: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
                 child: TextWidget(message.message ?? "",
                   size: 15,
-                  color: message.userId == _auth.currentUser?.userId ? Colors.black : Colors.white,
+                  color: isReceiver ? Colors.black : Colors.white,
                   weight: FontWeight.normal,
                 ),
               ),
             ),
-            if(message.userId == _auth.currentUser?.userId)
+            if(isReceiver)
               const SizedBox(width: 30,),
-            if(message.userId != _auth.currentUser?.userId)
+            if(!isReceiver)
                CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 28,

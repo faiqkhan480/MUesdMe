@@ -12,6 +12,7 @@ import 'agora_controller.dart';
 class MessageController extends GetxController {
   RxBool loading = true.obs;
   RxBool emojiShowing = false.obs;
+  RxBool fetching = false.obs;
 
   // Rx<User> user = User().obs;
   Rx<Chat> chat = Chat().obs;
@@ -35,7 +36,6 @@ class MessageController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     if(args != null) {
-      debugPrint(":::::: ${args}");
       chat.value = args;
     }
     getMessages();
@@ -70,27 +70,35 @@ class MessageController extends GetxController {
 
   void _addMessage() {
     comments.insert(0, ChatMessage(uid: "MusedByMe_${chat.value.userId}", message: message.text, type: "sender"));
+    messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: chat.value.chatId, message: message.text, messageDate: DateTime.now()));
     message.clear();
   }
 
   void sendMessage() async {
     debugPrint("${_authService.rtm}");
-    // if (_peerUserId.text.isEmpty) {
-    //   widget.logController.addLog('Please input peer user id to send message.');
-    //   return;
-    // }
     if (message.text.isEmpty) {
       return;
     }
+    fetching.value = true;
     if(await _isUserOnline(chat.value.userId.toString())) {
       try {
         AgoraRtmMessage msg = AgoraRtmMessage.fromText(message.text);
         await _agora.client?.sendMessageToPeer("MusedByMe_${chat.value.userId}", msg, false);
         _addMessage();
+        await _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString());
       } catch (errorCode) {
         debugPrint(message.text + errorCode.toString());
+        fetching.value = false;
         Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
       }
+    }
+    else {
+      var res = await _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString());
+      if(res == true) {
+        messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: chat.value.chatId, message: message.text, messageDate: DateTime.now()));
+        message.clear();
+      }
+      fetching.value = false;
     }
   }
 

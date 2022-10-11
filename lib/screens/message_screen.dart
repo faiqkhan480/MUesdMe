@@ -16,6 +16,7 @@ import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
+import '../utils/style_config.dart';
 import '../widgets/loader.dart';
 
 
@@ -26,6 +27,7 @@ class MessageScreen extends GetView<MessageController> {
   Chat? get _chatUser => controller.chat.value;
   List<Message?> get _messages => controller.messages;
   bool get _loading => controller.loading();
+  bool get _fetching => controller.fetching();
   AuthService get _authService => Get.find<AuthService>();
 
   @override
@@ -85,7 +87,6 @@ class MessageScreen extends GetView<MessageController> {
           const Loader() :
           ListView.builder(
             itemCount: _messages.length,
-            // itemCount: controller.comments.length,
             physics: const BouncingScrollPhysics(),
             reverse: true,
             padding: const EdgeInsets.only(top: 10,bottom: 60),
@@ -110,36 +111,7 @@ class MessageScreen extends GetView<MessageController> {
                     child: EmojiPicker(
                       textEditingController: controller.message,
                       onBackspacePressed: controller.onPressed,
-                      config: Config(
-                        columns: 7,
-                        // Issue: https://github.com/flutter/flutter/issues/28894
-                        emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
-                        verticalSpacing: 0,
-                        horizontalSpacing: 0,
-                        gridPadding: EdgeInsets.zero,
-                        initCategory: Category.RECENT,
-                        bgColor: const Color(0xFFF2F2F2),
-                        indicatorColor: AppColors.primaryColor,
-                        iconColor: Colors.grey,
-                        iconColorSelected: AppColors.primaryColor,
-                        backspaceColor: AppColors.primaryColor,
-                        skinToneDialogBgColor: Colors.white,
-                        skinToneIndicatorColor: Colors.grey,
-                        enableSkinTones: true,
-                        showRecentsTab: true,
-                        recentsLimit: 28,
-                        replaceEmojiOnLimitExceed: false,
-                        noRecents: const Text(
-                          'No Recents',
-                          style: TextStyle(fontSize: 20, color: Colors.black26),
-                          textAlign: TextAlign.center,
-                        ),
-                        loadingIndicator: const SizedBox.shrink(),
-                        tabIndicatorAnimDuration: kTabScrollDuration,
-                        categoryIcons: const CategoryIcons(),
-                        buttonMode: ButtonMode.CUPERTINO,
-                        checkPlatformCompatibility: true,
-                      ),
+                      config: StyleConfig.emojiConfig,
                     )),
               ),
             ),
@@ -173,6 +145,9 @@ class MessageScreen extends GetView<MessageController> {
                       ),
                       Expanded(child: MessageInput(controller.message)),
                       const SizedBox(width: 5,),
+
+                      _fetching ?
+                      const Center(child: CircularProgressIndicator(color: AppColors.primaryColor, strokeWidth: 2,)) :
                       IconButton(
                           onPressed: controller.sendMessage,
                           color: AppColors.primaryColor,
