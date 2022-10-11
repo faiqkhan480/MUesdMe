@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:badges/badges.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -97,7 +100,49 @@ class MessageScreen extends GetView<MessageController> {
             },
           ),
 
-          if(!_loading)
+          if(!_loading)...[
+            Offstage(
+              offstage: !controller.emojiShowing(),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                    height: 250,
+                    child: EmojiPicker(
+                      textEditingController: controller.message,
+                      onBackspacePressed: controller.onPressed,
+                      config: Config(
+                        columns: 7,
+                        // Issue: https://github.com/flutter/flutter/issues/28894
+                        emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                        verticalSpacing: 0,
+                        horizontalSpacing: 0,
+                        gridPadding: EdgeInsets.zero,
+                        initCategory: Category.RECENT,
+                        bgColor: const Color(0xFFF2F2F2),
+                        indicatorColor: AppColors.primaryColor,
+                        iconColor: Colors.grey,
+                        iconColorSelected: AppColors.primaryColor,
+                        backspaceColor: AppColors.primaryColor,
+                        skinToneDialogBgColor: Colors.white,
+                        skinToneIndicatorColor: Colors.grey,
+                        enableSkinTones: true,
+                        showRecentsTab: true,
+                        recentsLimit: 28,
+                        replaceEmojiOnLimitExceed: false,
+                        noRecents: const Text(
+                          'No Recents',
+                          style: TextStyle(fontSize: 20, color: Colors.black26),
+                          textAlign: TextAlign.center,
+                        ),
+                        loadingIndicator: const SizedBox.shrink(),
+                        tabIndicatorAnimDuration: kTabScrollDuration,
+                        categoryIcons: const CategoryIcons(),
+                        buttonMode: ButtonMode.CUPERTINO,
+                        checkPlatformCompatibility: true,
+                      ),
+                    )),
+              ),
+            ),
             Align(
             alignment: Alignment.bottomLeft,
             child: Container(
@@ -121,7 +166,7 @@ class MessageScreen extends GetView<MessageController> {
                   child: Row(
                     children: [
                       IconButton(
-                          onPressed: () => null,
+                          onPressed: controller.onPressed,
                           color: AppColors.primaryColor,
                           iconSize: 30,
                           icon: Image.asset(Assets.iconsSmileyFace)
@@ -140,6 +185,7 @@ class MessageScreen extends GetView<MessageController> {
               ),
             ),
           ),
+          ],
         ]
       ),),
     );

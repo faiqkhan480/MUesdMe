@@ -11,6 +11,7 @@ import 'agora_controller.dart';
 
 class MessageController extends GetxController {
   RxBool loading = true.obs;
+  RxBool emojiShowing = false.obs;
 
   // Rx<User> user = User().obs;
   Rx<Chat> chat = Chat().obs;
@@ -91,5 +92,9 @@ class MessageController extends GetxController {
         Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
       }
     }
+  }
+
+  onPressed() {
+    emojiShowing.value = !emojiShowing.value;
   }
 }

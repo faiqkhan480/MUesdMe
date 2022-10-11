@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/app_colors.dart';
@@ -12,12 +15,12 @@ class MessageInput extends StatelessWidget {
       autofocus: false,
       controller: controller,
       decoration: InputDecoration(
-        suffixIcon: IconButton(
-            onPressed: () => null,
-          color: AppColors.lightGrey,
-            iconSize: 30,
-            icon: const Icon(Icons.image_rounded,)
-        ),
+        // suffixIcon: IconButton(
+        //     onPressed: () => null,
+        //   color: AppColors.lightGrey,
+        //     iconSize: 30,
+        //     icon: const Icon(Icons.image_rounded,)
+        // ),
         hintText: 'Type a message....',
         hintStyle: const TextStyle(color: AppColors.lightGrey),
         // isDense: true,
