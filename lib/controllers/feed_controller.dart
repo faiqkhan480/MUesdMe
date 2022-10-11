@@ -120,4 +120,10 @@ class FeedController extends GetxController {
     }
     fetching.value = false;
   }
+
+  updateCommentCount(int feedId, int count) {
+
+    feeds.firstWhere((feed) => feed?.feedId == feedId)?.postComments = count;
+    update();
+  }
 }

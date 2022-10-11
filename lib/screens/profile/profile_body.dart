@@ -135,52 +135,56 @@ class ProfileBody extends StatelessWidget {
   FeedController get _feedController => Get.find<FeedController>();
 
   Widget listing(List<Feed?> data, int tab) {
-    return
-    RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView.separated(
-          physics: const NeverScrollableScrollPhysics(),
-          separatorBuilder: (context, index) => const SizedBox(height: 20),
-          itemCount: data.length,
-          // itemBuilder: (context, index) => FeedCard(
-          //   index: index,
-          //   isInView: isInView,
-          //   post: _feeds.elementAt(index),
-          //   onDownload: _controller.handleDownload,
-          //   handleNavigate: () => onTap(index),
-          //   controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == _feeds.elementAt(index)?.feedPath),
-          //   actions: Obx(() => FeedActions(
-          //     index: index,
-          //     loader: _fetching && _currIndex == index,
-          //     liked: _feeds.elementAt(index)?.postLiked == "Liked",
-          //     commentsCount: _feeds.elementAt(index)?.postComments ?? 0,
-          //     likeCount: _feeds.elementAt(index)?.postLikes ?? 0,
-          //     onLikeTap: handleLikeTap,
-          //     onCommentTap: () =>  handleComment(_feeds.elementAt(index)!.feedId!),
-          //     onShareTap: () => handleShare(_feeds.elementAt(index)!),
-          //   )),
-          // ),
-          itemBuilder: (context, index) => FeedCard(
-            horizontalSpace: 10,
+    return Column(
+      children: List.generate(data.length, (index) => Padding(
+          padding: EdgeInsets.only(top: 5, bottom: 10),
+        child: FeedCard(
+          horizontalSpace: 10,
+          index: index,
+          post: data.elementAt(index),
+          onDownload: _feedController.handleDownload,
+          handleNavigate: () {
+            User u = User(userId: data.elementAt(index)?.userId,);
+            _feedController.gotoProfile(u);
+          },
+          controller: videoController,
+          actions: FeedActions(
             index: index,
-            post: data.elementAt(index),
-            onDownload: _feedController.handleDownload,
-            handleNavigate: () {
-              User u = User(userId: data.elementAt(index)?.userId,);
-              _feedController.gotoProfile(u);
-            },
-            controller: videoController,
-            actions: FeedActions(
-              index: index,
-              loader: fetching && currIndex == index && currTab == tab,
-              liked: data.elementAt(index)?.postLiked == "Liked",
-              commentsCount: data.elementAt(index)?.postComments ?? 0,
-              likeCount: data.elementAt(index)?.postLikes ?? 0,
-              onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
-              onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
-              onShareTap: () => onShareTap(data.elementAt(index)!),
+            loader: fetching && currIndex == index && currTab == tab,
+            liked: data.elementAt(index)?.postLiked == "Liked",
+            commentsCount: data.elementAt(index)?.postComments ?? 0,
+            likeCount: data.elementAt(index)?.postLikes ?? 0,
+            onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
+            onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
+            onShareTap: () => onShareTap(data.elementAt(index)!),
           ),),
-      ),
+      )),
     );
+    return
+      ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        separatorBuilder: (context, index) => const SizedBox(height: 20),
+        itemCount: data.length,
+        itemBuilder: (context, index) => FeedCard(
+          horizontalSpace: 10,
+          index: index,
+          post: data.elementAt(index),
+          onDownload: _feedController.handleDownload,
+          handleNavigate: () {
+            User u = User(userId: data.elementAt(index)?.userId,);
+            _feedController.gotoProfile(u);
+          },
+          controller: videoController,
+          actions: FeedActions(
+            index: index,
+            loader: fetching && currIndex == index && currTab == tab,
+            liked: data.elementAt(index)?.postLiked == "Liked",
+            commentsCount: data.elementAt(index)?.postComments ?? 0,
+            likeCount: data.elementAt(index)?.postLikes ?? 0,
+            onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
+            onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
+            onShareTap: () => onShareTap(data.elementAt(index)!),
+          ),),
+      );
   }
 }

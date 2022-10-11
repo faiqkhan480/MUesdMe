@@ -6,7 +6,8 @@ import '../services/api_service.dart';
 
 class CommentController extends GetxController {
   final String? feedId;
-  CommentController({this.feedId});
+  final Function(int, int)? action;
+  CommentController({this.feedId, this.action});
 
   RxList<Comment?> comments = List<Comment?>.empty(growable: true).obs;
   RxBool loading = true.obs;
@@ -59,5 +60,14 @@ class CommentController extends GetxController {
       }
       fetching.value = false;
     }
+  }
+
+  @override
+  void onClose() {
+    if(action != null) {
+      action!(int.parse(feedId!), comments.length);
+    }
+    // TODO: implement onClose
+    super.onClose();
   }
 }

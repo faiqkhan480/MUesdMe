@@ -50,21 +50,24 @@ class ProfileScreen extends GetView<ProfileController> {
             ),
             (_loading && _user == null) ?
             Center(child: Lottie.asset(Assets.loader)):
-            ProfileBody(
-              onRefresh: controller.getData,
-              loader: _loading,
-              scrollController: controller.scroll(),
-              user: _user,
-              feeds: _feeds,
-              toolbarHeight: _toolbarHeight,
-              fetchingFeeds: controller.feedsLoading(),
-              currIndex: _currIndex,
-              currTab: _currTab,
-              fetching: _fetching,
-              likeTap: handleLikeTap,
-              onShareTap: handleShare,
-              onCommentTap: handleComment,
-            ),
+                RefreshIndicator(
+                  onRefresh: controller.getData,
+                  child: ProfileBody(
+                    onRefresh: controller.getData,
+                    loader: _loading,
+                    scrollController: controller.scroll(),
+                    user: _user,
+                    feeds: _feeds,
+                    toolbarHeight: _toolbarHeight,
+                    fetchingFeeds: controller.feedsLoading(),
+                    currIndex: _currIndex,
+                    currTab: _currTab,
+                    fetching: _fetching,
+                    likeTap: handleLikeTap,
+                    onShareTap: handleShare,
+                    onCommentTap: handleComment,
+                  ),
+                    ),
 
             Header(
                 title: "Profile",

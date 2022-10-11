@@ -88,12 +88,12 @@ class ApiService extends GetxService {
       final json = await Network.post(url: Constants.SERACH_USER, headers: _header, payload: payload);
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        if(res.message != null && res.message!.isNotEmpty) {
-          Get.snackbar("Failed!", res.message ?? "",
-              backgroundColor: AppColors.pinkColor,
-              colorText: Colors.white
-          );
-        }
+        // if(res.message != null && res.message!.isNotEmpty) {
+        //   Get.snackbar("Failed!", res.message ?? "",
+        //       backgroundColor: AppColors.pinkColor,
+        //       colorText: Colors.white
+        //   );
+        // }
         if(res.code == 200 && res.users != null) {
           List<User> _users = userFromJson(jsonEncode(res.users));
           return _users;

@@ -17,12 +17,14 @@ class SearchController extends GetxController {
 
   // FETCH FEEDS
   Future<void> getUsers(String? search) async {
-    users.clear();
-    loading.value = true;
-    List<User?> res = await _service.fetchUsers(search ?? "");
-    users.addAll(res);
-    searchResult.value = res == [];
-    loading.value = false;
+    if(search!.isNotEmpty) {
+      users.clear();
+      loading.value = true;
+      List<User?> res = await _service.fetchUsers(search ?? "");
+      users.addAll(res);
+      searchResult.value = res == [];
+      loading.value = false;
+    }
   }
 
   // NAVIGATE TO USER'S PROFILE

@@ -53,7 +53,7 @@ class Feed {
   final int? postShares;
 
   @JsonKey(name: 'PostComments')
-  final int? postComments;
+  int? postComments;
 
   @JsonKey(name: 'FeedType')
   final String? feedType;

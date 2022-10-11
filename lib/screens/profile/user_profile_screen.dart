@@ -61,42 +61,45 @@ class UserProfileScreen extends GetView<UserProfileController> {
             ),
             (_loading && _user?.userId == null) ?
             Center(child: Lottie.asset(Assets.loader)):
-            ProfileBody(
+            RefreshIndicator(
               onRefresh: controller.getData,
-              loader: _loading,
-              scrollController: controller.scroll(),
-              user: _user,
-              feeds: _feeds,
-              toolbarHeight: _toolbarHeight,
-              fetchingFeeds: controller.feedsLoading(),
-              options: PopupMenuButton<int>(
-                  padding: const EdgeInsets.only(left: 10, right: 0),
-                  onSelected: handleOption,
-                  icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
-                  itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                    const PopupMenuItem<int>(
-                      value: 0,
-                      child: Text('Message'),
-                    ),
-                    const PopupMenuItem<int>(
-                      value: 1,
-                      child: Text("Call"),
-                    ),
-                  ]
-              ),
-              button: ButtonWidget(
-                text: _user?.follow == 0 ? "Follow" : "Un Follow",
-                onPressed: controller.sendFollowReq,
-                bgColor: AppColors.primaryColor,
-                textColor: Colors.white,
+              child: ProfileBody(
+                onRefresh: controller.getData,
                 loader: _loading,
-              ),
-              currIndex: _currIndex,
-              currTab: _currTab,
-              fetching: _fetching,
-              likeTap: handleLikeTap,
-              onShareTap: handleShare,
-              onCommentTap: handleComment,
+                scrollController: controller.scroll(),
+                user: _user,
+                feeds: _feeds,
+                toolbarHeight: _toolbarHeight,
+                fetchingFeeds: controller.feedsLoading(),
+                options: PopupMenuButton<int>(
+                    padding: const EdgeInsets.only(left: 10, right: 0),
+                    onSelected: handleOption,
+                    icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+                      const PopupMenuItem<int>(
+                        value: 0,
+                        child: Text('Message'),
+                      ),
+                      const PopupMenuItem<int>(
+                        value: 1,
+                        child: Text("Call"),
+                      ),
+                    ]
+                ),
+                button: ButtonWidget(
+                  text: _user?.follow == 0 ? "Follow" : "Un Follow",
+                  onPressed: controller.sendFollowReq,
+                  bgColor: AppColors.primaryColor,
+                  textColor: Colors.white,
+                  loader: _loading,
+                ),
+                currIndex: _currIndex,
+                currTab: _currTab,
+                fetching: _fetching,
+                likeTap: handleLikeTap,
+                onShareTap: handleShare,
+                onCommentTap: handleComment,
+              )
             ),
 
             const SizedBox(

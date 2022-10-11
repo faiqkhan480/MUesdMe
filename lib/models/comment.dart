@@ -48,7 +48,7 @@ class Comment {
   final int? postComments;
 
   @JsonKey(name: 'FeedDate')
-  final DateTime? feedDate;
+  final int? feedDate;
 
   @JsonKey(name: 'Comment')
   final String? comment;

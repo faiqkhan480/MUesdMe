@@ -16,8 +16,6 @@ Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
       postLikes: json['PostLikes'] as int?,
       postShares: json['PostShares'] as int?,
       postComments: json['PostComments'] as int?,
-      feedDate: json['FeedDate'] == null
-          ? null
-          : DateTime.parse(json['FeedDate'] as String),
+      feedDate: json['FeedDate'] as int?,
       comment: json['Comment'] as String?,
     );

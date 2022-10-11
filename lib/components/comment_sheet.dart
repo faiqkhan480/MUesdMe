@@ -30,7 +30,7 @@ class CommentSheet extends GetWidget<CommentController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.clear)),
+                IconButton(onPressed: () => Get.back(result: _comments.length), icon: const Icon(Icons.clear)),
                 const Spacer(flex: 2,),
                 const Text("Comments",
                   textAlign: TextAlign.center,
@@ -46,16 +46,17 @@ class CommentSheet extends GetWidget<CommentController> {
               ],
             ),
             Obx(() =>
-            Flexible(
+            Expanded(
                 child: (_loading) ?
-                const Loader() :
-                ListView.builder(
+                const Center(
+                  child: Loader(),
+                ) :
+                ListView.separated(
                     padding: const EdgeInsets.symmetric(vertical: 20),
-                    itemBuilder: (context, index) =>
-                    Row(
+                    itemBuilder: (context, index) => Row(
                       children: [
                         _imageView(_comments.elementAt(index)?.profilePic),
-                        const SizedBox(width: 10,),
+                        const SizedBox(width: 5,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -86,10 +87,13 @@ class CommentSheet extends GetWidget<CommentController> {
                         )
                       ],
                     ),
+                    separatorBuilder: (context, index) => const SizedBox(height: 10,),
                     itemCount: _comments.length
                 )),
             ),
-            const SizedBox(height: 20),
+
+            if(_loading)
+              const Spacer(),
 
             Obx(() => TextFormField(
               controller: controller.comment,
@@ -119,23 +123,6 @@ class CommentSheet extends GetWidget<CommentController> {
     );
   }
 
-  Widget _removable(Widget child) {
-    return Stack(
-      alignment: Alignment.topRight,
-      children: [
-        child,
-        IconButton(
-          icon: const Icon(Icons.clear),
-          onPressed: () {
-            // setState(() {
-            //   image = null;
-            //   // widget?.onImageRemoved();
-            // });
-          },
-        )
-      ],
-    );
-  }
 
   Widget _imageView([String? url]) {
     return ClipRRect(

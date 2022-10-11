@@ -67,7 +67,9 @@ class ProfileController extends GetxController {
         feeds.addAll(res as List<Feed?>);
       }
       else {
-        feeds.replaceRange(0, (feeds.length-1), res as List<Feed?>);
+        feeds.clear();
+        feeds.addAll(res as List<Feed?>);
+        // feeds.replaceRange(0, (feeds.length-1), res as List<Feed?>);
       }
       for (var f in feeds) {
         if(f?.feedType == "Video") {

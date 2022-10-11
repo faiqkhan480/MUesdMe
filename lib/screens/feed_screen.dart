@@ -98,7 +98,7 @@ class FeedScreen extends StatelessWidget {
 
   // COMMENT SHEET
   handleComment(int feedId) async {
-    Get.create(() => CommentController(feedId: feedId.toString()));
+    Get.create(() => CommentController(feedId: feedId.toString(), action: _controller.updateCommentCount));
     await Get.bottomSheet(
         const CommentSheet(),
         clipBehavior: Clip.antiAlias,
