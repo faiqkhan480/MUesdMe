@@ -213,8 +213,6 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() => loader = false);
         if(res) {
           Get.offAndToNamed(AppRoutes.ROOT);
-          // if(!mounted) return;
-          // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
         }
       }
       catch(e) {

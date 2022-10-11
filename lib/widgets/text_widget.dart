@@ -22,6 +22,7 @@ class TextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(text,
       textAlign: align,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
       color: color ?? Colors.black,
       fontSize: size,

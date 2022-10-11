@@ -3,6 +3,7 @@ import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:musedme/widgets/shadowed_box.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -42,6 +43,10 @@ class FeedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isShared = post?.shareUser != null && post?.shareUser?.userId != 0;
+
+    // var dt = DateTime.fromMillisecondsSinceEpoch(638010816410000000 * 1000);
+    var dt = DateTime.fromMicrosecondsSinceEpoch(638010816410000000);
+    debugPrint(":::::::::::$dt");
     return StreamBuilder<bool>(
       stream: (_agora.checkStatus(post?.userId.toString() ?? "")),
       // future: _agora.isUserOnline(post?.userId.toString() ?? ""),
@@ -83,7 +88,7 @@ class FeedCard extends StatelessWidget {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children:[
-                    TextWidget(post?.feedDate != null ?timeago.format(post!.feedDate!) : "", color: AppColors.lightGrey, size: 12),
+                    TextWidget(post?.feedDate != null ?timeago.format(DateTime.fromMicrosecondsSinceEpoch(post!.feedDate!)) : "", color: AppColors.lightGrey, size: 12),
                     const SizedBox(width: 10,),
                     PopupMenuButton<String>(
                         padding: const EdgeInsets.only(left: 10, right: 0),

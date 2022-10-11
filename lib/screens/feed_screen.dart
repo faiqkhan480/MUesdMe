@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 
@@ -11,6 +12,7 @@ import '../controllers/comment_controller.dart';
 import '../models/auths/user_model.dart';
 import '../models/feed.dart';
 import '../controllers/feed_controller.dart';
+import '../utils/assets.dart';
 import '../widgets/loader.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -33,15 +35,32 @@ class FeedScreen extends StatelessWidget {
           Obx(() =>
           (_loading) ?
           const Loader() :
-          Expanded(
+          Flexible(
               child: RefreshIndicator(
                 onRefresh: _controller.getFeeds,
-                child: InViewNotifierList(
+                child: (!_loading && _feeds.isEmpty) ?
+                ListView(
+                  shrinkWrap: true,
+                  // physics: const BouncingScrollPhysics(),
+                  children: [
+                    SvgPicture.asset(Assets.iconsNoFeeds, height: 300),
+                    const Text("No Feeds!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontFamily: 'Larsseit',
+                      fontWeight: FontWeight.w500,
+                    ),),
+                  ],
+                ) :
+                InViewNotifierList(
                     isInViewPortCondition:
                         (double deltaTop, double deltaBottom, double viewPortDimension) {
                       return deltaTop < (0.5 * viewPortDimension) &&
                           deltaBottom > (0.5 * viewPortDimension);
                     },
+                    // physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
                     builder: (context, index) => InViewNotifierWidget(
                       id: '$index',
@@ -71,7 +90,7 @@ class FeedScreen extends StatelessWidget {
                     itemCount: _feeds.length
                 ),
               )
-          ),),
+          )),
         ],
       ),
     );

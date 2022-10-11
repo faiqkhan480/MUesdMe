@@ -34,13 +34,16 @@ class AuthService extends GetxService {
       rtc = _box.read("rtc");
     }
     else {
-      getRTC().then((value) => rtc = value);
+      var res = await getRTC();
+      rtc = res;
     }
     if(_box.read("rtm") != null) {
       rtm = _box.read("rtm");
     }
     else {
-      getRTM().then((value) => rtm = value);
+      var res = await getRTM();
+      rtm = res;
+      // getRTM().then((value) => rtm = value);
     }
   }
 

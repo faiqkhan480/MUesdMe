@@ -59,7 +59,7 @@ class Feed {
   final String? feedType;
 
   @JsonKey(name: 'FeedDate')
-  final DateTime? feedDate;
+  final int? feedDate;
 
   @JsonKey(name: 'PostLiked')
   String? postLiked;

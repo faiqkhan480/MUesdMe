@@ -50,6 +50,8 @@ class AgoraController extends GetxController {
     } catch (errorCode) {
       debugPrint('Login error:::: $errorCode');
       Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+      client?.logout();
+      await _login();
     }
   }
 

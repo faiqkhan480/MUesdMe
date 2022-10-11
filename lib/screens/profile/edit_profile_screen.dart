@@ -33,7 +33,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
             onClick: controller.handleImage,
             img:
             (controller.file.value == null ?
-            NetworkImage("${Constants.IMAGE_URL}${_authService.currentUser?.profilePic}") :
+            NetworkImage(_authService.currentUser!.profilePic!.isEmpty ? Constants.dummyImage : "${Constants.IMAGE_URL}${_authService.currentUser?.profilePic}") :
             FileImage(File(controller.file.value!.path))) as ImageProvider,
           ),
 

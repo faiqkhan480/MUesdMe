@@ -32,12 +32,12 @@ class ApiService extends GetxService {
       // debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        if(res.message != null && res.message!.isNotEmpty) {
-          Get.snackbar("Failed!", res.message ?? "",
-              backgroundColor: AppColors.pinkColor,
-              colorText: Colors.white
-          );
-        }
+        // if(res.message != null && res.message!.isNotEmpty) {
+        //   Get.snackbar("Failed!", res.message ?? "",
+        //       backgroundColor: AppColors.pinkColor,
+        //       colorText: Colors.white
+        //   );
+        // }
         if(res.code == 200 && res.feeds != null) {
           List<Feed> feeds = feedFromJson(jsonEncode(res.feeds));
           return feeds;

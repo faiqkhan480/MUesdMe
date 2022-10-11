@@ -34,7 +34,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0, top: 5),
           child: TextButton(
-              onPressed: () => (Navigator.canPop(context)) ? Navigator.pop(context) : null,
+              onPressed: () => (Navigator.canPop(context)) ? Get.back() : null,
               style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(

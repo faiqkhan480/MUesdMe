@@ -75,9 +75,9 @@ class _EditorScreenState extends State<EditorScreen> {
     if(imagePicker) {
       handleImage();
     }
-    else {
-      handleVideo();
-    }
+    // else {
+    //   handleVideo();
+    // }
   }
 
   // PICKED SELECTED IMAGE & MOVE TO EDITOR
@@ -172,7 +172,7 @@ class _EditorScreenState extends State<EditorScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 1,
       child: Scaffold(
         body: SafeArea(
           child: Column(
@@ -255,42 +255,42 @@ class _EditorScreenState extends State<EditorScreen> {
                         // controllers: _controllers,
                         items: selectedImage?.files,
                       ),
-                      // VIDEOS
-                      Grids(
-                        onTap: (int i, {String? path}) async {
-                          await _controller.dispose();
-                          _controller = CachedVideoPlayerController.file(File(path!));
-                          await _controller.initialize();
-                          _controller.play();
-                          setState(() {
-                            video = selectedVideo?.files?.elementAt(i).path;
-                          });
-                        },
-                        items: selectedVideo?.files,
-                      ),
+                      // // VIDEOS
+                      // Grids(
+                      //   onTap: (int i, {String? path}) async {
+                      //     await _controller.dispose();
+                      //     _controller = CachedVideoPlayerController.file(File(path!));
+                      //     await _controller.initialize();
+                      //     _controller.play();
+                      //     setState(() {
+                      //       video = selectedVideo?.files?.elementAt(i).path;
+                      //     });
+                      //   },
+                      //   items: selectedVideo?.files,
+                      // ),
                     ],
                   )
               )
             ],
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: TabBar(
-              labelColor: AppColors.primaryColor,
-              unselectedLabelColor: Colors.black,
-              onTap: (value) {
-                setState(() => imagePicker = value == 0);
-              },
-              indicatorSize: TabBarIndicatorSize.label,
-              labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-              indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
-                  insets: EdgeInsets.symmetric(horizontal: 35.0)),
-              tabs: List.generate(2, (index) => Tab(
-                text: index == 0 ? "Images" : "Videos",
-              ))
-          ),
-        ),
+        // bottomNavigationBar: BottomAppBar(
+        //   child: TabBar(
+        //       labelColor: AppColors.primaryColor,
+        //       unselectedLabelColor: Colors.black,
+        //       onTap: (value) {
+        //         setState(() => imagePicker = value == 0);
+        //       },
+        //       indicatorSize: TabBarIndicatorSize.label,
+        //       labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+        //       indicator: const UnderlineTabIndicator(
+        //           borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
+        //           insets: EdgeInsets.symmetric(horizontal: 35.0)),
+        //       tabs: List.generate(2, (index) => Tab(
+        //         text: index == 0 ? "Images" : "Videos",
+        //       ))
+        //   ),
+        // ),
       ),
     );
   }

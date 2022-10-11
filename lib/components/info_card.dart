@@ -99,9 +99,10 @@ class InfoCard extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 50,
                   child: ImageWidget(
-                    url: "${Constants.IMAGE_URL}${user?.profilePic}",
+                    url: user?.profilePic != null && user!.profilePic!.isNotEmpty ? "${Constants.IMAGE_URL}${user?.profilePic}" : Constants.dummyImage,
                     borderRadius: 100,
                     height: 100,
+                    width: 100,
                   ),
                 ),
                 // child: CircleAvatar(

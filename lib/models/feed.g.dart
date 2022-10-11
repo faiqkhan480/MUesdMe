@@ -18,9 +18,7 @@ Feed _$FeedFromJson(Map<String, dynamic> json) => Feed(
       postShares: json['PostShares'] as int?,
       postComments: json['PostComments'] as int?,
       feedType: json['FeedType'] as String?,
-      feedDate: json['FeedDate'] == null
-          ? null
-          : DateTime.parse(json['FeedDate'] as String),
+      feedDate: json['FeedDate'] as int?,
       postLiked: json['PostLiked'] as String?,
       shareUser: json['ShareUser'] == null
           ? null
@@ -39,7 +37,7 @@ Map<String, dynamic> _$FeedToJson(Feed instance) => <String, dynamic>{
       'PostShares': instance.postShares,
       'PostComments': instance.postComments,
       'FeedType': instance.feedType,
-      'FeedDate': instance.feedDate?.toIso8601String(),
+      'FeedDate': instance.feedDate,
       'PostLiked': instance.postLiked,
       'ShareUser': instance.shareUser,
     };

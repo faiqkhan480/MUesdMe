@@ -38,6 +38,7 @@ class VideosScreen extends StatelessWidget {
   List<Feed?> get _feeds => _controller.feeds;
   List<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList();
   List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video").toList();
+  List<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(DateTime.fromMicrosecondsSinceEpoch(v!.feedDate!))).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,8 @@ class VideosScreen extends StatelessWidget {
                   children: [
                     _view(_videos, 0), // ALL VIDEOS
                     _view(_trending, 1), // TRENDING VIDEOS
-                    SvgPicture.asset(Assets.searchUsers), // TODAY'S VIDEOS
+                    _view(_today, 1), // TODAY'S VIDEOS
+                    // SvgPicture.asset(Assets.searchUsers), // TODAY'S VIDEOS
                   ],
                 )
             ),),
@@ -87,7 +89,23 @@ class VideosScreen extends StatelessWidget {
   Widget _view(List<Feed?> items, int tab) {
     return RefreshIndicator(
       onRefresh: _controller.getFeeds,
-      child: InViewNotifierList(
+      child: (!_loading && items.isEmpty) ?
+      ListView(
+        // shrinkWrap: true,
+        // physics: const BouncingScrollPhysics(),
+        children: [
+          SvgPicture.asset(Assets.iconsNoFeeds, height: 300),
+          const Text("No Feeds!",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontFamily: 'Larsseit',
+              fontWeight: FontWeight.w500,
+            ),),
+        ],
+      ) :
+      InViewNotifierList(
           isInViewPortCondition:
               (double deltaTop, double deltaBottom, double viewPortDimension) {
             return deltaTop < (0.5 * viewPortDimension) &&
@@ -160,5 +178,27 @@ class VideosScreen extends StatelessWidget {
     if(item.feedId != null) {
       _controller.handleLike(index, item.feedId!, currentTab: tab);
     }
+  }
+
+  bool _checkDateIsToday(DateTime dateToCheck) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+
+
+    // final dateToCheck = ...
+    final aDate = DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
+    if(aDate == today) {
+      return true;
+    }
+    else {
+      return false;
+    }
+    // else if(aDate == yesterday) {
+    // ...
+    // } else(aDate == tomorrow) {
+    // ...
+    // }
   }
 }
