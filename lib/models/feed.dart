@@ -35,7 +35,7 @@ class Feed {
   final String? userName;
 
   @JsonKey(name: 'ProfilePic')
-  final String? profilePic;
+  String? profilePic;
 
   @JsonKey(name: 'FeedID')
   final int? feedId;

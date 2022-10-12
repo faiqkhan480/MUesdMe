@@ -20,6 +20,9 @@ class AuthService extends GetxService {
 
   late final bool isAuthenticated;
 
+  // REQUEST AUTHORIZATION HEADER
+  Map<String, String> get _header => {"Authorization": "Bearer ${_box.read("token")}",};
+
   Future<AuthService> init() async {
     if(_box.read("token") != null && _box.read("user") != null) {
       isAuthenticated = _box.read("token") != null;
@@ -243,8 +246,33 @@ class AuthService extends GetxService {
     }
   }
 
+  // UPLOAD PROFILE IMAGE FILE
+  Future<String?> uploadImageFile(String filePath) async {
+    try {
+      final json = await Network.multipart(url: Constants.UPLOAD_IMAGE, headers: _header, filePath: filePath);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.user != null) {
+          User? u = User.fromJson(res.user);
+          return u.profilePic;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
+
   // UPDATE USER DETAILS
-  Future updateUser(
+  Future<bool> updateUser(
       String firstName,
       String lastName,
       String userName,

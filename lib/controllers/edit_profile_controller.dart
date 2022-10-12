@@ -1,14 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/auths/user_model.dart';
 import '../routes/app_routes.dart';
-import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import 'profile_controller.dart';
 
@@ -26,7 +23,7 @@ class EditProfileController extends GetxController {
   final TextEditingController aboutMe = TextEditingController();
 
   final ProfileController _controller = Get.find<ProfileController>();
-  final ApiService _service = Get.find<ApiService>();
+  // final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
 
   final ImagePicker _picker = ImagePicker();
@@ -72,14 +69,13 @@ class EditProfileController extends GetxController {
   // FORM SUBMISSION
   void handleSubmit() async {
     Get.focusScope?.unfocus();
-    String? base64Image;
+    // String? base64Image;
+    String? filePath;
     loading.value = true;
     if(file.value != null) {
-      Uint8List imageBytes =  File(file.value!.path).readAsBytesSync();
-      base64Image = base64Encode(imageBytes);
+      filePath = await _authService.uploadImageFile(File(file.value!.path).path);
     }
-    // debugPrint(base64Image);
-    var res = await _authService.updateUser(
+    bool res = await _authService.updateUser(
       firstName.text,
       lastName.text,
       userName.text,
@@ -87,15 +83,21 @@ class EditProfileController extends GetxController {
       location.text,
       postal.text,
       aboutMe.text,
-      profilePic: base64Image,
+      profilePic: filePath,
     );
     if(res) {
       await _authService.getUser();
+      if(filePath != null) {
+        _controller.user.value.profilePic = filePath ?? _controller.user.value.profilePic;
+        _controller.user.refresh();
+        for (var feed in _controller.feeds) {
+          feed?.profilePic = filePath;
+        }
+        _controller.feeds.refresh();
+      }
     }
     loading.value = false;
     Get.offNamed(Get.previousRoute);
-    // FocusScope.of(context).unfocus();
-    // Get.toNamed(AppRoutes.PROFILE_EDIT);
   }
 
   // DELETE ACCOUNT

@@ -47,7 +47,7 @@ class User {
   final String? lastName;
 
   @JsonKey(name: 'ProfilePic')
-  final String? profilePic;
+  String? profilePic;
 
   @JsonKey(name: 'Token')
   final String? token;
