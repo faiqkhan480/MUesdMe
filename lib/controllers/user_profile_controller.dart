@@ -20,9 +20,7 @@ class UserProfileController extends GetxController {
   RxInt currIndex = 0.obs;
   RxInt currTab = 0.obs;
 
-  RxDouble toolbarHeight = 10.0.obs;
   Rx<User> user = User().obs;
-  final Rx<ScrollController> scroll = ScrollController().obs;
 
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
 
@@ -35,15 +33,6 @@ class UserProfileController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    scroll.value.addListener(() {
-      debugPrint("::: ${scroll.value.position.pixels}");
-      if(scroll.value.position.pixels > 330) {
-        toolbarHeight.value = 100;
-
-      } else if(scroll.value.position.pixels < 500) {
-        toolbarHeight.value = 10;
-      }
-    });
     getData();
   }
 
@@ -119,6 +108,7 @@ class UserProfileController extends GetxController {
     Get.toNamed(AppRoutes.CALL, arguments: user.value);
   }
 
+  // LIKE ON FEED
   handleLike(int index, int feedId, {int? currentTab}) async {
     currIndex.value = index;
     currTab.value = currentTab ?? 0;
@@ -132,5 +122,12 @@ class UserProfileController extends GetxController {
       feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes = (status == "Like") ? count+1 : count-1;
     }
     fetching.value = false;
+  }
+
+  // UPDATE COMMENT COUNT
+  updateCommentCount(int feedId, int count) {
+    feeds.firstWhere((feed) => feed?.feedId == feedId)?.postComments = count;
+    feeds.refresh();
+    update();
   }
 }

@@ -128,15 +128,14 @@ class FeedController extends GetxController {
     fetching.value = false;
   }
 
+  // UPDATE COMMENT COUNT
   updateCommentCount(int feedId, int count) {
     feeds.firstWhere((feed) => feed?.feedId == feedId)?.postComments = count;
-    update();
+    feeds.refresh();
   }
 
   // FETCH USERS
   Future<void> getActiveUsers() async {
-    // users.clear();
-    // gettingUsers.value = true;
     List<User?> res = await _service.fetchActiveUsers();
     users.clear();
     users.addAll(res);

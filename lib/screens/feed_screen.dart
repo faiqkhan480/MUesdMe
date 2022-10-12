@@ -15,15 +15,16 @@ import '../controllers/feed_controller.dart';
 import '../utils/assets.dart';
 import '../widgets/loader.dart';
 
-class FeedScreen extends StatelessWidget {
+// class FeedScreen extends StatelessWidget {
+class FeedScreen extends GetView<FeedController> {
   const FeedScreen({Key? key}) : super(key: key);
 
-  FeedController get _controller => Get.find<FeedController>();
+  // FeedController get _controller => Get.find<FeedController>();
 
-  bool get _loading => _controller.loading();
-  bool get _fetching => _controller.fetching();
-  List<Feed?> get _feeds => _controller.feeds;
-  int get _currIndex => _controller.currIndex.value;
+  bool get _loading => controller.loading();
+  bool get _fetching => controller.fetching();
+  List<Feed?> get _feeds => controller.feeds;
+  int get _currIndex => controller.currIndex.value;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class FeedScreen extends StatelessWidget {
           Header(
             title: "Live Feed",
             showLives: true,
-            handleSearch: _controller.handleNavigation,
+            handleSearch: controller.handleNavigation,
           ),
           // const SizedBox(height: 20,),
           Obx(() =>
@@ -41,7 +42,7 @@ class FeedScreen extends StatelessWidget {
           const Loader() :
           Flexible(
               child: RefreshIndicator(
-                onRefresh: _controller.getData,
+                onRefresh: controller.getData,
                 child: (!_loading && _feeds.isEmpty) ?
                 ListView(
                   shrinkWrap: true,
@@ -73,9 +74,9 @@ class FeedScreen extends StatelessWidget {
                             index: index,
                             isInView: isInView,
                             post: _feeds.elementAt(index),
-                            onDownload: _controller.handleDownload,
+                            onDownload: controller.handleDownload,
                             handleNavigate: () => onTap(index),
-                            controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == _feeds.elementAt(index)?.feedPath),
+                            controller: controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == _feeds.elementAt(index)?.feedPath),
                             actions: Obx(() => FeedActions(
                               index: index,
                               loader: _fetching && _currIndex == index,
@@ -101,7 +102,7 @@ class FeedScreen extends StatelessWidget {
 
   // COMMENT SHEET
   handleComment(int feedId) async {
-    Get.create(() => CommentController(feedId: feedId.toString(), action: _controller.updateCommentCount));
+    Get.create(() => CommentController(feedId: feedId.toString(), action: controller.updateCommentCount));
     await Get.bottomSheet(
         const CommentSheet(),
         clipBehavior: Clip.antiAlias,
@@ -128,13 +129,13 @@ class FeedScreen extends StatelessWidget {
   // GOTO PROFILE
   void onTap(int index) {
     User u = User(userId: _feeds.elementAt(index)?.userId,);
-    _controller.gotoProfile(u);
+    controller.gotoProfile(u);
   }
 
   // ON LIKE TAP
   handleLikeTap(int index) {
     if(_feeds.elementAt(index)?.feedId != null) {
-      _controller.handleLike(index, _feeds.elementAt(index)!.feedId!);
+      controller.handleLike(index, _feeds.elementAt(index)!.feedId!);
     }
   }
 }

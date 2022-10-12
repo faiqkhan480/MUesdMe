@@ -6,6 +6,18 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class StyleConfig {
+  static BoxDecoration gradientBackground = const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Colors.orange,
+          AppColors.primaryColor,
+          AppColors.pinkColor,
+        ],
+        begin: Alignment.topRight,
+        end: Alignment.bottomLeft,
+      )
+  );
+
   static Config emojiConfig = Config(
     columns: 7,
     // Issue: https://github.com/flutter/flutter/issues/28894

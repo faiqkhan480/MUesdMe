@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -11,6 +13,7 @@ import '../../models/auths/user_model.dart';
 import '../../models/feed.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
+import '../../utils/style_config.dart';
 import 'profile_body.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
@@ -18,7 +21,6 @@ class ProfileScreen extends GetView<ProfileController> {
 
   User? get _user => controller.user.value;
 
-  double get _toolbarHeight => controller.toolbarHeight();
   bool get _loading => controller.loading();
   List<Feed?> get _feeds => controller.feeds;
 
@@ -31,34 +33,44 @@ class ProfileScreen extends GetView<ProfileController> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        body: Obx(() => Stack(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              decoration: (!_loading || _user?.userId != null) ? const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.orange,
-                      AppColors.primaryColor,
-                      AppColors.pinkColor,
-                    ],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                  )
-              ) : null,
-              height: 300,
-              width: double.infinity,
+              decoration: StyleConfig.gradientBackground,
+              child: Header(
+                title: "Profile",
+                isProfile: true,
+                showShadow: false,
+                action: controller.handleClick,
+                height: 108,
+              ),
             ),
-            (_loading && _user == null) ?
-            Center(child: Lottie.asset(Assets.loader)):
+
+            Flexible(child: Obx(() => Stack(
+              children: [
+                Container(
+                  decoration: (!_loading || _user?.userId != null) ? StyleConfig.gradientBackground : null,
+                  height: 300,
+                  width: double.infinity,
+                ),
+                (_loading && _user == null) ?
+                Center(child: Lottie.asset(Assets.loader)):
                 RefreshIndicator(
+                  // displacement: 20,
+                  notificationPredicate: (notification) {
+                    // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
+                    if (notification is OverscrollNotification || Platform.isIOS) {
+                      return notification.depth == 2;
+                    }
+                    return notification.depth == 0;
+                 },
                   onRefresh: controller.getData,
                   child: ProfileBody(
                     onRefresh: controller.getData,
                     loader: _loading,
-                    scrollController: controller.scroll(),
                     user: _user,
                     feeds: _feeds,
-                    toolbarHeight: _toolbarHeight,
                     fetchingFeeds: controller.feedsLoading(),
                     currIndex: _currIndex,
                     currTab: _currTab,
@@ -67,17 +79,11 @@ class ProfileScreen extends GetView<ProfileController> {
                     onShareTap: handleShare,
                     onCommentTap: handleComment,
                   ),
-                    ),
-
-            Header(
-                title: "Profile",
-                isProfile: true,
-                showShadow: false,
-                action: controller.handleClick,
-                height: 108,
-              ),
+                ),
+              ],
+            )))
           ],
-        )),
+        ),
       ),
     );
   }
@@ -91,7 +97,7 @@ class ProfileScreen extends GetView<ProfileController> {
 
   // COMMENT SHEET
   handleComment(int feedId) async {
-    Get.create(() => CommentController(feedId: feedId.toString()));
+    Get.create(() => CommentController(feedId: feedId.toString(), action: controller.updateCommentCount));
     await Get.bottomSheet(
         const CommentSheet(),
         clipBehavior: Clip.antiAlias,

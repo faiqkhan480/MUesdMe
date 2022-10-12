@@ -11,7 +11,6 @@ import '../utils/constants.dart';
 
 class ProfileController extends GetxController {
   RxBool loading = true.obs;
-  RxDouble toolbarHeight = 10.0.obs;
 
   RxBool feedsLoading = true.obs;
   RxBool fetching = false.obs;
@@ -20,7 +19,6 @@ class ProfileController extends GetxController {
   RxInt currTab = 0.obs;
 
   Rx<User> user = User().obs;
-  final Rx<ScrollController> scroll = ScrollController().obs;
 
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
@@ -32,14 +30,6 @@ class ProfileController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    scroll.value.addListener(() {
-      if(scroll.value.position.pixels > 540) {
-        toolbarHeight.value = 120;
-
-      } else if(scroll.value.position.pixels < 620) {
-        toolbarHeight.value = 35;
-      }
-    });
     getData();
   }
 
@@ -102,5 +92,11 @@ class ProfileController extends GetxController {
       feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes = (status == "Like") ? count+1 : count-1;
     }
     fetching.value = false;
+  }
+
+  // UPDATE COMMENT COUNT
+  updateCommentCount(int feedId, int count) {
+    feeds.firstWhere((feed) => feed?.feedId == feedId)?.postComments = count;
+    feeds.refresh();
   }
 }

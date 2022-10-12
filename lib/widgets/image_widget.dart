@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:musedme/utils/app_colors.dart';
 
+import '../utils/app_colors.dart';
 import '../utils/assets.dart';
+import 'loader.dart';
 
 class ImageWidget extends StatelessWidget {
   final String url;
@@ -17,11 +17,12 @@ class ImageWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius ?? 20),
         child: Image.network(
           url,
-          loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : Lottie.asset(Assets.loader),
+          loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
           errorBuilder: (context, error, stackTrace) => Icon(Icons.photo, color: AppColors.secondaryColor.withOpacity(0.4), size: ((height ?? 0) - 30)),
           height: height,
           width: width,
           fit: BoxFit.cover,
+          // color: Colors.white,
         ));
   }
 }

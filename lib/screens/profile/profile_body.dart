@@ -16,11 +16,9 @@ import '../../utils/assets.dart';
 
 class ProfileBody extends StatelessWidget {
   final User? user;
-  final double toolbarHeight;
   final bool loader;
   final bool fetchingFeeds;
   final Future Function() onRefresh;
-  final ScrollController? scrollController;
   final Widget? button;
   final Widget? options;
   final List<Feed?>? feeds;
@@ -34,11 +32,9 @@ class ProfileBody extends StatelessWidget {
   const ProfileBody({
     Key? key,
     this.user,
-    this.scrollController,
     this.loader = false,
     this.fetchingFeeds = true,
     required this.onRefresh,
-    this.toolbarHeight = 0,
     this.button,
     this.options,
     this.feeds,
@@ -51,6 +47,8 @@ class ProfileBody extends StatelessWidget {
     required this.onShareTap,
   }) : super(key: key);
 
+  FeedController get _feedController => Get.find<FeedController>();
+
   @override
   Widget build(BuildContext context) {
     List<String> tabs = [
@@ -60,14 +58,13 @@ class ProfileBody extends StatelessWidget {
     ];
     
     return NestedScrollView(
-      controller: scrollController,
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
           SliverAppBar(
             pinned: false,
-            expandedHeight: 300.0,
+            expandedHeight: 200.0,
             automaticallyImplyLeading: false,
-            toolbarHeight: 280,
+            toolbarHeight: 180,
             backgroundColor: Colors.transparent,
             forceElevated: innerBoxIsScrolled,
             bottom: PreferredSize(
@@ -92,8 +89,8 @@ class ProfileBody extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              // padding: EdgeInsets.only(top: 100),
-              padding: EdgeInsets.only(top: toolbarHeight),
+              padding: const EdgeInsets.only(top: 10),
+              // padding: EdgeInsets.only(top: toolbarHeight),
               child: SizedBox(
                 height: 50,
                 child: Row(
@@ -132,12 +129,37 @@ class ProfileBody extends StatelessWidget {
     );
   }
 
-  FeedController get _feedController => Get.find<FeedController>();
-
   Widget listing(List<Feed?> data, int tab) {
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      separatorBuilder: (context, index) => const SizedBox(height: 20),
+      itemCount: data.length,
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      itemBuilder: (context, index) => FeedCard(
+        horizontalSpace: 10,
+        index: index,
+        post: data.elementAt(index),
+        onDownload: _feedController.handleDownload,
+        handleNavigate: () {
+          User u = User(userId: data.elementAt(index)?.userId,);
+          _feedController.gotoProfile(u);
+        },
+        controller: videoController,
+        actions: FeedActions(
+          index: index,
+          loader: fetching && currIndex == index && currTab == tab,
+          liked: data.elementAt(index)?.postLiked == "Liked",
+          commentsCount: data.elementAt(index)?.postComments ?? 0,
+          likeCount: data.elementAt(index)?.postLikes ?? 0,
+          onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
+          onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
+          onShareTap: () => onShareTap(data.elementAt(index)!),
+        ),),
+    );
+
     return Column(
       children: List.generate(data.length, (index) => Padding(
-          padding: EdgeInsets.only(top: 5, bottom: 10),
+          padding: const EdgeInsets.only(top: 5, bottom: 10),
         child: FeedCard(
           horizontalSpace: 10,
           index: index,
@@ -160,31 +182,5 @@ class ProfileBody extends StatelessWidget {
           ),),
       )),
     );
-    return
-      ListView.separated(
-        physics: const NeverScrollableScrollPhysics(),
-        separatorBuilder: (context, index) => const SizedBox(height: 20),
-        itemCount: data.length,
-        itemBuilder: (context, index) => FeedCard(
-          horizontalSpace: 10,
-          index: index,
-          post: data.elementAt(index),
-          onDownload: _feedController.handleDownload,
-          handleNavigate: () {
-            User u = User(userId: data.elementAt(index)?.userId,);
-            _feedController.gotoProfile(u);
-          },
-          controller: videoController,
-          actions: FeedActions(
-            index: index,
-            loader: fetching && currIndex == index && currTab == tab,
-            liked: data.elementAt(index)?.postLiked == "Liked",
-            commentsCount: data.elementAt(index)?.postComments ?? 0,
-            likeCount: data.elementAt(index)?.postLikes ?? 0,
-            onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
-            onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
-            onShareTap: () => onShareTap(data.elementAt(index)!),
-          ),),
-      );
   }
 }

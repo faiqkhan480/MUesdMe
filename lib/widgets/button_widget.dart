@@ -54,10 +54,10 @@ class ButtonWidget extends StatelessWidget {
         ],
       ) :
       loader ?
-      const SizedBox (
+      SizedBox (
           height: 20,
           width: 20,
-          child: Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 1.5,))) :
+          child: Center(child: CircularProgressIndicator(color: textColor ?? AppColors.pinkColor, strokeWidth: 1.5,))) :
       Row(
         children: [
           if(icon != null)...[

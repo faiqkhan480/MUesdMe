@@ -49,12 +49,14 @@ class CommentController extends GetxController {
       if(res.isNotEmpty) {
         comment.clear();
         if(comments.isNotEmpty) {
-          debugPrint(":::::::::::");
           comments.clear();
           comments.addAll(res as List<Comment?>);
         }
         else {
           comments.addAll(res as List<Comment?>);
+        }
+        if(action != null) {
+          action!(int.parse(feedId!), comments.length);
         }
         update();
       }
