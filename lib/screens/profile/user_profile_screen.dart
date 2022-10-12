@@ -2,20 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';import '../../components/comment_sheet.dart';
 
-
+import '../../components/comment_sheet.dart';
 import '../../components/custom_header.dart';
 import '../../components/share_sheet.dart';
 import '../../controllers/comment_controller.dart';
 import '../../controllers/user_profile_controller.dart';
 import '../../models/auths/user_model.dart';
 import '../../models/feed.dart';
-import '../../utils/assets.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/style_config.dart';
 import '../../widgets/button_widget.dart';
 
+import '../../widgets/loader.dart';
 import 'profile_body.dart';
 
 class UserProfileScreen extends GetView<UserProfileController> {
@@ -76,7 +75,7 @@ class UserProfileScreen extends GetView<UserProfileController> {
                  // ) : null,
                ),
                (_loading && _user?.userId == null) ?
-               Center(child: Lottie.asset(Assets.loader)):
+               const Center(child: Loader()):
                RefreshIndicator(
                  // displacement: 20,
                    notificationPredicate: (notification) {

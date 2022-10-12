@@ -2,12 +2,11 @@ import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:musedme/controllers/feed_controller.dart';
-import 'package:musedme/widgets/loader.dart';
 
 import '../../components/feed_actions.dart';
 import '../../components/feed_card.dart';
 import '../../components/info_card.dart';
+import '../../controllers/feed_controller.dart';
 import '../../models/auths/user_model.dart';
 import '../../models/feed.dart';
 import '../../utils/app_colors.dart';
@@ -155,32 +154,6 @@ class ProfileBody extends StatelessWidget {
           onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
           onShareTap: () => onShareTap(data.elementAt(index)!),
         )),),
-    );
-
-    return Column(
-      children: List.generate(data.length, (index) => Padding(
-          padding: const EdgeInsets.only(top: 5, bottom: 10),
-        child: FeedCard(
-          horizontalSpace: 10,
-          index: index,
-          post: data.elementAt(index),
-          onDownload: _feedController.handleDownload,
-          handleNavigate: () {
-            User u = User(userId: data.elementAt(index)?.userId,);
-            _feedController.gotoProfile(u);
-          },
-          controller: videoController,
-          actions: FeedActions(
-            index: index,
-            loader: fetching && currIndex == index && currTab == tab,
-            liked: data.elementAt(index)?.postLiked == "Liked",
-            commentsCount: data.elementAt(index)?.postComments ?? 0,
-            likeCount: data.elementAt(index)?.postLikes ?? 0,
-            onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
-            onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
-            onShareTap: () => onShareTap(data.elementAt(index)!),
-          ),),
-      )),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:cached_video_player/cached_video_player.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../models/auths/user_model.dart';
