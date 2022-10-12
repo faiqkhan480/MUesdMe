@@ -27,14 +27,14 @@ class VideoWidget extends StatelessWidget {
   //   super.initState();
   //   _controller = widget.controller;
   // //   _controller = CachedVideoPlayerController.network(widget.url);
-  // //   _initializeVideoPlayerFuture = _controller.initialize().then((_) {
-  // //     // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-  // //     setState(() {});
-  // //   });
+  //   _initializeVideoPlayerFuture = _controller.initialize().then((_) {
+  //     // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+  //     setState(() {});
+  //   });
   // //
   // //   if (widget.play) {
-  // //     _controller.play();
-  // //     _controller.setLooping(true);
+  //     _controller.play();
+  //     _controller.setLooping(true);
   // //   }
   // }
 

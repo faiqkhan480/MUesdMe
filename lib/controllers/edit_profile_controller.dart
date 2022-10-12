@@ -88,7 +88,7 @@ class EditProfileController extends GetxController {
     if(res) {
       await _authService.getUser();
       if(filePath != null) {
-        _controller.user.value.profilePic = filePath ?? _controller.user.value.profilePic;
+        _controller.user.value.profilePic = filePath;
         _controller.user.refresh();
         for (var feed in _controller.feeds) {
           feed?.profilePic = filePath;

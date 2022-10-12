@@ -73,25 +73,28 @@ class _EditorScreenState extends State<EditorScreen> {
 
   handleNext() {
     if(imagePicker) {
-      handleImage();
+      _handleImage();
     }
-    // else {
-    //   handleVideo();
-    // }
+    else {
+      _handleVideo();
+    }
   }
 
   // PICKED SELECTED IMAGE & MOVE TO EDITOR
-  handleImage() async {
+  _handleImage() async {
     PhotoEditorResult? result = await PESDK.openEditor(image: image, configuration: createConfiguration());
     if(result != null) {
       Get.to(UploadScreen(post: result,));
     }
   }
 
-  handleVideo() async {
+  _handleVideo() async {
     if(video != null && video!.isNotEmpty) {
       var result = await VESDK.openEditor(Video(video!), configuration: createConfiguration());
-      debugPrint("${result?.toJson()}");
+      if(result != null) {
+        Get.to(UploadScreen(video: result,));
+      }
+      // debugPrint("${result?.toJson()}");
     }
   }
 
@@ -133,29 +136,28 @@ class _EditorScreenState extends State<EditorScreen> {
     await getVideosPath();
   }
 
-  // onChange(d) async {
-  //   debugPrint("CAALLEDD:::::::");
-  //   assert((d?.files?.length ?? 0) > 0);
-  //   if(d is FileModel) {
-  //     image = d.files?.elementAt(0);
-  //     setState(() => selectedImage = d);
-  //   }
-  //   else{
-  //     // await _controller.dispose();
-  //     // setState(() {
-  //     //   _controllers = [];
-  //     // });
-  //     // _controller = VideoPlayerController.file(File(d!.files!.elementAt(0).path));
-  //     // // await _controller.initialize();
-  //     // await Future.forEach(d!.files!, (FileElement element) async {
-  //     //   VideoPlayerController c = VideoPlayerController.file(File(element.path!));
-  //     //   // await c.initialize();
-  //     //   _controllers.add(c);
-  //     // });
-  //     video = d!.files!.elementAt(0).path;
-  //     setState(() => selectedVideo = d);
-  //   }
-  // }
+  onChange(d) async {
+    assert((d?.files?.length ?? 0) > 0);
+    if(d is FileModel) {
+      image = d.files?.elementAt(0);
+      setState(() => selectedImage = d);
+    }
+    else{
+      // await _controller.dispose();
+      // setState(() {
+      //   _controllers = [];
+      // });
+      // _controller = VideoPlayerController.file(File(d!.files!.elementAt(0).path));
+      // // await _controller.initialize();
+      // await Future.forEach(d!.files!, (FileElement element) async {
+      //   VideoPlayerController c = VideoPlayerController.file(File(element.path!));
+      //   // await c.initialize();
+      //   _controllers.add(c);
+      // });
+      video = d!.files!.elementAt(0).path;
+      setState(() => selectedVideo = d);
+    }
+  }
 
   @override
   void dispose() {
@@ -172,7 +174,7 @@ class _EditorScreenState extends State<EditorScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 1,
+      length: 2,
       child: Scaffold(
         body: SafeArea(
           child: Column(
@@ -255,54 +257,47 @@ class _EditorScreenState extends State<EditorScreen> {
                         // controllers: _controllers,
                         items: selectedImage?.files,
                       ),
-                      // // VIDEOS
-                      // Grids(
-                      //   onTap: (int i, {String? path}) async {
-                      //     await _controller.dispose();
-                      //     _controller = CachedVideoPlayerController.file(File(path!));
-                      //     await _controller.initialize();
-                      //     _controller.play();
-                      //     setState(() {
-                      //       video = selectedVideo?.files?.elementAt(i).path;
-                      //     });
-                      //   },
-                      //   items: selectedVideo?.files,
-                      // ),
+                      // VIDEOS
+                      Grids(
+                        onTap: (int i, {String? path}) async {
+                          await _controller.dispose();
+                          _controller = CachedVideoPlayerController.file(File(path!));
+                          await _controller.initialize();
+                          _controller.play();
+                          setState(() {
+                            video = selectedVideo?.files?.elementAt(i).path;
+                          });
+                        },
+                        items: selectedVideo?.files,
+                      ),
                     ],
                   )
               )
             ],
           ),
         ),
-        // bottomNavigationBar: BottomAppBar(
-        //   child: TabBar(
-        //       labelColor: AppColors.primaryColor,
-        //       unselectedLabelColor: Colors.black,
-        //       onTap: (value) {
-        //         setState(() => imagePicker = value == 0);
-        //       },
-        //       indicatorSize: TabBarIndicatorSize.label,
-        //       labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-        //       indicator: const UnderlineTabIndicator(
-        //           borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
-        //           insets: EdgeInsets.symmetric(horizontal: 35.0)),
-        //       tabs: List.generate(2, (index) => Tab(
-        //         text: index == 0 ? "Images" : "Videos",
-        //       ))
-        //   ),
-        // ),
+        bottomNavigationBar: BottomAppBar(
+          child: TabBar(
+              labelColor: AppColors.primaryColor,
+              unselectedLabelColor: Colors.black,
+              onTap: (value) {
+                setState(() => imagePicker = value == 0);
+              },
+              indicatorSize: TabBarIndicatorSize.label,
+              labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+              indicator: const UnderlineTabIndicator(
+                  borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
+                  insets: EdgeInsets.symmetric(horizontal: 35.0)),
+              tabs: List.generate(2, (index) => Tab(
+                text: index == 0 ? "Images" : "Videos",
+              ))
+          ),
+        ),
       ),
     );
   }
 
   List<DropdownMenuItem>? getItems() {
-    // return videoFiles.map((e) => DropdownMenuItem(
-    //   value: e,
-    //   child: Text(
-    //     e?.folder ?? "",
-    //     style: const TextStyle(color: Colors.black),
-    //   ),
-    // )).toList() ?? [];
     if(imagePicker) {
       return imageFiles.map((e) => DropdownMenuItem(
         value: e,
