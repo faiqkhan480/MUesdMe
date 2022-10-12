@@ -134,14 +134,15 @@ class _UploadScreenState extends State<UploadScreen> {
     setState(() {
       loading = true;
     });
-    Uint8List imageBytes =  File(img).readAsBytesSync();
-    String base64Image = base64Encode(imageBytes);
     // String feedPath, String type, String privacy
-    var res = await _service.uploadFeed(base64Image, "Image", value);
-    if(res == true) {
-      await _feeds.getFeeds();
-      await _profile.getData();
-      Get.close(2);
+    String? filePath = await _service.uploadFeedFile(File(img).path);
+    if(filePath != null) {
+      var res = await _service.uploadFeed(filePath, "Image", value);
+      if(res == true) {
+        await _feeds.getFeeds();
+        await _profile.getData();
+        Get.close(2);
+      }
     }
     setState(() {
       loading = false;

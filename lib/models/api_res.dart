@@ -11,6 +11,7 @@ class ApiRes {
     required this.users,
     required this.user,
     required this.feeds,
+    required this.feed,
     required this.token,
     required this.feedComments,
     required this.messages,
@@ -30,6 +31,9 @@ class ApiRes {
 
   @JsonKey(name: 'Feeds')
   final dynamic feeds;
+
+  @JsonKey(name: 'Feed')
+  final dynamic feed;
 
   @JsonKey(name: 'Token')
   final dynamic token;

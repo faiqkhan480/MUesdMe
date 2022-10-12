@@ -37,7 +37,7 @@ class InfoCard extends StatelessWidget {
                       blurRadius: 4
                   )]
               ),
-              padding: const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 30),
+              padding: const EdgeInsets.only(left: 15, right: 15, top: 22, bottom: 30),
               height:user?.aboutMe == null ? Get.height * 0.40 : null,
               // alignment: Alignment.bottomCenter,
               child: Column(
@@ -105,17 +105,6 @@ class InfoCard extends StatelessWidget {
                     width: 100,
                   ),
                 ),
-                // child: CircleAvatar(
-                //   backgroundImage:
-                //   user?.profilePic == null || user!.profilePic!.isEmpty?
-                //   null :
-                //   NetworkImage("${Constants.IMAGE_URL}${user?.profilePic}"),
-                //   radius: 50,
-                //   backgroundColor: Colors.white,
-                //   child: user?.profilePic == null || user!.profilePic!.isEmpty?
-                //   const Icon(CupertinoIcons.person, size: 80,) :
-                //   null,
-                // ),
               ),
             ),
           ],

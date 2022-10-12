@@ -9,6 +9,7 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
 import 'chat_controller.dart';
+import 'profile_controller.dart';
 
 class UserProfileController extends GetxController {
   RxBool loading = true.obs;
@@ -25,6 +26,7 @@ class UserProfileController extends GetxController {
 
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
+  final ProfileController _profile = Get.find<ProfileController>();
 
   RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
 
@@ -78,11 +80,15 @@ class UserProfileController extends GetxController {
   }
 
   Future<void> sendFollowReq() async {
+    int count = _profile.user.value.followings ?? 0;
+
     loading.value = true;
     // debugPrint("UID ${profile.value.userId} FOLLOW${profile.value.follow}");
     User? res = await _service.followReq((user.value.userId ?? "").toString(), user.value.follow ?? 0);
     user.value.follow = user.value.follow == 0 ? 1 : 0;
     user.value.followers = res?.followers;
+    _profile.user.value.followings = (user.value.follow == 0) ? count-1 : count+1;
+    _profile.user.refresh();
     loading.value = false;
   }
 

@@ -246,6 +246,31 @@ class ApiService extends GetxService {
     }
   }
 
+  // UPLOAD FEED FILE
+  Future<String?> uploadFeedFile(String filePath) async {
+    try {
+      final json = await Network.multipart(url: Constants.UPLOAD_FILE, headers: _header, filePath: filePath);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.feed != null) {
+            Feed? feed = Feed.fromJson(res.feed);
+          return feed.feedPath;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
+
   // UPLOAD FEED
   Future uploadFeed(String feedPath, String type, String privacy) async {
     try {

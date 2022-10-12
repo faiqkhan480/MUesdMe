@@ -89,7 +89,7 @@ class User {
   int? followers;
 
   @JsonKey(name: 'Followings')
-  final int? followings;
+  int? followings;
 
   @JsonKey(name: 'Posts')
   final int? posts;

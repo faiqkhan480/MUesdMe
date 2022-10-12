@@ -56,4 +56,41 @@ class Network {
       return throw Exception(e);
     }
   }
+
+  static Future multipart({url,filePath,headers}) async {
+    try{
+      Map<String, String> apiHeaders = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+      if(headers !=null){
+        apiHeaders.addAll(headers);
+      }
+      debugPrint("Request:>>>>>>>>>>>> $url");
+
+      // CREATE MULTIPART REQUEST
+      http.MultipartRequest request = http.MultipartRequest("POST", Uri.parse(url));
+
+      request.headers.addAll(apiHeaders);
+
+      request.files.add(await http.MultipartFile.fromPath("field", filePath));
+
+      var response = await request.send();
+
+      var responseData = await http.Response.fromStream(response);
+
+      // final responseData = json.decode(responsed.body);
+
+      if(responseData.statusCode == 200) {
+        return responseData.body;
+      }
+      if(responseData.statusCode < 200 || responseData.statusCode > 400 || json == null) {
+        return responseData.body;
+        // return json.decode(response.body);
+      }
+    } catch(e){
+      debugPrint("POST: $e");
+      return throw Exception(e);
+    }
+  }
 }

@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:badges/badges.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -71,7 +73,8 @@ class MessageScreen extends GetView<MessageController> {
                 ),
               ),
             ),
-            Text(_chatUser?.fullName ?? "", style: const TextStyle(fontFamily: Constants.fontFamily)),
+            Text(_chatUser?.fullName ?? "",
+                style: const TextStyle(fontFamily: Constants.fontFamily)),
           ],
         ),
         actions: [
