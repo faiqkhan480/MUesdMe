@@ -47,7 +47,8 @@ class _UploadScreenState extends State<UploadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: Container(
+        // padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
             // HEADER
@@ -57,7 +58,7 @@ class _UploadScreenState extends State<UploadScreen> {
                 showBottom: false,
                 showSave: false
             ),
-            Flexible(child: SingleChildScrollView(
+            Flexible(child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,9 +91,13 @@ class _UploadScreenState extends State<UploadScreen> {
                         },
                         value: value,
                       )),
+
+                  const Spacer(),
                   if(loading)
-                    const Loader(),
-                  // const Spacer(),
+                    const SizedBox(
+                        height: 55,
+                        child: Center(child: Loader(),))
+                  else
                   TextButton(
                     onPressed: uploadFeed,
                     style: TextButton.styleFrom(
