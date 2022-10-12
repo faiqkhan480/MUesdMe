@@ -42,6 +42,7 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -172,7 +173,7 @@ class Header extends StatelessWidget {
                               // child: Image.network(Constants.dummyImage, fit: BoxFit.cover,),
                               child: Image.network(
                                 controller.users.elementAt(index-1)?.profilePic != null && controller.users.elementAt(index-1)!.profilePic!.isNotEmpty ?
-                                "${Constants.IMAGE_URL}${controller.users.elementAt(index)?.profilePic}" :
+                                "${Constants.IMAGE_URL}${controller.users.elementAt(index-1)?.profilePic}" :
                                 Constants.dummyImage,
                                 fit: BoxFit.cover,),
                             ),

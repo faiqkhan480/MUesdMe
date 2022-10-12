@@ -34,6 +34,10 @@ class FeedController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    getData();
+  }
+
+  Future<void> getData() async {
     getFeeds();
     getActiveUsers();
   }
@@ -132,8 +136,9 @@ class FeedController extends GetxController {
   // FETCH USERS
   Future<void> getActiveUsers() async {
     // users.clear();
-    gettingUsers.value = true;
+    // gettingUsers.value = true;
     List<User?> res = await _service.fetchActiveUsers();
+    users.clear();
     users.addAll(res);
     gettingUsers.value = false;
   }

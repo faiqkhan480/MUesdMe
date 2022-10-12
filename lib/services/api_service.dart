@@ -57,7 +57,7 @@ class ApiService extends GetxService {
         "UserID": uid,
       };
       final json = await Network.post(url: Constants.USERS_FEEDS, headers: _header, payload: payload);
-      debugPrint("json::::::$json");
+      // debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         // if(res.message != null && res.message!.isNotEmpty) {
@@ -372,7 +372,7 @@ class ApiService extends GetxService {
         "ChatWithUser": chatWithUser,
       };
       final json = await Network.post(url: Constants.SEND_MESSAGE, headers: _header, payload: payload);
-      debugPrint("json::::::$json");
+      // debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.message != null) {
@@ -397,6 +397,7 @@ class ApiService extends GetxService {
         "UserID": _userId,
       };
       final json = await Network.post(url: Constants.ACTIVE_USERS, headers: _header, payload: payload);
+      // debugPrint("RES:::::::::::: $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.users != null) {

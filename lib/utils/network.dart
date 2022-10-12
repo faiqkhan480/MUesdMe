@@ -48,7 +48,6 @@ class Network {
         // return json.decode(response.body);
       }
       if(response.statusCode < 200 || response.statusCode > 400 || json == null) {
-        // return json.decode(response.body);
         return response.body;
         // return json.decode(response.body);
       }

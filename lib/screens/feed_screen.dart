@@ -41,7 +41,7 @@ class FeedScreen extends StatelessWidget {
           const Loader() :
           Flexible(
               child: RefreshIndicator(
-                onRefresh: _controller.getFeeds,
+                onRefresh: _controller.getData,
                 child: (!_loading && _feeds.isEmpty) ?
                 ListView(
                   shrinkWrap: true,
@@ -64,7 +64,6 @@ class FeedScreen extends StatelessWidget {
                       return deltaTop < (0.5 * viewPortDimension) &&
                           deltaBottom > (0.5 * viewPortDimension);
                     },
-                    // physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
                     builder: (context, index) => InViewNotifierWidget(
                       id: '$index',

@@ -92,8 +92,8 @@ class CommentSheet extends GetWidget<CommentController> {
                 )),
             ),
 
-            if(_loading)
-              const Spacer(),
+            // if(_loading)
+            //   const Spacer(),
 
             Obx(() => TextFormField(
               controller: controller.comment,
