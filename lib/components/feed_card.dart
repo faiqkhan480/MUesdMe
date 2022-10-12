@@ -43,10 +43,6 @@ class FeedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isShared = post?.shareUser != null && post?.shareUser?.userId != 0;
-
-    // var dt = DateTime.fromMillisecondsSinceEpoch(638010816410000000 * 1000);
-    var dt = DateTime.fromMicrosecondsSinceEpoch(638010816410000000);
-    debugPrint(":::::::::::$dt");
     return StreamBuilder<bool>(
       stream: (_agora.checkStatus(post?.userId.toString() ?? "")),
       // future: _agora.isUserOnline(post?.userId.toString() ?? ""),
@@ -88,22 +84,22 @@ class FeedCard extends StatelessWidget {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children:[
-                    TextWidget(post?.feedDate != null ?timeago.format(DateTime.fromMicrosecondsSinceEpoch(post!.feedDate!)) : "", color: AppColors.lightGrey, size: 12),
+                    TextWidget(post?.feedDate != null ? timeago.format(post!.feedDate!.toLocal()) : "", color: AppColors.lightGrey, size: 12),
                     const SizedBox(width: 10,),
-                    PopupMenuButton<String>(
-                        padding: const EdgeInsets.only(left: 10, right: 0),
-                        onSelected: handleOption,
-                        icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
-                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                          const PopupMenuItem<String>(
-                            value: "0",
-                            child: Text('Add to watch later'),
-                          ),
-                          const PopupMenuItem<String>(
-                            value: "1",
-                            child: Text("Download"),
-                          ),
-                        ]),
+                    // PopupMenuButton<String>(
+                    //     padding: const EdgeInsets.only(left: 10, right: 0),
+                    //     onSelected: handleOption,
+                    //     icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
+                    //     itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    //       const PopupMenuItem<String>(
+                    //         value: "0",
+                    //         child: Text('Add to watch later'),
+                    //       ),
+                    //       const PopupMenuItem<String>(
+                    //         value: "1",
+                    //         child: Text("Download"),
+                    //       ),
+                    //     ]),
                   ],
                 ),
               ),
@@ -130,6 +126,7 @@ class FeedCard extends StatelessWidget {
                       ),
                       elevation: 0,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           if(isShared)
                             ListTile(

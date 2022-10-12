@@ -38,7 +38,7 @@ class VideosScreen extends StatelessWidget {
   List<Feed?> get _feeds => _controller.feeds;
   List<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList();
   List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video").toList();
-  List<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(DateTime.fromMicrosecondsSinceEpoch(v!.feedDate!))).toList();
+  List<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(v!.feedDate!)).toList();
 
   @override
   Widget build(BuildContext context) {
