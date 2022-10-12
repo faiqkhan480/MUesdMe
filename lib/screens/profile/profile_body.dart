@@ -145,7 +145,7 @@ class ProfileBody extends StatelessWidget {
           _feedController.gotoProfile(u);
         },
         controller: videoController,
-        actions: FeedActions(
+        actions: Obx(() => FeedActions(
           index: index,
           loader: fetching && currIndex == index && currTab == tab,
           liked: data.elementAt(index)?.postLiked == "Liked",
@@ -154,7 +154,7 @@ class ProfileBody extends StatelessWidget {
           onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
           onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
           onShareTap: () => onShareTap(data.elementAt(index)!),
-        ),),
+        )),),
     );
 
     return Column(

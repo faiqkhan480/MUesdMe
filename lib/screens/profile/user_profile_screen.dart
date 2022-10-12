@@ -91,7 +91,7 @@ class UserProfileScreen extends GetView<UserProfileController> {
                      onRefresh: controller.getData,
                      loader: _loading,
                      user: _user,
-                     feeds: _feeds,
+                     feeds:  controller.feeds,
                      fetchingFeeds: controller.feedsLoading(),
                      options: PopupMenuButton<int>(
                          padding: const EdgeInsets.only(left: 10, right: 0),
