@@ -22,7 +22,7 @@ class ProfileScreen extends GetView<ProfileController> {
   User? get _user => controller.user.value;
 
   bool get _loading => controller.loading();
-  List<Feed?> get _feeds => controller.feeds;
+  // List<Feed?> get _feeds => controller.feeds;
 
   bool get _fetching => controller.fetching();
   int get _currIndex => controller.currIndex.value;
@@ -70,7 +70,7 @@ class ProfileScreen extends GetView<ProfileController> {
                     onRefresh: controller.getData,
                     loader: _loading,
                     user: _user,
-                    feeds: _feeds,
+                    feeds: controller.feeds,
                     fetchingFeeds: controller.feedsLoading(),
                     currIndex: _currIndex,
                     currTab: _currTab,

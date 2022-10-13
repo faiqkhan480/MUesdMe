@@ -73,6 +73,7 @@ class _UploadScreenState extends State<UploadScreen> {
     debugPrint(":::::::::::::::: ${video}");
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // HEADER
           const CustomHeader(
@@ -158,11 +159,14 @@ class _UploadScreenState extends State<UploadScreen> {
     return _controller.value.isInitialized ?
     SizedBox(
         height: MediaQuery.of(context).size.height * 0.45,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: CachedVideoPlayer(_controller)),
+        // width: MediaQuery.of(context).size.width,
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: CachedVideoPlayer(_controller)),
+          ),
         )) :
     const Loader();
   }
@@ -209,9 +213,13 @@ class _UploadScreenState extends State<UploadScreen> {
     if(filePath != null) {
       var res = await _service.uploadFeed(filePath, "Video", value);
       if(res == true) {
-        await _feeds.getFeeds();
+        await _feeds.getFeeds(force: true);
         await _profile.getData();
         await VideoCompress.deleteAllCache();
+        Get.snackbar("Success!", "feed uploaded!",
+            backgroundColor: AppColors.successColor,
+            colorText: Colors.white
+        );
         Get.close(2);
       }
     }

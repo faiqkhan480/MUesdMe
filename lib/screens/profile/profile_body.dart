@@ -20,7 +20,9 @@ class ProfileBody extends StatelessWidget {
   final Future Function() onRefresh;
   final Widget? button;
   final Widget? options;
-  final List<Feed?>? feeds;
+  final RxList<Feed?>? feeds;
+  final List<Feed?>? images;
+  final List<Feed?>? videos;
   final CachedVideoPlayerController? videoController;
   final bool fetching;
   final int currIndex;
@@ -44,6 +46,8 @@ class ProfileBody extends StatelessWidget {
     required this.likeTap,
     required this.onCommentTap,
     required this.onShareTap,
+    this.images,
+    this.videos
   }) : super(key: key);
 
   FeedController get _feedController => Get.find<FeedController>();
@@ -55,8 +59,8 @@ class ProfileBody extends StatelessWidget {
       "Images",
       "Videos"
     ];
-    
     return NestedScrollView(
+
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
           SliverAppBar(
@@ -117,8 +121,8 @@ class ProfileBody extends StatelessWidget {
               TabBarView(
                 children: [
                   listing(feeds ?? [], 0),
-                  listing(feeds?.where((f) => f?.feedType == "Image").toList() ?? [], 1),
-                  listing(feeds?.where((f) => f?.feedType == "Video").toList() ?? [], 2),
+                  listing(feeds?.where((f) => f?.feedType == "Image").toList().obs ?? RxList.empty(), 1),
+                  listing(feeds?.where((f) => f?.feedType == "Video").toList().obs ?? RxList.empty(), 2),
                 ],
               ),
             ),
@@ -144,16 +148,19 @@ class ProfileBody extends StatelessWidget {
           _feedController.gotoProfile(u);
         },
         controller: videoController,
-        actions: Obx(() => FeedActions(
-          index: index,
-          loader: fetching && currIndex == index && currTab == tab,
-          liked: data.elementAt(index)?.postLiked == "Liked",
-          commentsCount: data.elementAt(index)?.postComments ?? 0,
-          likeCount: data.elementAt(index)?.postLikes ?? 0,
-          onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
-          onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
-          onShareTap: () => onShareTap(data.elementAt(index)!),
-        )),),
+        actions: Obx(() {
+          return FeedActions(
+            index: index,
+            loader: fetching && currIndex == index && currTab == tab,
+            liked: data.elementAt(index)?.postLiked == "Liked",
+            commentsCount: data.elementAt(index)?.postComments ?? 0,
+            likeCount: data.elementAt(index)?.postLikes ?? 0,
+            onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
+            onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
+            onShareTap: () => onShareTap(data.elementAt(index)!),
+          );
+        }),
+      ),
     );
   }
 }

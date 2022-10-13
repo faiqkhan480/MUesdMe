@@ -43,8 +43,11 @@ class FeedController extends GetxController {
   }
 
   // FETCH FEEDS
-  Future<void> getFeeds() async {
+  Future<void> getFeeds({bool? force}) async {
     // videos.clear();
+    if(force == true) {
+      loading.value = force!;
+    }
     List res = await _service.fetchPosts();
     if(res.isNotEmpty) {
       if(feeds.isEmpty) {

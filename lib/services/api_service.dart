@@ -293,10 +293,10 @@ class ApiService extends GetxService {
         if(res.code == 200 && res.message != null) {
         //   List<Comment> comments = commentFromJson(jsonEncode(res.feedComments));
         //   return comments;
-          Get.snackbar("Success!", res.message ?? "",
-              backgroundColor: AppColors.successColor,
-              colorText: Colors.white
-          );
+        //   Get.snackbar("Success!", res.message ?? "",
+        //       backgroundColor: AppColors.successColor,
+        //       colorText: Colors.white
+        //   );
            return true;
         }
       }

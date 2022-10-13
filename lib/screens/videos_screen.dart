@@ -37,7 +37,7 @@ class VideosScreen extends StatelessWidget {
   int get _currTab => _controller.currTab.value;
   List<Feed?> get _feeds => _controller.feeds;
   List<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList();
-  List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video").toList();
+  List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video" && v!.postLikes! > 0).toList();
   List<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(v!.feedDate!)).toList();
 
   @override
@@ -67,22 +67,28 @@ class VideosScreen extends StatelessWidget {
                 ))
             ),
 
-            Obx(() =>
-            (_loading) ?
-            const Loader() :
-            Expanded(
-                child: TabBarView(
-                  children: [
-                    _view(_videos, 0), // ALL VIDEOS
-                    _view(_trending, 1), // TRENDING VIDEOS
-                    _view(_today, 1), // TODAY'S VIDEOS
-                    // SvgPicture.asset(Assets.searchUsers), // TODAY'S VIDEOS
-                  ],
-                )
-            ),),
+            Obx(_body),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _body() {
+    if(_trending.isNotEmpty) {
+      _trending.sort((a, b) => a!.postLikes!.compareTo(b!.postLikes!));
+    }
+    return (_loading) ?
+    const Loader() :
+    Expanded(
+        child: TabBarView(
+          children: [
+            _view(_videos, 0), // ALL VIDEOS
+            _view(_trending, 1), // TRENDING VIDEOS
+            _view(_today, 1), // TODAY'S VIDEOS
+            // SvgPicture.asset(Assets.searchUsers), // TODAY'S VIDEOS
+          ],
+        )
     );
   }
 
