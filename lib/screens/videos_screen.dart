@@ -37,8 +37,8 @@ class VideosScreen extends StatelessWidget {
   int get _currTab => _controller.currTab.value;
   List<Feed?> get _feeds => _controller.feeds;
   List<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList();
-  List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video" && v!.postLikes! > 0).toList();
-  List<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(v!.feedDate!)).toList();
+  List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video" && v!.postLikes! > 0).toList().obs;
+  List<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(v!.feedDate!)).toList().obs;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class VideosScreen extends StatelessWidget {
     }
     return (_loading) ?
     const Loader() :
-    Expanded(
+    Flexible(
         child: TabBarView(
           children: [
             _view(_videos, 0), // ALL VIDEOS
@@ -93,25 +93,27 @@ class VideosScreen extends StatelessWidget {
   }
 
   Widget _view(List<Feed?> items, int tab) {
+    if(!_loading && items.isEmpty) {
+      return
+        SvgPicture.asset(Assets.searchUsers, height: 300);
+        Column(
+          children: [
+
+            const Text("No Feeds!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: 'Larsseit',
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+      ],
+    );
+    }
     return RefreshIndicator(
       onRefresh: _controller.getFeeds,
-      child: (!_loading && items.isEmpty) ?
-      ListView(
-        // shrinkWrap: true,
-        // physics: const BouncingScrollPhysics(),
-        children: [
-          SvgPicture.asset(Assets.iconsNoFeeds, height: 300),
-          const Text("No Feeds!",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontFamily: 'Larsseit',
-              fontWeight: FontWeight.w500,
-            ),),
-        ],
-      ) :
-      InViewNotifierList(
+      child: InViewNotifierList(
           isInViewPortCondition:
               (double deltaTop, double deltaBottom, double viewPortDimension) {
             return deltaTop < (0.5 * viewPortDimension) &&

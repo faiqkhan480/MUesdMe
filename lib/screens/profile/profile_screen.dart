@@ -97,6 +97,10 @@ class ProfileScreen extends GetView<ProfileController> {
 
   // COMMENT SHEET
   handleComment(int feedId) async {
+    // int count = controller.feeds.firstWhere((feed) => feed?.feedId == feedId)?.postComments ?? 0;
+    // count++;
+    // controller.feeds.firstWhere((feed) => feed?.feedId == feedId)?.postComments = count;
+    // controller.feeds.refresh();
     Get.create(() => CommentController(feedId: feedId.toString(), action: controller.updateCommentCount));
     await Get.bottomSheet(
         const CommentSheet(),

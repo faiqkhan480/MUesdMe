@@ -78,13 +78,13 @@ class AgoraController extends GetxController {
   // CHECK USER'S ONLINE STATUS
   Stream<bool> checkStatus(String uid) async* {
     try {
-      debugPrint('ID :::: $uid');
+      // debugPrint('ID :::: $uid');
       Map<dynamic, dynamic>? result = await client?.queryPeersOnlineStatus(["MusedByMe_$uid"]);
-      debugPrint('Query result: $result');
+      // debugPrint('Query result: $result');
       bool r = result!["MusedByMe_$uid"] as bool;
       yield r;
     } catch (errorCode) {
-      debugPrint('Query error: $errorCode');
+      // debugPrint('Query error: $errorCode');
       yield false;
     }
   }

@@ -20,9 +20,7 @@ class ProfileBody extends StatelessWidget {
   final Future Function() onRefresh;
   final Widget? button;
   final Widget? options;
-  final RxList<Feed?>? feeds;
-  final List<Feed?>? images;
-  final List<Feed?>? videos;
+  final RxList<Feed?> feeds;
   final CachedVideoPlayerController? videoController;
   final bool fetching;
   final int currIndex;
@@ -38,7 +36,7 @@ class ProfileBody extends StatelessWidget {
     required this.onRefresh,
     this.button,
     this.options,
-    this.feeds,
+    required this.feeds,
     this.videoController,
     required this.fetching,
     required this.currIndex,
@@ -46,8 +44,6 @@ class ProfileBody extends StatelessWidget {
     required this.likeTap,
     required this.onCommentTap,
     required this.onShareTap,
-    this.images,
-    this.videos
   }) : super(key: key);
 
   FeedController get _feedController => Get.find<FeedController>();
@@ -115,24 +111,26 @@ class ProfileBody extends StatelessWidget {
                 ),
               ),
             ),
-            Flexible(
-              child: (!fetchingFeeds && feeds!.isEmpty) ?
-              SvgPicture.asset(Assets.searchUsers) :
-              TabBarView(
-                children: [
-                  listing(feeds ?? [], 0),
-                  listing(feeds?.where((f) => f?.feedType == "Image").toList().obs ?? RxList.empty(), 1),
-                  listing(feeds?.where((f) => f?.feedType == "Video").toList().obs ?? RxList.empty(), 2),
-                ],
-              ),
-            ),
+            Obx(() =>
+                Flexible(
+                  child: (!fetchingFeeds && feeds.isEmpty) ?
+                  SvgPicture.asset(Assets.searchUsers) :
+                  TabBarView(
+                    children: [
+                      listing(feeds, 0),
+                      listing(feeds.where((f) => f?.feedType == "Image").toList().obs, 1),
+                      listing(feeds.where((f) => f?.feedType == "Video").toList().obs, 2),
+                    ],
+                  ),
+                ),
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget listing(List<Feed?> data, int tab) {
+  Widget listing(RxList<Feed?> data, int tab) {
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
       separatorBuilder: (context, index) => const SizedBox(height: 20),
@@ -148,18 +146,16 @@ class ProfileBody extends StatelessWidget {
           _feedController.gotoProfile(u);
         },
         controller: videoController,
-        actions: Obx(() {
-          return FeedActions(
-            index: index,
-            loader: fetching && currIndex == index && currTab == tab,
-            liked: data.elementAt(index)?.postLiked == "Liked",
-            commentsCount: data.elementAt(index)?.postComments ?? 0,
-            likeCount: data.elementAt(index)?.postLikes ?? 0,
-            onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
-            onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
-            onShareTap: () => onShareTap(data.elementAt(index)!),
-          );
-        }),
+        actions: FeedActions(
+          index: index,
+          loader: fetching && currIndex == index && currTab == tab,
+          liked: data.elementAt(index)?.postLiked == "Liked",
+          commentsCount: data.elementAt(index)?.postComments ?? 0,
+          likeCount: data.elementAt(index)?.postLikes ?? 0,
+          onLikeTap: (value) => likeTap(index, data.elementAt(index)!, tab),
+          onCommentTap: () =>  onCommentTap(data.elementAt(index)!.feedId!),
+          onShareTap: () => onShareTap(data.elementAt(index)!),
+        ),
       ),
     );
   }

@@ -117,6 +117,7 @@ class FeedController extends GetxController {
     }
   }
 
+  // LIKE OR UNLIKE THE FEED
   handleLike(int index, int feedId, {int? currentTab}) async {
     currIndex.value = index;
     currTab.value = currentTab ?? 0;
@@ -128,6 +129,7 @@ class FeedController extends GetxController {
       feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLiked = (status == "Like") ? "Liked" : "Like";
       feeds.firstWhere((feed) => feed?.feedId == feedId)?.postLikes = (status == "Like") ? count+1 : count-1;
     }
+    feeds.refresh();
     fetching.value = false;
   }
 
