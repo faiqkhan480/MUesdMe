@@ -1,22 +1,28 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
+import '../controllers/agora_controller.dart';
+import '../controllers/feed_controller.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 import '../widgets/text_widget.dart';
 import 'search_field.dart';
 
-class CustomScrollViewContent extends StatefulWidget {
-  const CustomScrollViewContent({Key? key}) : super(key: key);
+class UsersSheet extends StatefulWidget {
+  const UsersSheet({Key? key}) : super(key: key);
 
   @override
-  State<CustomScrollViewContent> createState() => _CustomScrollViewContentState();
+  State<UsersSheet> createState() => _UsersSheetState();
 }
 
-class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
-  List<int> _selections = [];
+class _UsersSheetState extends State<UsersSheet> {
+  final List<int> _selections = [];
+
+  FeedController get controller => Get.find<FeedController>();
+  AgoraController get _agora => Get.find<AgoraController>();
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +122,7 @@ class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
                       childAspectRatio: 1,
                         // mainAxisSpacing:5
                     ),
-                    itemCount: 12,
+                    itemCount: controller.users.length,
                     shrinkWrap: true,
                     // physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 50),
@@ -128,20 +134,27 @@ class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children:[
-                            Badge(
-                              badgeColor: AppColors.lightGrey,
-                              position: BadgePosition.topEnd(top: -1, end: 4),
-                              elevation: 0,
-                              padding: _selections.contains(index) ? EdgeInsets.zero : const EdgeInsets.all(5.0),
-                              badgeContent: _selections.contains(index) ? SvgPicture.asset(Assets.iconsSelection) : null,
-                              borderSide: const BorderSide(color: Colors.transparent, width: 0),
-                              child: const CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 25,
-                                  backgroundImage: NetworkImage(Constants.albumArt)),
+                            StreamBuilder(
+                                stream: _agora.checkStatus(controller.users.elementAt(index)!.userId.toString()),
+                                builder: (context, snapshot) => Badge(
+                                  badgeColor: AppColors.lightGrey,
+                                  position: BadgePosition.topEnd(top: -1, end: 4),
+                                  elevation: 0,
+                                  padding: _selections.contains(index) ? EdgeInsets.zero : const EdgeInsets.all(5.0),
+                                  badgeContent: _selections.contains(index) ? SvgPicture.asset(Assets.iconsSelection) : null,
+                                  borderSide: const BorderSide(color: Colors.transparent, width: 0),
+                                  child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      radius: 25,
+                                      backgroundImage: NetworkImage(
+                                        controller.users.elementAt(index)?.profilePic != null && controller.users.elementAt(index)!.profilePic!.isNotEmpty ?
+                                        "${Constants.IMAGE_URL}${controller.users.elementAt(index)?.profilePic}" :
+                                        Constants.dummyImage,
+                                      )),
+                                )
                             ),
                             const SizedBox(height: 5,),
-                            const TextWidget("Alexander")
+                            TextWidget(controller.users.elementAt(index)?.userName ?? "")
                           ],
                         ),
                       ),

@@ -1,23 +1,27 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtm/agora_rtm.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:musedme/controllers/agora_controller.dart';
 
 import '../models/chat.dart';
 import '../services/auth_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
 class LiveController extends GetxController {
   RtcEngine? engine;
-  AgoraRtmClient? _client;
-  AgoraRtmChannel? _channel;
 
   TextEditingController chatController = TextEditingController();
 
   final AuthService _service = Get.find<AuthService>();
 
+  final AgoraRtmClient? _client = Get.find<AgoraController>().client;
+  AgoraRtmChannel? _channel;
+
   RxList<int> users = <int>[].obs;
+  RxInt views = 0.obs;
   RxBool muted = false.obs;
   RxBool flash = false.obs;
   RxBool loading = true.obs;
@@ -26,7 +30,7 @@ class LiveController extends GetxController {
   int? streamId;
   // String userId = "abc";
 
-  RxList comments = [].obs;
+  RxList<ChatMessage?> comments = List<ChatMessage?>.empty(growable: true).obs;
   // The key of the list
   final GlobalKey<AnimatedListState> key = GlobalKey();
 
@@ -49,7 +53,7 @@ class LiveController extends GetxController {
     // destroy sdk and leave channel
     engine?.destroy();
     _channel?.leave();
-    _client?.destroy();
+    // _client?.destroy();
     // TODO: implement onClose
     super.onClose();
   }
@@ -85,7 +89,9 @@ class LiveController extends GetxController {
       },
     ));
 
-    await engine?.joinChannel(_service.rtc, "MusedByMe_${_service.currentUser?.userId}", null, 0);
+    await engine?.joinChannel(_service.rtc, "${Constants.agoraBaseId}${_service.currentUser?.userId}", null, 0);
+
+    await _joinChannel();
   }
 
   // <----------------START RTC------------------> //
@@ -102,8 +108,6 @@ class LiveController extends GetxController {
     } else {
       await engine!.setClientRole(ClientRole.Audience);
     }
-
-    _createClient();
   }
 
   void _addListeners() {
@@ -136,53 +140,21 @@ class LiveController extends GetxController {
 
   // <----------------END RTC------------------> //
 
-  // <----------------START RTM------------------> //
-  Future _createClient() async {
-    _client = await AgoraRtmClient.createInstance(Constants.appId);
-    debugPrint("RTM Initialize::::::::");
-
-    _client?.onMessageReceived = (AgoraRtmMessage message, String peerId) {
-      // logController.addLog("Private Message from " + peerId + ": " + message.text);
-      comments.add(ChatMessage(uid: peerId, message: message.text, type: "receiver"));
-    };
-    _client?.onConnectionStateChanged = (int state, int reason) {
-      debugPrint('Connection state changed::::::::::: $state, reason: $reason');
-      if (state == 5) {
-        _client?.logout();
-        // logController.addLog('Logout.');
-      }
-    };
-    _login();
-  }
-
-  Future _login() async {
-    try {
-      await _client?.login(_service.rtm, "MusedByMe_${_service.currentUser?.userId}");
-      loading.value = false;
-      Get.snackbar("Success", "Login success!", backgroundColor: Colors.green, colorText: Colors.white);
-      _joinChannel();
-    } catch (errorCode) {
-      debugPrint('Login error:::: $errorCode');
-      Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
-    }
-  }
-
+  // <----------------START RTM CHANNEL------------------> //
   Future _joinChannel() async {
     try {
-      _channel = await _createChannel("MusedByMe_${_service.currentUser?.userId}");
-      debugPrint('Join channel success.');
+      _channel = await _createChannel("${Constants.agoraBaseId}${_service.currentUser?.userId}");
+      debugPrint('Join channel success. ${Constants.agoraBaseId}${_service.currentUser?.userId}');
       await _channel?.join();
-      // logController.addLog('Join channel success.');
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => MessageScreen(
-      //           client: _client,
-      //           channel: _channel,
-      //           logController: logController,
-      //         )));
+      if(kDebugMode) {
+        Get.snackbar("Success", "Join channel success.", backgroundColor: AppColors.successColor, colorText: Colors.white);
+      }
+      loading.value = false;
     } catch (errorCode) {
       debugPrint('Join channel error: $errorCode');
+      if(kDebugMode) {
+        Get.snackbar("Join channel error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+      }
     }
   }
 
@@ -190,17 +162,29 @@ class LiveController extends GetxController {
     AgoraRtmChannel? channel = await _client?.createChannel(name);
     if(channel != null) {
       channel.onMemberJoined = (AgoraRtmMember member) {
+        if(kDebugMode) {
+          Get.snackbar("Member joined", member.userId.toString(), backgroundColor: AppColors.successColor, colorText: Colors.white);
+        }
+        debugPrint('Member joined: ${member.userId}');
+        views.value = views.value+1;
         comments.insert(0, ChatMessage(uid: member.userId, message: "Member joined: ${member.userId}"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
+        update();
       };
       channel.onMemberLeft = (AgoraRtmMember member) {
+        views.value = views.value-1;
         comments.insert(0, ChatMessage(uid: member.userId, message: "Member left: ${member.userId}"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
       };
       channel.onMessageReceived = (AgoraRtmMessage message, AgoraRtmMember member) {
-        debugPrint(":::::::::::: RECIEVED MESSAGE");
+        // if(kDebugMode) {
+        //   Get.snackbar("Received Message", message.text.toString(), backgroundColor: AppColors.successColor, colorText: Colors.white);
+        // }
+        views.value = views.value+1;
+        debugPrint(":::::::::::: RECEIVED MESSAGE");
         comments.insert(0, ChatMessage(uid: member.userId, message: message.text, type: "receiver"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
+        update();
       };
     }
     return channel;
@@ -231,12 +215,18 @@ class LiveController extends GetxController {
 
   void handleSubmit([String? val]) async {
     String text = chatController.text;
+    debugPrint(":::::::::::${text}");
     if (text.isNotEmpty) {
       try {
         await _channel?.sendMessage(AgoraRtmMessage.fromText(text));
+        comments.insert(0, ChatMessage(uid: "${Constants.agoraBaseId}${_service.currentUser?.userId}", message: text, type: "receiver"));
+        key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
+        chatController.clear();
       } catch (errorCode) {
         debugPrint("Send channel message error: $errorCode");
-        // widget.logController.addLog('Send channel message error: ' + errorCode.toString());
+        if(kDebugMode) {
+          Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+        }
       }
     }
   }

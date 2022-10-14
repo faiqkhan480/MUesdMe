@@ -7,11 +7,15 @@ import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:musedme/services/auth_service.dart';
 
 import '../components/comment_tile.dart';
-import '../components/custom_scroll_view_content.dart';
+import '../components/users_sheet.dart';
 import '../components/invitation_card.dart';
+import '../controllers/feed_controller.dart';
 import '../controllers/live_controller.dart';
+import '../models/auths/user_model.dart';
+import '../models/chat.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
@@ -22,8 +26,11 @@ import '../widgets/text_widget.dart';
 class LiveScreen extends StatelessWidget {
   const LiveScreen({Key? key}) : super(key: key);
 
+  User get _currUser => Get.find<AuthService>().currentUser!;
   LiveController get _controller => Get.find<LiveController>();
-  List get comments => _controller.comments;
+  List<User?> get users => Get.find<FeedController>().users;
+  int get views => _controller.views();
+  List<ChatMessage?> get comments => _controller.comments;
   bool get isBroadcaster => _controller.isBroadcaster();
   bool get loading => _controller.loading();
   bool get flash => _controller.flash();
@@ -31,8 +38,10 @@ class LiveScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // debugPrint("COMMENTS::::::::::::: ${views}");
     return Scaffold(
       extendBodyBehindAppBar: true,
+      // extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: Padding(
@@ -55,7 +64,7 @@ class LiveScreen extends StatelessWidget {
           children: [
             badge("Live", true),
             const SizedBox(width: 10,),
-            badge("3m views", false),
+            Obx(() => badge("$views views", false)),
           ],
         ),
         actions: [
@@ -113,7 +122,7 @@ class LiveScreen extends StatelessWidget {
       bottomNavigationBar: InkWell(
         onTap: _handleBottomSheet,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-        child: Ink(
+        child: Container(
           decoration: const BoxDecoration(
               color: AppColors.primaryColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
@@ -219,9 +228,9 @@ class LiveScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Flexible(
-                flex: 2,
-                child: InvitationCard()),
+            // const Flexible(
+            //     flex: 2,
+            //     child: InvitationCard()),
 
             Flexible(
               flex: 4,
@@ -229,7 +238,12 @@ class LiveScreen extends StatelessWidget {
                 key: _controller.key,
                   padding: const EdgeInsets.only(left: 20, right: 50),
                   reverse: true,
-                  itemBuilder: (context, index, animation) => CommentTile(comments.elementAt(index), animation: animation),
+                  itemBuilder: (context, index, animation) => CommentTile(
+                      user: users.firstWhere((u) => u?.userId.toString() == comments.elementAt(index)?.uid.replaceAll(Constants.agoraBaseId, ""),
+                        orElse: () => _currUser,),
+                      comments.elementAt(index)!,
+                      animation: animation
+                  ),
                   initialItemCount: comments.length,
               ),
             ),
@@ -253,7 +267,7 @@ class LiveScreen extends StatelessWidget {
                               iconSize: 30,
                               icon: const Icon(Icons.send,)
                           ),
-                          hintText: 'Write your comment here...',
+                          hintText: 'Write your message here...',
                           hintStyle: const TextStyle(color: Colors.white),
                           // isDense: true,
                           // fillColor: AppColors.textFieldColor,
@@ -268,13 +282,13 @@ class LiveScreen extends StatelessWidget {
                     ),
                   ),
 
-                  ButtonWidget(
-                    onPressed: () => null,
-                    text: "7.1k",
-                    vertical: true,
-                    textColor: Colors.white,
-                    icon: Assets.iconsHeart,
-                  ),
+                  // ButtonWidget(
+                  //   onPressed: () => null,
+                  //   text: "0",
+                  //   vertical: true,
+                  //   textColor: Colors.white,
+                  //   icon: Assets.iconsHeart,
+                  // ),
                 ],
               ),
             )
@@ -338,22 +352,8 @@ class LiveScreen extends StatelessWidget {
 
   void _handleBottomSheet() {
     Get.bottomSheet(
-        const CustomScrollViewContent(),
+        const UsersSheet(),
         backgroundColor: Colors.transparent,
-        // isDismissible: true,
-        // clipBehavior: Clip.antiAlias,
-        // shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
-        // enableDrag: true,
-        // isScrollControlled: true,
-        // persistent: true,
-        // ignoreSafeArea: false
     );
-    // showModalBottomSheet<void>(
-    //   context: context,
-    //   backgroundColor: Colors.transparent,
-    //   builder: (BuildContext context) {
-    //     return const CustomScrollViewContent();
-    //   },
-    // );
   }
 }

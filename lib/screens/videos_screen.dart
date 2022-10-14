@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:inview_notifier_list/inview_notifier_list.dart';
 
 import '../components/comment_sheet.dart';
 import '../components/feed_actions.dart';
 import '../components/feed_card.dart';
 import '../components/header.dart';
 import '../components/share_sheet.dart';
-import '../components/title_row.dart';
-import '../components/todays_picks.dart';
-import '../components/trending_card.dart';
 import '../controllers/comment_controller.dart';
 import '../controllers/feed_controller.dart';
 import '../models/auths/user_model.dart';
@@ -18,7 +14,6 @@ import '../models/feed.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../widgets/loader.dart';
-import '../widgets/text_widget.dart';
 
 class VideosScreen extends StatelessWidget {
   const VideosScreen({Key? key}) : super(key: key);
@@ -94,59 +89,62 @@ class VideosScreen extends StatelessWidget {
 
   Widget _view(List<Feed?> items, int tab) {
     if(!_loading && items.isEmpty) {
-      return
-        SvgPicture.asset(Assets.searchUsers, height: 300);
-        Column(
-          children: [
-
-            const Text("No Feeds!",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontFamily: 'Larsseit',
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-      ],
-    );
+      return SvgPicture.asset(Assets.searchUsers, height: 300);
+    //     Column(
+    //       children: [
+    //         const Text("No Feeds!",
+    //           textAlign: TextAlign.center,
+    //           style: TextStyle(
+    //             color: Colors.black,
+    //             fontSize: 20,
+    //             fontFamily: 'Larsseit',
+    //             fontWeight: FontWeight.w500,
+    //           ),
+    //         ),
+    //   ],
+    // );
     }
-    return RefreshIndicator(
-      onRefresh: _controller.getFeeds,
-      child: InViewNotifierList(
-          isInViewPortCondition:
-              (double deltaTop, double deltaBottom, double viewPortDimension) {
-            return deltaTop < (0.5 * viewPortDimension) &&
-                deltaBottom > (0.5 * viewPortDimension);
-          },
-          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-          builder: (context, index) => InViewNotifierWidget(
-            id: '$index',
-            builder: (BuildContext context, bool isInView, Widget? child) => Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child:Obx(() => FeedCard(
-                index: index,
-                isInView: isInView,
-                post: items.elementAt(index),
-                onDownload: _controller.handleDownload,
-                handleNavigate: () => onTap(index, items.elementAt(index)!),
-                // controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == items.elementAt(index)?.feedPath),
-                actions: FeedActions(
-                  index: index,
-                  loader: _fetching && _currIndex == index && _currTab == tab,
-                  liked: items.elementAt(index)?.postLiked == "Liked",
-                  commentsCount: items.elementAt(index)?.postComments ?? 0,
-                  likeCount: items.elementAt(index)?.postLikes ?? 0,
-                  onLikeTap: (value) => handleLikeTap(index, items.elementAt(index)!, tab),
-                  onCommentTap: () =>   handleComment(index, items.elementAt(index)!),
-                  onShareTap: () => handleShare(items.elementAt(index)!),
-                ),
-              ),
-            ),
-          )),
-          itemCount: items.length
-      ),
+    return ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        itemBuilder: (context, index) => Obx(() => FeedCard(
+          index: index,
+          isInView: true,
+          post: items.elementAt(index),
+          onDownload: _controller.handleDownload,
+          handleNavigate: () => onTap(index, items.elementAt(index)!),
+          // controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == items.elementAt(index)?.feedPath),
+          actions: FeedActions(
+            index: index,
+            loader: _fetching && _currIndex == index && _currTab == tab,
+            liked: items.elementAt(index)?.postLiked == "Liked",
+            commentsCount: items.elementAt(index)?.postComments ?? 0,
+            likeCount: items.elementAt(index)?.postLikes ?? 0,
+            onLikeTap: (value) => handleLikeTap(index, items.elementAt(index)!, tab),
+            onCommentTap: () =>   handleComment(index, items.elementAt(index)!),
+            onShareTap: () => handleShare(items.elementAt(index)!),
+          ),
+        ),),
+        separatorBuilder: (context, index) => const SizedBox(height: 20),
+        itemCount: items.length
     );
+    // return RefreshIndicator(
+    //   onRefresh: _controller.getFeeds,
+    //   child: InViewNotifierList(
+    //       isInViewPortCondition:
+    //           (double deltaTop, double deltaBottom, double viewPortDimension) {
+    //         return deltaTop < (0.5 * viewPortDimension) &&
+    //             deltaBottom > (0.5 * viewPortDimension);
+    //       },
+    //       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+    //       builder: (context, index) => InViewNotifierWidget(
+    //         id: '$index',
+    //         builder: (BuildContext context, bool isInView, Widget? child) => Padding(
+    //           padding: const EdgeInsets.only(top: 20),
+    //           child:
+    //       )),
+    //       itemCount: items.length
+    //   ),
+    // );
   }
 
   // COMMENT SHEET

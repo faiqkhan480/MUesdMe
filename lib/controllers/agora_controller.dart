@@ -65,6 +65,9 @@ class AgoraController extends GetxController {
         // logController.addLog('Logout.');
       }
     };
+    client?.onRemoteInvitationReceivedByPeer = (invite) {
+
+    };
     await _login();
   }
 

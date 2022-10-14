@@ -2,8 +2,6 @@ import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:inview_notifier_list/inview_notifier_list.dart';
-import 'package:musedme/components/video_list_widget.dart';
 
 import '../components/comment_sheet.dart';
 import '../components/feed_actions.dart';
@@ -15,7 +13,6 @@ import '../models/auths/user_model.dart';
 import '../models/feed.dart';
 import '../controllers/feed_controller.dart';
 import '../utils/assets.dart';
-import '../utils/constants.dart';
 import '../widgets/loader.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -65,30 +62,7 @@ class FeedScreen extends StatelessWidget {
 
                 ListView.separated(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    // itemBuilder: (context, index) => (_feeds.elementAt(index)?.feedType == "Video") ?
-                    // VideoListWidget(
-                    //   post: _feeds.elementAt(index),
-                    //   index: index,
-                    //   isInView: false,
-                    //   videoListData: _feeds.elementAt(index),
-                    //   onDownload: controller.handleDownload,
-                    //   handleNavigate: () => onTap(index),
-                    //   actions: Obx(() => FeedActions(
-                    //     index: index,
-                    //     loader: _fetching && _currIndex == index,
-                    //     liked: _feeds.elementAt(index)?.postLiked == "Liked",
-                    //     commentsCount: _feeds.elementAt(index)?.postComments ?? 0,
-                    //     likeCount: _feeds.elementAt(index)?.postLikes ?? 0,
-                    //     onLikeTap: handleLikeTap,
-                    //     onCommentTap: () =>  handleComment(_feeds.elementAt(index)!.feedId!),
-                    //     onShareTap: () => handleShare(_feeds.elementAt(index)!),
-                    //   )),
-                    // ) :
-                    // const SizedBox.shrink(),
-                    itemBuilder: (context, index) =>
-                    //     index == 0 ?
-                    //         SizedBox.shrink() :
-                        FeedCard(
+                    itemBuilder: (context, index) => FeedCard(
                         index: index,
                         isInView: false,
                         post: _feeds.elementAt(index),
@@ -109,40 +83,6 @@ class FeedScreen extends StatelessWidget {
                     separatorBuilder: (context, index) => const SizedBox(height: 20),
                     itemCount: _feeds.length
                 )
-                // InViewNotifierList(
-                //     isInViewPortCondition:
-                //         (double deltaTop, double deltaBottom, double viewPortDimension) {
-                //       return deltaTop < (0.5 * viewPortDimension) &&
-                //           deltaBottom > (0.5 * viewPortDimension);
-                //     },
-                //     padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                //     builder: (context, index) => InViewNotifierWidget(
-                //       id: '$index',
-                //       builder: (BuildContext context, bool isInView, Widget? child) => Padding(
-                //         padding: const EdgeInsets.only(top: 20),
-                //         child: FeedCard(
-                //             index: index,
-                //             isInView: isInView,
-                //             post: _feeds.elementAt(index),
-                //             onDownload: controller.handleDownload,
-                //             handleNavigate: () => onTap(index),
-                //             controller: controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == _feeds.elementAt(index)?.feedPath),
-                //             actions: Obx(() => FeedActions(
-                //               index: index,
-                //               loader: _fetching && _currIndex == index,
-                //               liked: _feeds.elementAt(index)?.postLiked == "Liked",
-                //               commentsCount: _feeds.elementAt(index)?.postComments ?? 0,
-                //               likeCount: _feeds.elementAt(index)?.postLikes ?? 0,
-                //               onLikeTap: handleLikeTap,
-                //               onCommentTap: () =>  handleComment(_feeds.elementAt(index)!.feedId!),
-                //               onShareTap: () => handleShare(_feeds.elementAt(index)!),
-                //             )),
-                //         ),
-                //       ),
-                //     ),
-                //     // separatorBuilder: (context, index) => const SizedBox(height: 20),
-                //     itemCount: _feeds.length
-                // ),
               )
           )),
         ],
