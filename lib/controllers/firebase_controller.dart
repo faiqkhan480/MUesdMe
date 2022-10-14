@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:musedme/controllers/chat_controller.dart';
 
 class FirebaseController extends GetxController {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -29,13 +30,18 @@ class FirebaseController extends GetxController {
     debugPrint("FCM: $token");
     _box.write("fcm", token);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      debugPrint('Got a message whilst in the foreground!');
-      debugPrint('Message data: ${message.data}');
+    FirebaseMessaging.onMessage.listen(onNotification);
+  }
 
-      if (message.notification != null) {
-        debugPrint('Message also contained a notification: ${message.notification}');
+  onNotification(RemoteMessage message) {
+    debugPrint('Got a message whilst in the foreground!');
+    debugPrint('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      if(Get.isRegistered<ChatController>()) {
+        Get.find<ChatController>().getChats();
       }
-    });
+      debugPrint('Message also contained a notification: ${message.notification}');
+    }
   }
 }

@@ -46,7 +46,7 @@ class MessageController extends GetxController {
     }
   }
 
-  void initialize() {
+  initialize() {
     if(args != null && args is Chat) {
       chat.value = args;
       getMessages();

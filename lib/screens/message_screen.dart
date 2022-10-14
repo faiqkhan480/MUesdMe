@@ -66,7 +66,7 @@ class MessageScreen extends GetView<MessageController> {
                     backgroundColor: Colors.white,
                     radius: 18,
                     backgroundImage: NetworkImage(
-                        _chatUser?.profilePic != null ?
+                        _chatUser?.profilePic != null && _chatUser!.profilePic!.isNotEmpty ?
                         Constants.IMAGE_URL + _chatUser!.profilePic! :
                         Constants.dummyImage
                     ),
