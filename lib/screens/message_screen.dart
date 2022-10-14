@@ -55,10 +55,10 @@ class MessageScreen extends GetView<MessageController> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
+            Obx(() => Padding(
               padding: const EdgeInsets.all(8.0),
               child: Badge(
-                badgeColor: AppColors.successColor,
+                badgeColor: controller.isOnline() ? AppColors.successColor : AppColors.lightGrey,
                 position: BadgePosition.topEnd(top: -1, end: 4),
                 elevation: 0,
                 borderSide: const BorderSide(color: Colors.white, width: .7),
@@ -72,7 +72,7 @@ class MessageScreen extends GetView<MessageController> {
                     ),
                 ),
               ),
-            ),
+            )),
             Text(_chatUser?.fullName ?? "",
                 style: const TextStyle(fontFamily: Constants.fontFamily)),
           ],
@@ -140,12 +140,12 @@ class MessageScreen extends GetView<MessageController> {
                   padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
                   child: Row(
                     children: [
-                      IconButton(
-                          onPressed: controller.onPressed,
-                          color: AppColors.primaryColor,
-                          iconSize: 30,
-                          icon: Image.asset(Assets.iconsSmileyFace)
-                      ),
+                      // IconButton(
+                      //     onPressed: controller.onPressed,
+                      //     color: AppColors.primaryColor,
+                      //     iconSize: 30,
+                      //     icon: Image.asset(Assets.iconsSmileyFace)
+                      // ),
                       Expanded(child: MessageInput(controller.message)),
                       const SizedBox(width: 5,),
 

@@ -1,28 +1,21 @@
 import 'package:badges/badges.dart';
 import 'package:better_player/better_player.dart';
-// import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:musedme/controllers/feed_controller.dart';
-import 'package:musedme/controllers/video_controller.dart';
-import 'package:musedme/widgets/loader.dart';
-import 'package:musedme/widgets/shadowed_box.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../controllers/agora_controller.dart';
 import '../models/feed.dart';
-import '../screens/feed_screen.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 import '../widgets/glass_morphism.dart';
-import '../widgets/image_widget.dart';
+import '../widgets/shadowed_box.dart';
 import '../widgets/text_widget.dart';
-import '../widgets/video_widget.dart';
 
-class FeedCard extends StatelessWidget {
+class VideoListWidget extends StatefulWidget {
+  final Feed? videoListData;
   final double? horizontalSpace;
   final int index;
   final bool isInView;
@@ -30,21 +23,49 @@ class FeedCard extends StatelessWidget {
   final Widget? actions;
   final Function(String, bool) onDownload;
   final VoidCallback? handleNavigate;
-  // final CachedVideoPlayerController? controller;
-  const FeedCard({
+
+  const VideoListWidget({
     Key? key,
+    this.videoListData,
     this.horizontalSpace,
     required this.index,
     this.isInView = false,
     this.post,
     this.actions,
     this.handleNavigate,
-    // this.controller,
     required this.onDownload
   }) : super(key: key);
 
+  @override
+  _VideoListWidgetState createState() => _VideoListWidgetState();
+}
+
+class _VideoListWidgetState extends State<VideoListWidget> {
+  Feed? get post => widget.videoListData;
+  BetterPlayerConfiguration? betterPlayerConfiguration;
+  BetterPlayerListVideoPlayerController? controller;
+
   AgoraController get _agora => Get.find<AgoraController>();
-  FeedController get _feedController => Get.find<FeedController>();
+
+  get horizontalSpace => widget.horizontalSpace;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = BetterPlayerListVideoPlayerController();
+    betterPlayerConfiguration = const BetterPlayerConfiguration(autoPlay: true);
+    //   setState(() {});
+    // if(mounted) {
+    //   setState(() {
+    //
+    //   });
+    // }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +87,8 @@ class FeedCard extends StatelessWidget {
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 0),
             leading: Badge(
-              badgeColor: AppColors.lightGrey,
+              // badgeColor: snapshot.hasData && snapshot.data! ? AppColors.successColor : AppColors.lightGrey,
+              badgeColor: AppColors.successColor,
               position: BadgePosition.topEnd(top: -1, end: 4),
               elevation: 0,
               borderSide: const BorderSide(color: Colors.white, width: .7),
@@ -80,7 +102,7 @@ class FeedCard extends StatelessWidget {
                 ),),
             ),
             title: GestureDetector(
-                onTap: handleNavigate,
+                onTap: widget.handleNavigate,
                 child: TextWidget(post?.fullName ??  "", weight: FontWeight.w800)),
             subtitle: TextWidget("@${post?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
             trailing: Row(
@@ -134,7 +156,7 @@ class FeedCard extends StatelessWidget {
                         ListTile(
                           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                           leading: Badge(
-                            badgeColor: AppColors.lightGrey,
+                            badgeColor: AppColors.successColor,
                             position: BadgePosition.topEnd(top: -1, end: 4),
                             elevation: 0,
                             borderSide: const BorderSide(color: Colors.white, width: .7),
@@ -148,17 +170,41 @@ class FeedCard extends StatelessWidget {
                               ),),
                           ),
                           title: GestureDetector(
-                              onTap: handleNavigate,
+                              onTap: widget.handleNavigate,
                               child: TextWidget(post?.shareUser?.fullName ??  "", weight: FontWeight.w800)),
                           subtitle: TextWidget("@${post?.shareUser?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
                         ),
 
-                      post?.feedType == "Video" ?
-                      _video() :
-                      ImageWidget(
-                        url: "${Constants.FEEDS_URL}${post?.feedPath}",
-                        height: 250,
-                      ),
+                      SizedBox(
+                          height: 250,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: BetterPlayerListVideoPlayer(
+                                BetterPlayerDataSource(
+                                  BetterPlayerDataSourceType.network,
+                                  "${Constants.FEEDS_URL}${post?.feedPath}",
+                                  notificationConfiguration: const BetterPlayerNotificationConfiguration(
+                                      showNotification: false,
+                                      title: "",
+                                      author: "Test"
+                                  ),
+                                  bufferingConfiguration: const BetterPlayerBufferingConfiguration(
+                                      minBufferMs: 2000,
+                                      maxBufferMs: 10000,
+                                      bufferForPlaybackMs: 1000,
+                                      bufferForPlaybackAfterRebufferMs: 2000),
+                                ),
+                                configuration: const BetterPlayerConfiguration(
+                                    autoPlay: false, aspectRatio: 1, handleLifecycle: true),
+                                //key: Key(videoListData.hashCode.toString()),
+                                playFraction: 0.8,
+                                // betterPlayerListVideoPlayerController: controller,
+                              ),
+                            ),
+                          )
+                      )
                     ],
                   ),
                 ),
@@ -180,59 +226,17 @@ class FeedCard extends StatelessWidget {
 
           Padding(
             padding: const EdgeInsets.only(left: 0.0, right: 8.0),
-            child: actions,
+            child: widget.actions,
           )
         ],
       ),
     );
-  }
-
-  Widget _video() {
-    // return VideoListWidget(feed: post,);
-    return SizedBox(
-        height: 250,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: BetterPlayerListVideoPlayer(
-              BetterPlayerDataSource(
-                BetterPlayerDataSourceType.network,
-                "${Constants.FEEDS_URL}${post?.feedPath}",
-                notificationConfiguration: BetterPlayerNotificationConfiguration(
-                    showNotification: false,
-                    title: post?.userName ?? "",
-                    author: "Test",
-                ),
-                bufferingConfiguration: const BetterPlayerBufferingConfiguration(
-                    minBufferMs: 2000,
-                    maxBufferMs: 10000,
-                    bufferForPlaybackMs: 1000,
-                    bufferForPlaybackAfterRebufferMs: 2000),
-              ),
-              configuration: const BetterPlayerConfiguration(
-                autoDispose: false,
-                  looping: false,
-                  fit: BoxFit.cover,
-                  autoPlay: false,
-                  aspectRatio: 1,
-                  handleLifecycle: true,
-                controlsConfiguration: BetterPlayerControlsConfiguration(
-                  showControls: false
-                )
-              ),
-              //key: Key(videoListData.hashCode.toString()),
-              playFraction: 0.8,
-              betterPlayerListVideoPlayerController: _feedController.betterCtrl,
-            ),
-          ),
-        )
-    );
-  }
-
-  handleOption(String item) {
-    if(item == "1") {
-      onDownload(post?.feedPath ?? "",  post?.feedType == "Video");
-    }
+    // return StreamBuilder<bool>(
+    //     stream: (_agora.checkStatus(post?.userId.toString() ?? "")),
+    //     // future: _agora.isUserOnline(post?.userId.toString() ?? ""),
+    //     builder: (context, AsyncSnapshot<bool> snapshot) {
+    //       return ;
+    //     }
+    // );
   }
 }

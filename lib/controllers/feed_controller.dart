@@ -1,4 +1,5 @@
-import 'package:cached_video_player/cached_video_player.dart';
+// import 'package:cached_video_player/cached_video_player.dart';
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gallery_saver/gallery_saver.dart';
@@ -28,13 +29,17 @@ class FeedController extends GetxController {
 
   final RootController _bottomNavigation = Get.find<RootController>();
 
-  RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
+  BetterPlayerListVideoPlayerController betterCtrl= BetterPlayerListVideoPlayerController();
+  BetterPlayerConfiguration betterPlayerConfiguration = const BetterPlayerConfiguration(autoPlay: true);
+  // RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     getData();
+    betterCtrl = BetterPlayerListVideoPlayerController();
+    // betterPlayerConfiguration = const BetterPlayerConfiguration(autoPlay: true);
   }
 
   Future<void> getData() async {
@@ -58,17 +63,17 @@ class FeedController extends GetxController {
         feeds.addAll(res as List<Feed?>);
         // feeds.replaceRange(0, (feeds.length-1), res as List<Feed?>);
       }
-      for (var f in feeds) {
-        if(f?.feedType == "Video") {
-          String url = "${Constants.FEEDS_URL}${f?.feedPath}";
-          if(videos.isEmpty || videos.any((v) => v?.dataSource != url)) {
-            CachedVideoPlayerController c = CachedVideoPlayerController.network(url);
-            await c.initialize();
-            videos.add(c);
-          }
-        }
-      }
-      update();
+      // for (var f in feeds) {
+      //   if(f?.feedType == "Video") {
+      //     String url = "${Constants.FEEDS_URL}${f?.feedPath}";
+      //     if(videos.isEmpty || videos.any((v) => v?.dataSource != url)) {
+      //       CachedVideoPlayerController c = CachedVideoPlayerController.network(url);
+      //       await c.initialize();
+      //       videos.add(c);
+      //     }
+      //   }
+      // }
+      // update();
     }
     loading.value = false;
   }

@@ -130,7 +130,7 @@ class VideosScreen extends StatelessWidget {
                 post: items.elementAt(index),
                 onDownload: _controller.handleDownload,
                 handleNavigate: () => onTap(index, items.elementAt(index)!),
-                controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == items.elementAt(index)?.feedPath),
+                // controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == items.elementAt(index)?.feedPath),
                 actions: FeedActions(
                   index: index,
                   loader: _fetching && _currIndex == index && _currTab == tab,

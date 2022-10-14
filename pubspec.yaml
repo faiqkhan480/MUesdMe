@@ -18,7 +18,7 @@ dependencies:
 
   badges: ^2.0.3
 
-  cached_video_player: ^2.0.3
+#  cached_video_player: ^2.0.3
   callkeep: ^0.3.2
   country_picker: ^2.0.16
   cupertino_icons: ^1.0.2
@@ -51,9 +51,10 @@ dependencies:
   video_editor_sdk: ^2.7.0
 
   timeago: ^3.3.0
-  video_player: ^2.4.7
+#  video_player: ^2.4.7
   video_thumbnail: ^0.5.3
   video_compress: ^3.1.1
+  better_player: ^0.0.83
 
 dev_dependencies:
   flutter_test:

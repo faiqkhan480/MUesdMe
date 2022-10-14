@@ -14,6 +14,8 @@ class MessageController extends GetxController {
   RxBool loading = true.obs;
   RxBool emojiShowing = false.obs;
   RxBool fetching = false.obs;
+  
+  RxBool isOnline = false.obs;
 
   // Rx<User> user = User().obs;
   Rx<Chat> chat = Chat().obs;
@@ -40,6 +42,13 @@ class MessageController extends GetxController {
       chat.value = args;
       getMessages();
     }
+    
+    isOnline.addListener(GetStream(
+      onListen: () async {
+        bool res = await _agora.isUserOnline(chat.value.userId.toString());
+        isOnline.value = res;
+      },
+    ));
 
     // comments.addListener(GetStream(
     //   onListen: appendMsg,
@@ -98,7 +107,7 @@ class MessageController extends GetxController {
     ));
     // comments.insert(0, ChatMessage(uid: "MusedByMe_${chat.value.userId}", message: message.text, type: "sender"));
     messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: chat.value.chatId, message: message.text, messageDate: DateTime.now()));
-    _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString());
+    _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString(), 1);
     message.clear();
   }
 
@@ -108,6 +117,7 @@ class MessageController extends GetxController {
       return;
     }
     fetching.value = true;
+    // FOR ONLINE USER
     if(await _isUserOnline(chat.value.userId.toString())) {
       try {
         AgoraRtmMessage msg = AgoraRtmMessage.fromText(message.text);
@@ -120,8 +130,9 @@ class MessageController extends GetxController {
         Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
       }
     }
+    // FOR OFFLINE USER
     else {
-      var res = await _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString());
+      var res = await _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString(), 0);
       if(res == true) {
         messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: chat.value.chatId, message: message.text, messageDate: DateTime.now()));
         message.clear();

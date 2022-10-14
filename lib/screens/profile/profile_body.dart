@@ -1,4 +1,4 @@
-import 'package:cached_video_player/cached_video_player.dart';
+// import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -21,7 +21,7 @@ class ProfileBody extends StatelessWidget {
   final Widget? button;
   final Widget? options;
   final RxList<Feed?> feeds;
-  final CachedVideoPlayerController? videoController;
+  // final CachedVideoPlayerController? videoController;
   final bool fetching;
   final int currIndex;
   final int currTab;
@@ -37,7 +37,7 @@ class ProfileBody extends StatelessWidget {
     this.button,
     this.options,
     required this.feeds,
-    this.videoController,
+    // this.videoController,
     required this.fetching,
     required this.currIndex,
     required this.currTab,
@@ -145,7 +145,7 @@ class ProfileBody extends StatelessWidget {
           User u = User(userId: data.elementAt(index)?.userId,);
           _feedController.gotoProfile(u);
         },
-        controller: videoController,
+        // controller: videoController,
         actions: FeedActions(
           index: index,
           loader: fetching && currIndex == index && currTab == tab,

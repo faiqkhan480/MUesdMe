@@ -388,24 +388,27 @@ class ApiService extends GetxService {
   }
 
   // SAVE MESSAGE TO SERVER
-  Future sendMessage(String chatId, String message, String chatWithUser) async {
+  Future sendMessage(String chatId, String message, String chatWithUser, int isActive) async {
     try {
       var payload = {
         "ChatID": chatId,
         "UserID": _userId,
         "Message": message,
         "ChatWithUser": chatWithUser,
+        "IsActive": isActive,
       };
       final json = await Network.post(url: Constants.SEND_MESSAGE, headers: _header, payload: payload);
-      // debugPrint("json::::::$json");
+      debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.message != null) {
-          // Get.snackbar("Success!", res.message ?? "",
-          //     backgroundColor: AppColors.successColor,
-          //     colorText: Colors.white
-          // );
           return true;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
         }
       }
       return null;

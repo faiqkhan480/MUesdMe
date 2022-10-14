@@ -1,4 +1,4 @@
-import 'package:cached_video_player/cached_video_player.dart';
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +21,7 @@ class ShareSheet extends StatefulWidget {
 class _ShareSheetState extends State<ShareSheet> {
   Feed get feed => widget.feed;
 
-  late CachedVideoPlayerController controller;
+  // late CachedVideoPlayerController controller;
 
   bool loading = false;
   String value = "Public";
@@ -30,13 +30,13 @@ class _ShareSheetState extends State<ShareSheet> {
 
   @override
   void initState() {
-    if(feed.feedType == "Video") {
-      controller = CachedVideoPlayerController.network("${Constants.FEEDS_URL}${feed.feedPath}");
-      controller.initialize().then((value) {
-        // controller.play();
-        setState(() {});
-      });
-    }
+    // if(feed.feedType == "Video") {
+    //   controller = CachedVideoPlayerController.network("${Constants.FEEDS_URL}${feed.feedPath}");
+    //   controller.initialize().then((value) {
+    //     // controller.play();
+    //     setState(() {});
+    //   });
+    // }
     super.initState();
   }
 
@@ -94,12 +94,37 @@ class _ShareSheetState extends State<ShareSheet> {
 
             const SizedBox(height: 30),
             feed.feedType == "Video" ?
-            VideoWidget(
-                url: "${Constants.FEEDS_URL}${feed.feedPath}",
-                controller: controller,
-                // controller: _controller.videos.first!,
-                play: false
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: BetterPlayer.network(
+                  "${Constants.FEEDS_URL}${feed.feedPath}",
+                  betterPlayerConfiguration: const BetterPlayerConfiguration(
+                      aspectRatio: 16 / 9,
+                      controlsConfiguration: BetterPlayerControlsConfiguration(
+                          // showControls: false,
+                        enableFullscreen: false,
+                        showControlsOnInitialize: true,
+                        enablePlaybackSpeed: false,
+                        enableProgressBar: false,
+                        enableOverflowMenu: false,
+                        enableProgressText: false,
+                        enablePip: false,
+                        enableSkips: false,
+                        overflowModalColor: Colors.transparent,
+                        loadingWidget: Loader()
+                      )
+                  ),
+                ),
+              ),
             ) :
+            // VideoWidget(
+            //     url: "${Constants.FEEDS_URL}${feed.feedPath}",
+            //     controller: controller,
+            //     // controller: _controller.videos.first!,
+            //     play: false
+            // ) :
             ImageWidget(
               url: "${Constants.FEEDS_URL}${feed.feedPath}",
               height: 250,

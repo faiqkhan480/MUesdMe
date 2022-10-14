@@ -1,4 +1,3 @@
-import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -10,8 +9,8 @@ class VideoWidget extends StatelessWidget {
 // class VideoWidget extends StatefulWidget {
   final String url;
   final bool play;
-  final CachedVideoPlayerController? controller;
-  const VideoWidget({Key? key, required this.url, required this.play, required this.controller});
+  // final CachedVideoPlayerController? controller;
+  const VideoWidget({Key? key, required this.url, required this.play});
 //       : super(key: key);
 //   @override
 //   _VideoWidgetState createState() => _VideoWidgetState();
@@ -19,7 +18,7 @@ class VideoWidget extends StatelessWidget {
 //
 // class _VideoWidgetState extends State<VideoWidget> {
 //   FeedController get _feedController => Get.find<FeedController>();
-  CachedVideoPlayerController? get _video => controller;
+//   CachedVideoPlayerController? get _video => controller;
   // late Future<void> _initializeVideoPlayerFuture;
 
   // @override
@@ -62,32 +61,34 @@ class VideoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<FeedController>(
       builder: (controller) {
-        if(_video == null) {
+        // if(_video == null) {
           return const SizedBox(
             height: 250,
             child: Icon(Icons.video_file_outlined)
           );
-        }
-        return _video!.value.isInitialized ?
-        SizedBox(
-          height: 250,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: AspectRatio(
-                aspectRatio: _video!.value.aspectRatio,
-                child: CachedVideoPlayer(_video!)),
-          )) :
+        // }
+        return
+          // _video!.value.isInitialized ?
+        // SizedBox(
+        //   height: 250,
+        //   child: ClipRRect(
+        //     borderRadius: BorderRadius.circular(20),
+        //     child: AspectRatio(
+        //         aspectRatio: _video!.value.aspectRatio,
+        //         child: CachedVideoPlayer(_video!)),
+        //   ));
+        // // :
         Lottie.asset(Assets.loader);
         },
       didUpdateWidget: (oldWidget, state) {
-        if(_video!.value.isInitialized) {
-          if (play) {
-            _video!.play();
-            _video!.setLooping(true);
-          } else {
-            _video!.pause();
-          }
-        }
+        // if(_video!.value.isInitialized) {
+        //   if (play) {
+        //     _video!.play();
+        //     _video!.setLooping(true);
+        //   } else {
+        //     _video!.pause();
+        //   }
+        // }
       },
 
       // dispose: (state) {

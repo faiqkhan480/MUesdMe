@@ -1,4 +1,4 @@
-import 'package:cached_video_player/cached_video_player.dart';
+// import 'package:cached_video_player/cached_video_player.dart';
 import 'package:get/get.dart';
 
 import '../models/auths/user_model.dart';
@@ -23,7 +23,7 @@ class ProfileController extends GetxController {
   final AuthService _authService = Get.find<AuthService>();
 
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
-  RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
+  // RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
 
   @override
   void onInit() {
@@ -60,17 +60,17 @@ class ProfileController extends GetxController {
         feeds.addAll(res as List<Feed?>);
         // feeds.replaceRange(0, (feeds.length-1), res as List<Feed?>);
       }
-      for (var f in feeds) {
-        if(f?.feedType == "Video") {
-          String url = "${Constants.FEEDS_URL}${f?.feedPath}";
-          if(videos.isEmpty || videos.any((v) => v?.dataSource != url)) {
-            CachedVideoPlayerController c = CachedVideoPlayerController.network(url);
-            await c.initialize();
-            videos.add(c);
-          }
-        }
-      }
-      update();
+      // for (var f in feeds) {
+      //   if(f?.feedType == "Video") {
+      //     String url = "${Constants.FEEDS_URL}${f?.feedPath}";
+      //     if(videos.isEmpty || videos.any((v) => v?.dataSource != url)) {
+      //       CachedVideoPlayerController c = CachedVideoPlayerController.network(url);
+      //       await c.initialize();
+      //       videos.add(c);
+      //     }
+      //   }
+      // }
+      // update();
     }
     feedsLoading.value = false;
   }

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 
@@ -10,8 +10,8 @@ class Grids extends StatelessWidget {
   // final bool images;
   final List? items;
   final Function(int, {String? path})? onTap;
-  final List<VideoPlayerController>? controllers;
-  const Grids({Key? key, this.items, this.onTap, this.controllers}) : super(key: key);
+  // final List<VideoPlayerController>? controllers;
+  const Grids({Key? key, this.items, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

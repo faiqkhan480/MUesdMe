@@ -2,7 +2,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cached_video_player/cached_video_player.dart';
+import 'package:better_player/better_player.dart';
+// import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
@@ -34,7 +35,7 @@ class _UploadScreenState extends State<UploadScreen> {
   String? get video => widget.video?.video.substring(7);
   String value = "Public";
 
-  late CachedVideoPlayerController _controller;
+  late BetterPlayerController _betterPlayerController;
   late Subscription _subscription;
 
   final ApiService _service = Get.find<ApiService>();
@@ -47,25 +48,41 @@ class _UploadScreenState extends State<UploadScreen> {
     File? f = await File(path).create(recursive: true);
   }
 
-  initializeVideo() async {
-    _controller = CachedVideoPlayerController.network(video!);
-    _controller.initialize().then((_) {
-      // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-      setState(() {});
-    });
-  }
+  // initializeVideo() async {
+  //   _controller = CachedVideoPlayerController.network(video!);
+  //   _controller.initialize().then((_) {
+  //     // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+  //     setState(() {});
+  //   });
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     if(video != null) {
-      initializeVideo();
-      _subscription =
-          VideoCompress.compressProgress$.subscribe((progress) {
-            debugPrint('progress: $progress');
-          });
+      BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
+          BetterPlayerDataSourceType.file,
+          video!);
+      _betterPlayerController = BetterPlayerController(
+          const BetterPlayerConfiguration(
+            fit: BoxFit.cover,
+            autoPlay: true,
+            aspectRatio: 1,
+          ),
+          betterPlayerDataSource: betterPlayerDataSource);
+      // _subscription =
+      //     VideoCompress.compressProgress$.subscribe((progress) {
+      //       debugPrint('progress: $progress');
+      //     });
     }
+  }
+
+  @override
+  void dispose() {
+    // _subscription.unsubscribe;
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -156,19 +173,24 @@ class _UploadScreenState extends State<UploadScreen> {
   }
 
   Widget videoWidget() {
-    return _controller.value.isInitialized ?
-    SizedBox(
+    // return _controller.value.isInitialized ?
+    return SizedBox(
         height: MediaQuery.of(context).size.height * 0.45,
         // width: MediaQuery.of(context).size.width,
         child: Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: CachedVideoPlayer(_controller)),
+                aspectRatio: 1,
+                child: BetterPlayer(
+                controller: _betterPlayerController
+              )
+                // child: CachedVideoPlayer(_controller)
+            ),
           ),
-        )) :
-    const Loader();
+        ));
+    // :
+    // const Loader();
   }
 
   uploadFeed() async {

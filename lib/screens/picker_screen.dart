@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 
-import 'package:cached_video_player/cached_video_player.dart';
+// import 'package:cached_video_player/cached_video_player.dart';
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_storage_path/flutter_storage_path.dart';
 import 'package:get/get.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
@@ -25,7 +27,11 @@ class EditorScreen extends StatefulWidget {
 }
 
 class _EditorScreenState extends State<EditorScreen> {
-  late CachedVideoPlayerController _controller;
+  // BetterPlayerConfiguration? betterPlayerConfiguration;
+  // BetterPlayerListVideoPlayerController? controller;
+
+  // BetterPlayerController? _betterPlayerController;
+
   List<FileModel?> imageFiles = [];
   List<VideoFile?> videoFiles = [];
   FileModel? selectedImage;
@@ -35,6 +41,39 @@ class _EditorScreenState extends State<EditorScreen> {
   String? videoPath;
   bool imagePicker = true;
   bool loader = true;
+
+  // <___________________BETTER PLAYER CONFIGURATION___________________>
+  final GlobalKey<BetterPlayerPlaylistState> _betterPlayerPlaylistStateKey = GlobalKey<BetterPlayerPlaylistState>();
+  List<BetterPlayerDataSource> _dataSourceList = [];
+  late BetterPlayerConfiguration _betterPlayerConfiguration;
+  late BetterPlayerPlaylistConfiguration _betterPlayerPlaylistConfiguration;
+
+  BetterPlayerPlaylistController? get _betterPlayerPlaylistController => _betterPlayerPlaylistStateKey.currentState?.betterPlayerPlaylistController;
+
+  _EditorScreenState() {
+    _betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 1,
+      autoPlay: true,
+      fit: BoxFit.cover,
+      placeholderOnTop: true,
+      showPlaceholderUntilPlay: true,
+      subtitlesConfiguration: const BetterPlayerSubtitlesConfiguration(fontSize: 10),
+      deviceOrientationsAfterFullScreen: [
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ],
+      eventListener: (e) {
+        _betterPlayerPlaylistController?.betterPlayerController?.setVolume(0);
+      },
+      controlsConfiguration: const BetterPlayerControlsConfiguration(showControls: false)
+    );
+    _betterPlayerPlaylistConfiguration = const BetterPlayerPlaylistConfiguration(
+      loopVideos: true,
+      nextVideoDelay: Duration(seconds: 3),
+    );
+  }
+
+  // <__________________END_BETTER PLAYER CONFIGURATION___________________>
 
   // IMAGE EDITOR CONFIGURATION
   Configuration createConfiguration() {
@@ -118,10 +157,16 @@ class _EditorScreenState extends State<EditorScreen> {
       var videos = jsonDecode(videoPath) as List;
       videoFiles = videos.map<VideoFile>((e) => VideoFile.fromJson(e)).toList();
       if (videoFiles.isNotEmpty) {
-        debugPrint(videoFiles.first!.files!.first.path!);
-        _controller = CachedVideoPlayerController.file(File(videoFiles.first!.files!.first.path!));
-        await _controller.initialize();
-        _controller.play();
+        // debugPrint(videoFiles.first!.files!.first.path!);
+        for (var f in videoFiles.first!.files!) {
+          _dataSourceList.add(
+            BetterPlayerDataSource(
+              BetterPlayerDataSourceType.file,
+              f.path!,
+            ),
+          );
+        }
+        _betterPlayerPlaylistController?.betterPlayerController?.setVolume(0);
         setState(() {
           selectedVideo = videoFiles.first;
           video = videoFiles.first?.files?.first.path;
@@ -143,25 +188,23 @@ class _EditorScreenState extends State<EditorScreen> {
       setState(() => selectedImage = d);
     }
     else{
-      // await _controller.dispose();
-      // setState(() {
-      //   _controllers = [];
-      // });
-      // _controller = VideoPlayerController.file(File(d!.files!.elementAt(0).path));
-      // // await _controller.initialize();
-      // await Future.forEach(d!.files!, (FileElement element) async {
-      //   VideoPlayerController c = VideoPlayerController.file(File(element.path!));
-      //   // await c.initialize();
-      //   _controllers.add(c);
-      // });
       video = d!.files!.elementAt(0).path;
+      List<BetterPlayerDataSource> list = [];
+      for (var f in d!.files!) {
+        list.add(
+          BetterPlayerDataSource(
+            BetterPlayerDataSourceType.file,
+            f.path!,
+          ),
+        );
+      }
+      _betterPlayerPlaylistController?.setupDataSourceList(list);
       setState(() => selectedVideo = d);
     }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -186,7 +229,7 @@ class _EditorScreenState extends State<EditorScreen> {
                   Row(
                     children: <Widget>[
                       IconButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => Get.back(),
                           icon: const Icon(Icons.clear)
                       ),
                       const SizedBox(width: 10),
@@ -194,18 +237,10 @@ class _EditorScreenState extends State<EditorScreen> {
                           child: DropdownButton(
                             items: getItems(),
                             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                            // onChanged: onChange,
-                            onChanged: (d) async {
-                              assert((d?.files?.length ?? 0) > 0);
-                              if(d is FileModel) {
-                                image = d.files?.elementAt(0);
-                                setState(() => selectedImage = d);
-                              }
-                              else{
-                                video = d!.files!.elementAt(0).path;
-                                setState(() => selectedVideo = d);
-                              }
-                            },
+                            onChanged: onChange,
+                            // onChanged: (d) async {
+                            //
+                            // },
                             value: imagePicker ? selectedImage : selectedVideo,
                             // value: selectedVideo,
                           ))
@@ -231,13 +266,7 @@ class _EditorScreenState extends State<EditorScreen> {
                       width: MediaQuery.of(context).size.width
                   ) :
                   !imagePicker && video != null ?
-                  Center(
-                    child: _controller.value.isInitialized ?
-                    AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      child: CachedVideoPlayer(_controller),
-                    ) : const SizedBox.shrink(),
-                  ) :
+                  videoWidget() :
                   const SizedBox.shrink()
               ),
               const Divider(),
@@ -246,6 +275,7 @@ class _EditorScreenState extends State<EditorScreen> {
               else
                 Flexible(
                     child: TabBarView(
+                      physics: const NeverScrollableScrollPhysics(),
                     children: [
                       // IMAGES
                       Grids(
@@ -260,12 +290,10 @@ class _EditorScreenState extends State<EditorScreen> {
                       // VIDEOS
                       Grids(
                         onTap: (int i, {String? path}) async {
-                          await _controller.dispose();
-                          _controller = CachedVideoPlayerController.file(File(path!));
-                          await _controller.initialize();
-                          _controller.play();
+                          _betterPlayerPlaylistController!.setupDataSource(i);
                           setState(() {
                             video = selectedVideo?.files?.elementAt(i).path;
+
                           });
                         },
                         items: selectedVideo?.files,
@@ -316,5 +344,19 @@ class _EditorScreenState extends State<EditorScreen> {
         ),
       )).toList() ?? [];
     }
+  }
+
+  Widget videoWidget() {
+    return (_dataSourceList.isNotEmpty) ? Center(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: BetterPlayerPlaylist(
+            key: _betterPlayerPlaylistStateKey,
+            betterPlayerConfiguration: _betterPlayerConfiguration,
+            betterPlayerPlaylistConfiguration: _betterPlayerPlaylistConfiguration,
+            betterPlayerDataSourceList: _dataSourceList,
+          ),
+        ),
+    ) : const SizedBox.shrink();
   }
 }
