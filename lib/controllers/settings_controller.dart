@@ -12,7 +12,7 @@ class SettingsController extends GetxController {
   handleLogout () async {
     await _authService.clearUser();
     // Going back all route/pages until LOGIN page you can even pass a predicate/ condition to pop until that condition passes
-    _agora.client?.logout();
+    _agora.logout();
     Get.offAllNamed(AppRoutes.LOGIN);
   }
 }

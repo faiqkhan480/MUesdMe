@@ -104,7 +104,7 @@ class ChatsScreen extends GetView<ChatController> {
                                         backgroundColor: Colors.white,
                                         radius: 25,
                                         backgroundImage: NetworkImage(
-                                            _chats.elementAt(index)?.profilePic != null ?
+                                            _chats.elementAt(index)?.profilePic != null && _chats.elementAt(index)!.profilePic!.isNotEmpty?
                                             Constants.IMAGE_URL + _chats.elementAt(index)!.profilePic! :
                                             Constants.dummyImage
                                         ),

@@ -1,26 +1,19 @@
 import 'package:badges/badges.dart';
 import 'package:better_player/better_player.dart';
-// import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:musedme/controllers/feed_controller.dart';
-import 'package:musedme/controllers/video_controller.dart';
-import 'package:musedme/widgets/loader.dart';
-import 'package:musedme/widgets/shadowed_box.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../controllers/agora_controller.dart';
+import '../controllers/feed_controller.dart';
 import '../models/feed.dart';
-import '../screens/feed_screen.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 import '../widgets/glass_morphism.dart';
 import '../widgets/image_widget.dart';
+import '../widgets/shadowed_box.dart';
 import '../widgets/text_widget.dart';
-import '../widgets/video_widget.dart';
 
 class FeedCard extends StatelessWidget {
   final double? horizontalSpace;
@@ -43,7 +36,6 @@ class FeedCard extends StatelessWidget {
     required this.onDownload
   }) : super(key: key);
 
-  AgoraController get _agora => Get.find<AgoraController>();
   FeedController get _feedController => Get.find<FeedController>();
 
   @override

@@ -19,7 +19,6 @@ class ChatController extends GetxController {
   }
 
   Future<void> getChats() async {
-    // videos.clear();
     List res = await _service.getAllChats();
     if(res.isNotEmpty) {
       if(chats.isEmpty) {

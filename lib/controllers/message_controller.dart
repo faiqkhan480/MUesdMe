@@ -38,36 +38,26 @@ class MessageController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    if(_agora.isLogin()) {
+      initialize();
+    }
+    else {
+      _agora.reLogin().then((value) => initialize());
+    }
+  }
+
+  void initialize() {
     if(args != null && args is Chat) {
       chat.value = args;
       getMessages();
     }
-    
+
     isOnline.addListener(GetStream(
       onListen: () async {
         bool res = await _agora.isUserOnline(chat.value.userId.toString());
         isOnline.value = res;
       },
     ));
-
-    // comments.addListener(GetStream(
-    //   onListen: appendMsg,
-    // ));
-    // comments.listen((p) {
-    //   debugPrint(":::::T:::::: ${comments.length}");
-    //   int uid = int.parse(comments.first.uid.replaceAll("MusedByMe_", ""));
-    //
-    //   // messages.insert(0, Message(
-    //   //     userId: uid,
-    //   //     chatId: chat.value.chatId,
-    //   //     message: comments.first.message,
-    //   //     messageDate: DateTime.now())
-    //   // );
-    // });
-  }
-
-  appendMsg() {
-    // List<Message?> m = comments.where((msg) => msg?.userId == _authService.currentUser?.userId || msg?.userId == chat.value.userId).toList() as List<Message?>;
   }
 
   Future getMessages() async {

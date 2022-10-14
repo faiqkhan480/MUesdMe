@@ -1,15 +1,18 @@
 import 'package:agora_rtm/agora_rtm.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:musedme/controllers/message_controller.dart';
 
 import '../models/chat.dart';
 import '../models/message.dart';
+import '../routes/app_routes.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
 
 class AgoraController extends GetxController {
   AgoraRtmClient? client;
+  RxBool isLogin = false.obs;
 
   final AuthService _service = Get.find<AuthService>();
 
@@ -55,6 +58,7 @@ class AgoraController extends GetxController {
       debugPrint('Connection state changed::::::::::: $state, reason: $reason');
       if (state == 5) {
         client?.logout();
+        isLogin.value = false;
         // logController.addLog('Logout.');
       }
     };
@@ -66,13 +70,47 @@ class AgoraController extends GetxController {
     debugPrint("LOGIN AGORA:::: MusedByMe_${_service.currentUser?.userId}");
     try {
       await client?.login(_service.rtm, "MusedByMe_${_service.currentUser?.userId}");
-      // Get.snackbar("Success", "Login success!", backgroundColor: Colors.green, colorText: Colors.white);
+      isLogin.value = true;
+      if(kDebugMode) {
+        Get.snackbar("Success", "Login success!", backgroundColor: Colors.green, colorText: Colors.white);
+      }
     } catch (errorCode) {
+      String err = errorCode.toString().replaceAll(new RegExp(r'[^0-9]'),'');
       debugPrint('Login error:::: $errorCode');
-      // Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
-      client?.logout();
-      await _login();
+      if(kDebugMode) {
+        Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+      }
+      if(int.parse(err) == 6) {
+        backToLogin();
+      }
     }
+  }
+
+  // AGORA RE-LOGIN
+  Future reLogin() async {
+    debugPrint("LOGIN AGORA:::: MusedByMe_${_service.currentUser?.userId}");
+    try {
+      await client?.login(_service.rtm, "MusedByMe_${_service.currentUser?.userId}");
+      isLogin.value = true;
+      if(kDebugMode) {
+        Get.snackbar("Success", "Login success!", backgroundColor: Colors.green, colorText: Colors.white);
+      }
+      return true;
+    } catch (errorCode) {
+      String err = errorCode.toString().replaceAll(new RegExp(r'[^0-9]'),'');
+      debugPrint('Login error:::: $errorCode');
+      if(kDebugMode) {
+        Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+      }
+      if(int.parse(err) == 6) {
+        backToLogin();
+      }
+    }
+  }
+
+  logout() {
+    client?.logout();
+    isLogin.value = false;
   }
 
   // CHECK USER'S ONLINE STATUS
@@ -107,5 +145,13 @@ class AgoraController extends GetxController {
 
   clearChat() {
     comments.clear();
+  }
+
+  // Going back all route/pages until LOGIN page you can even pass a predicate/ condition to pop until that condition passes
+  backToLogin () async {
+    await _service.clearUser();
+    client?.logout();
+    Get.offAllNamed(AppRoutes.LOGIN);
+    Get.snackbar("Session Logout", "Your login session is Expired!", backgroundColor: Colors.red, colorText: Colors.white);
   }
 }
