@@ -1,5 +1,6 @@
 // import 'package:cached_video_player/cached_video_player.dart';
 import 'package:get/get.dart';
+import 'package:musedme/controllers/agora_controller.dart';
 
 import '../models/auths/user_model.dart';
 import '../models/feed.dart';
@@ -10,6 +11,7 @@ import '../utils/constants.dart';
 
 class ProfileController extends GetxController {
   RxBool loading = true.obs;
+  RxBool isOnline = false.obs;
 
   RxBool feedsLoading = true.obs;
   RxBool fetching = false.obs;
@@ -21,6 +23,7 @@ class ProfileController extends GetxController {
 
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
+  final AgoraController _agora = Get.find<AgoraController>();
 
   RxList<Feed?> feeds = List<Feed?>.empty(growable: true).obs;
   // RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
@@ -44,6 +47,8 @@ class ProfileController extends GetxController {
     User? res = await _authService.getUser(uid: profileId);
     user.value = res!;
     loading.value = false;
+    bool status = await _agora.isUserOnline(user.value.userId!.toString());
+    isOnline.value = status;
   }
 
   // FETCH USER'S FEEDS

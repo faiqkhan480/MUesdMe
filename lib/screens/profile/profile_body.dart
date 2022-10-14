@@ -25,6 +25,7 @@ class ProfileBody extends StatelessWidget {
   final bool fetching;
   final int currIndex;
   final int currTab;
+  final bool isOnline;
   final Function(int, Feed, int) likeTap;
   final Function(int) onCommentTap;
   final Function(Feed) onShareTap;
@@ -44,6 +45,7 @@ class ProfileBody extends StatelessWidget {
     required this.likeTap,
     required this.onCommentTap,
     required this.onShareTap,
+    required this.isOnline
   }) : super(key: key);
 
   FeedController get _feedController => Get.find<FeedController>();
@@ -77,6 +79,7 @@ class ProfileBody extends StatelessWidget {
                   user: user,
                   button: button,
                   action: options,
+                  isOnline: isOnline,
                 ),
               ),
             ),

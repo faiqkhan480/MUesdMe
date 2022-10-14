@@ -70,6 +70,7 @@ class ProfileScreen extends GetView<ProfileController> {
                     onRefresh: controller.getData,
                     loader: _loading,
                     user: _user,
+                    isOnline: controller.isOnline(),
                     feeds: controller.feeds,
                     fetchingFeeds: controller.feedsLoading(),
                     currIndex: _currIndex,
@@ -78,6 +79,7 @@ class ProfileScreen extends GetView<ProfileController> {
                     likeTap: handleLikeTap,
                     onShareTap: handleShare,
                     onCommentTap: handleComment,
+
                   ),
                 ),
               ],

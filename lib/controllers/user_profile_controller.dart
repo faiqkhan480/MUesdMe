@@ -8,12 +8,14 @@ import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
+import 'agora_controller.dart';
 import 'chat_controller.dart';
 import 'profile_controller.dart';
 
 class UserProfileController extends GetxController {
   RxBool loading = true.obs;
   RxBool feedsLoading = true.obs;
+  RxBool isOnline = false.obs;
 
   RxBool fetching = false.obs;
 
@@ -27,6 +29,7 @@ class UserProfileController extends GetxController {
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
   final ProfileController _profile = Get.find<ProfileController>();
+  final AgoraController _agora = Get.find<AgoraController>();
 
   // RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
 
@@ -50,6 +53,8 @@ class UserProfileController extends GetxController {
     User? res = await _authService.getUser(uid: args?.userId, followedBy: _authService.currentUser?.userId);
     user.value = res!;
     loading.value = false;
+    bool status = await _agora.isUserOnline(user.value.userId.toString());
+    isOnline.value = status;
   }
 
   // FETCH USER'S FEEDS

@@ -90,6 +90,7 @@ class UserProfileScreen extends GetView<UserProfileController> {
                      onRefresh: controller.getData,
                      loader: _loading,
                      user: _user,
+                     isOnline: controller.isOnline(),
                      feeds:  controller.feeds,
                      fetchingFeeds: controller.feedsLoading(),
                      options: PopupMenuButton<int>(

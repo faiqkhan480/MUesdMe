@@ -13,103 +13,99 @@ import '../widgets/text_widget.dart';
 
 class InfoCard extends StatelessWidget {
   final User? user;
+  final bool isOnline;
   final Widget? button;
   final Widget? action;
-  const InfoCard({Key? key, this.user, this.button, this.action}) : super(key: key);
+  const InfoCard({Key? key, this.user, this.button, this.action, this.isOnline = true}) : super(key: key);
 
   AgoraController get _agora => Get.find<AgoraController>();
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _agora.isUserOnline(user?.userId.toString() ?? ""),
-      builder: (context, AsyncSnapshot<bool> snapshot) {
-        return Stack(
-          clipBehavior: Clip.none,
-          alignment: AlignmentDirectional.topCenter,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [BoxShadow(
-                      color: AppColors.grayScale, //AppColors.shadowColor,
-                      blurRadius: 4
-                  )]
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: AlignmentDirectional.topCenter,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [BoxShadow(
+                  color: AppColors.grayScale, //AppColors.shadowColor,
+                  blurRadius: 4
+              )]
+          ),
+          padding: const EdgeInsets.only(left: 15, right: 15, top: 22, bottom: 30),
+          height:user?.aboutMe == null ? Get.height * 0.40 : null,
+          // alignment: Alignment.bottomCenter,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: action ?? const SizedBox(height: 30,)
               ),
-              padding: const EdgeInsets.only(left: 15, right: 15, top: 22, bottom: 30),
-              height:user?.aboutMe == null ? Get.height * 0.40 : null,
-              // alignment: Alignment.bottomCenter,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.end,
+              const SizedBox(height: 5,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: action ?? const SizedBox(height: 30,)
+                  TextWidget("${user?.firstName} ${user?.lastName}",
+                    size: 34,
+                    weight: FontWeight.w700,
                   ),
-                  const SizedBox(height: 5,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextWidget("${user?.firstName} ${user?.lastName}",
-                        size: 34,
-                        weight: FontWeight.w700,
-                      ),
-                      button ?? const SizedBox.shrink()
-                    ],
-                  ),
-                  const SizedBox(height: 5,),
-                  Row(
-                    children: [
-                      TextWidget("@${user?.userName} ",
-                        size: 14,
-                        color: AppColors.lightGrey,
-                        weight: FontWeight.w400,
-                      ),
-                      SvgPicture.asset(Assets.iconsVerified)
-                    ],
-                  ),
-
-                  staticDataRow(),
-
-                  const TextWidget("About me",
-                    // size: 34,
-                    color: AppColors.primaryColor,
-                    weight: FontWeight.normal,
-                  ),
-
-                  const SizedBox(height: 15,),
-
-                  TextWidget(user?.aboutMe ?? '',
-                    weight: FontWeight.normal,
-                  ),
+                  button ?? const SizedBox.shrink()
                 ],
               ),
-            ),
-
-            Positioned(
-              top: -50,
-              child: Badge(
-                position: BadgePosition.topEnd(top: 5, end: 10),
-                elevation: 0,
-                padding: const EdgeInsets.all(7),
-                borderSide: const BorderSide(color: Colors.white),
-                badgeColor: snapshot.hasData && snapshot.data! ? AppColors.successColor : AppColors.lightGrey,
-                child: CircleAvatar(
-                  radius: 50,
-                  child: ImageWidget(
-                    url: user?.profilePic != null && user!.profilePic!.isNotEmpty ? "${Constants.IMAGE_URL}${user?.profilePic}" : Constants.dummyImage,
-                    borderRadius: 100,
-                    height: 100,
-                    width: 100,
+              const SizedBox(height: 5,),
+              Row(
+                children: [
+                  TextWidget("@${user?.userName} ",
+                    size: 14,
+                    color: AppColors.lightGrey,
+                    weight: FontWeight.w400,
                   ),
-                ),
+                  SvgPicture.asset(Assets.iconsVerified)
+                ],
+              ),
+
+              staticDataRow(),
+
+              const TextWidget("About me",
+                // size: 34,
+                color: AppColors.primaryColor,
+                weight: FontWeight.normal,
+              ),
+
+              const SizedBox(height: 15,),
+
+              TextWidget(user?.aboutMe ?? '',
+                weight: FontWeight.normal,
+              ),
+            ],
+          ),
+        ),
+
+        Positioned(
+          top: -50,
+          child: Badge(
+            position: BadgePosition.topEnd(top: 5, end: 10),
+            elevation: 0,
+            padding: const EdgeInsets.all(7),
+            borderSide: const BorderSide(color: Colors.white),
+            badgeColor: isOnline ? AppColors.successColor : AppColors.lightGrey,
+            child: CircleAvatar(
+              radius: 50,
+              child: ImageWidget(
+                url: user?.profilePic != null && user!.profilePic!.isNotEmpty ? "${Constants.IMAGE_URL}${user?.profilePic}" : Constants.dummyImage,
+                borderRadius: 100,
+                height: 100,
+                width: 100,
               ),
             ),
-          ],
-        );
-      }
+          ),
+        ),
+      ],
     );
   }
 
