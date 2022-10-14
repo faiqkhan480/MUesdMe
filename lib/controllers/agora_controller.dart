@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:musedme/controllers/message_controller.dart';
 
+import '../models/auths/user_model.dart';
 import '../models/chat.dart';
 import '../models/message.dart';
 import '../routes/app_routes.dart';
@@ -15,6 +16,8 @@ class AgoraController extends GetxController {
   RxBool isLogin = false.obs;
 
   final AuthService _service = Get.find<AuthService>();
+
+  User? get currentUser => _service.currentUser;
 
   RxList comments = [].obs;
 
@@ -114,17 +117,18 @@ class AgoraController extends GetxController {
   }
 
   // CHECK USER'S ONLINE STATUS
-  Stream<bool> checkStatus(String uid) async* {
-    try {
-      // debugPrint('ID :::: $uid');
-      Map<dynamic, dynamic>? result = await client?.queryPeersOnlineStatus(["MusedByMe_$uid"]);
-      // debugPrint('Query result: $result');
-      bool r = result!["MusedByMe_$uid"] as bool;
-      yield r;
-    } catch (errorCode) {
-      // debugPrint('Query error: $errorCode');
-      yield false;
-    }
+  Stream<bool> checkStatus(String uid) {
+    return Stream.fromFuture(isUserOnline(uid));
+    // try {
+    //   debugPrint('ID :::: $uid');
+    //   Map<dynamic, dynamic>? result = await client?.queryPeersOnlineStatus(["MusedByMe_$uid"]);
+    //   // debugPrint('Query result: $result');
+    //   bool r = result!["MusedByMe_$uid"] as bool;
+    //   yield r;
+    // } catch (errorCode) {
+    //   // debugPrint('Query error: $errorCode');
+    //   yield false;
+    // }
   }
 
   Future<bool> isUserOnline(String uid) async {

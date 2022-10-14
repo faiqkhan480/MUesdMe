@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../controllers/agora_controller.dart';
 import '../controllers/feed_controller.dart';
 import '../models/feed.dart';
 import '../utils/app_colors.dart';
@@ -37,7 +38,7 @@ class FeedCard extends StatelessWidget {
   }) : super(key: key);
 
   FeedController get _feedController => Get.find<FeedController>();
-
+  AgoraController get _agora => Get.find<AgoraController>();
   @override
   Widget build(BuildContext context) {
     bool isShared = post?.shareUser != null && post?.shareUser?.userId != 0;
@@ -55,47 +56,55 @@ class FeedCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-            leading: Badge(
-              badgeColor: AppColors.lightGrey,
-              position: BadgePosition.topEnd(top: -1, end: 4),
-              elevation: 0,
-              borderSide: const BorderSide(color: Colors.white, width: .7),
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 25,
-                backgroundImage: NetworkImage(
-                  post?.profilePic != null && post!.profilePic!.isNotEmpty ?
-                  "${Constants.IMAGE_URL}${post?.profilePic}" :
-                  Constants.dummyImage,
-                ),),
-            ),
-            title: GestureDetector(
-                onTap: handleNavigate,
-                child: TextWidget(post?.fullName ??  "", weight: FontWeight.w800)),
-            subtitle: TextWidget("@${post?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children:[
-                TextWidget(post?.feedDate != null ? timeago.format(post!.feedDate!.toLocal()) : "", color: AppColors.lightGrey, size: 12),
-                const SizedBox(width: 10,),
-                // PopupMenuButton<String>(
-                //     padding: const EdgeInsets.only(left: 10, right: 0),
-                //     onSelected: handleOption,
-                //     icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
-                //     itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                //       const PopupMenuItem<String>(
-                //         value: "0",
-                //         child: Text('Add to watch later'),
-                //       ),
-                //       const PopupMenuItem<String>(
-                //         value: "1",
-                //         child: Text("Download"),
-                //       ),
-                //     ]),
-              ],
-            ),
+          StreamBuilder<bool>(
+            stream: _agora.checkStatus(post!.userId.toString()),
+            initialData: post?.userId == _agora.currentUser?.userId,
+            builder: (context, snapshot) {
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                leading: Badge(
+                  badgeColor: (snapshot.data == true) || (post?.userId == _agora.currentUser?.userId) ?
+                  AppColors.successColor :
+                  AppColors.lightGrey,
+                  position: BadgePosition.topEnd(top: -1, end: 4),
+                  elevation: 0,
+                  borderSide: const BorderSide(color: Colors.white, width: .7),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 25,
+                    backgroundImage: NetworkImage(
+                      post?.profilePic != null && post!.profilePic!.isNotEmpty ?
+                      "${Constants.IMAGE_URL}${post?.profilePic}" :
+                      Constants.dummyImage,
+                    ),),
+                ),
+                title: GestureDetector(
+                    onTap: handleNavigate,
+                    child: TextWidget(post?.fullName ??  "", weight: FontWeight.w800)),
+                subtitle: TextWidget("@${post?.userName}", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children:[
+                    TextWidget(post?.feedDate != null ? timeago.format(post!.feedDate!.toLocal()) : "", color: AppColors.lightGrey, size: 12),
+                    const SizedBox(width: 10,),
+                    PopupMenuButton<String>(
+                        padding: const EdgeInsets.only(left: 10, right: 0),
+                        onSelected: handleOption,
+                        icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
+                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                            value: "0",
+                            child: Text('Add to watch later'),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: "1",
+                            child: Text("Download"),
+                          ),
+                        ]),
+                  ],
+                ),
+              );
+            },
           ),
           const SizedBox(height: 10,),
           ShadowedBox(

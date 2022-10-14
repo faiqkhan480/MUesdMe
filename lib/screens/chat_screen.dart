@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:musedme/controllers/agora_controller.dart';
 import 'package:musedme/controllers/chat_controller.dart';
 import 'package:popover/popover.dart';
 
@@ -17,13 +18,8 @@ import '../utils/constants.dart';
 
 class ChatsScreen extends GetView<ChatController> {
   const ChatsScreen({Key? key}) : super(key: key);
-//
-//   @override
-//   State<MessagesScreen> createState() => _MessagesScreenState();
-// }
-//
-// class _MessagesScreenState extends State<MessagesScreen> {
 
+  AgoraController get _agora => Get.find<AgoraController>();
   bool get _loading => controller.loading();
   List<Chat?> get _chats => controller.chats;
 
@@ -91,47 +87,50 @@ class ChatsScreen extends GetView<ChatController> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  ListTile(
-                                    onTap: () => controller.navigateToChat(_chats.elementAt(index)!),
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                                    leading: Badge(
-                                      badgeColor: AppColors.successColor,
-                                      position: BadgePosition.topEnd(top: -1, end: 4),
-                                      elevation: 0,
-                                      showBadge: index == 0 || index == 1 || index == 4,
-                                      borderSide: const BorderSide(color: Colors.white, width: .7),
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        radius: 25,
-                                        backgroundImage: NetworkImage(
-                                            _chats.elementAt(index)?.profilePic != null && _chats.elementAt(index)!.profilePic!.isNotEmpty?
-                                            Constants.IMAGE_URL + _chats.elementAt(index)!.profilePic! :
-                                            Constants.dummyImage
+                                  StreamBuilder<bool>(
+                                      stream: _agora.checkStatus(_chats.elementAt(index)!.userId.toString()),
+                                      builder: (context, snapshot) => ListTile(
+                                        onTap: () => controller.navigateToChat(_chats.elementAt(index)!),
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                        leading: Badge(
+                                          badgeColor: snapshot.data == true ? AppColors.successColor : AppColors.lightGrey,
+                                          position: BadgePosition.topEnd(top: -1, end: 4),
+                                          elevation: 0,
+                                          showBadge: index == 0 || index == 1 || index == 4,
+                                          borderSide: const BorderSide(color: Colors.white, width: .7),
+                                          child: CircleAvatar(
+                                            backgroundColor: Colors.white,
+                                            radius: 25,
+                                            backgroundImage: NetworkImage(
+                                                _chats.elementAt(index)?.profilePic != null && _chats.elementAt(index)!.profilePic!.isNotEmpty?
+                                                Constants.IMAGE_URL + _chats.elementAt(index)!.profilePic! :
+                                                Constants.dummyImage
+                                            ),
+                                          ),
+                                          // child: const CircleAvatar(
+                                          //     backgroundColor: Colors.white,
+                                          //     radius: 25,
+                                          //     backgroundImage: NetworkImage(Constants.albumArt)),
                                         ),
+                                        title: TextWidget(_chats.elementAt(index)?.fullName ?? "", weight: FontWeight.w800),
+                                        subtitle: TextWidget(_chats.elementAt(index)?.message ?? "", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
+                                        // trailing: GestureDetector(
+                                        //     onTap: () {
+                                        //       // showPopover(
+                                        //       //   context: context,
+                                        //       //   transitionDuration: const Duration(milliseconds: 150),
+                                        //       //   bodyBuilder: (context) => const ListItems(),
+                                        //       //   onPop: () => print('Popover was popped!'),
+                                        //       //   direction: PopoverDirection.top,
+                                        //       //   width: 200,
+                                        //       //   height: 400,
+                                        //       //   arrowHeight: 15,
+                                        //       //   arrowWidth: 30,
+                                        //       // );
+                                        //     },
+                                        //     child: SvgPicture.asset(Assets.iconsAdd)
+                                        // )
                                       ),
-                                      // child: const CircleAvatar(
-                                      //     backgroundColor: Colors.white,
-                                      //     radius: 25,
-                                      //     backgroundImage: NetworkImage(Constants.albumArt)),
-                                    ),
-                                    title: TextWidget(_chats.elementAt(index)?.fullName ?? "", weight: FontWeight.w800),
-                                    subtitle: TextWidget(_chats.elementAt(index)?.message ?? "", size: 12, weight: FontWeight.w500, color: AppColors.lightGrey),
-                                    // trailing: GestureDetector(
-                                    //     onTap: () {
-                                    //       // showPopover(
-                                    //       //   context: context,
-                                    //       //   transitionDuration: const Duration(milliseconds: 150),
-                                    //       //   bodyBuilder: (context) => const ListItems(),
-                                    //       //   onPop: () => print('Popover was popped!'),
-                                    //       //   direction: PopoverDirection.top,
-                                    //       //   width: 200,
-                                    //       //   height: 400,
-                                    //       //   arrowHeight: 15,
-                                    //       //   arrowWidth: 30,
-                                    //       // );
-                                    //     },
-                                    //     child: SvgPicture.asset(Assets.iconsAdd)
-                                    // )
                                   ),
                                   if(index == 5)
                                     const Divider(color: AppColors.grayScale, thickness: 1, height: 1),
@@ -147,24 +146,6 @@ class ChatsScreen extends GetView<ChatController> {
         ),
       ),
     );
-  }
-
-  handleNavigation(String title) {
-    // Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen(),));
-  }
-
-  void handleClick() {
-    // showPopover(
-    //   context: context,
-    //   transitionDuration: const Duration(milliseconds: 150),
-    //   bodyBuilder: (context) => const ListItems(),
-    //   onPop: () => print('Popover was popped!'),
-    //   direction: PopoverDirection.top,
-    //   width: 200,
-    //   height: 400,
-    //   arrowHeight: 15,
-    //   arrowWidth: 30,
-    // );
   }
 }
 
