@@ -183,7 +183,7 @@ class _UploadScreenState extends State<UploadScreen> {
             child: AspectRatio(
                 aspectRatio: 1,
                 child: BetterPlayer(
-                controller: _betterPlayerController
+                  controller: _betterPlayerController,
               )
                 // child: CachedVideoPlayer(_controller)
             ),

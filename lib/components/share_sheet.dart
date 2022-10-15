@@ -8,7 +8,7 @@ import '../utils/constants.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/image_widget.dart';
 import '../widgets/loader.dart';
-import '../widgets/video_widget.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class ShareSheet extends StatefulWidget {
   final Feed feed;
@@ -28,17 +28,6 @@ class _ShareSheetState extends State<ShareSheet> {
 
   final ApiService _apiService = Get.find<ApiService>();
 
-  @override
-  void initState() {
-    // if(feed.feedType == "Video") {
-    //   controller = CachedVideoPlayerController.network("${Constants.FEEDS_URL}${feed.feedPath}");
-    //   controller.initialize().then((value) {
-    //     // controller.play();
-    //     setState(() {});
-    //   });
-    // }
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +91,7 @@ class _ShareSheetState extends State<ShareSheet> {
                   "${Constants.FEEDS_URL}${feed.feedPath}",
                   betterPlayerConfiguration: const BetterPlayerConfiguration(
                       aspectRatio: 16 / 9,
+                      looping: true,
                       controlsConfiguration: BetterPlayerControlsConfiguration(
                           // showControls: false,
                         enableFullscreen: false,
@@ -112,19 +102,18 @@ class _ShareSheetState extends State<ShareSheet> {
                         enableProgressText: false,
                         enablePip: false,
                         enableSkips: false,
-                        overflowModalColor: Colors.transparent,
-                        loadingWidget: Loader()
+                        loadingWidget: Loader(),
+                        controlBarColor: Colors.transparent,
+                        playIcon: FontAwesome5Solid.play_circle,
+                        pauseIcon: FontAwesome5Solid.pause_circle,
+                        muteIcon: FontAwesome5Solid.volume_up,
+                        unMuteIcon: FontAwesome5Solid.volume_mute,
+                        enablePlayPause: false,
                       )
                   ),
                 ),
               ),
             ) :
-            // VideoWidget(
-            //     url: "${Constants.FEEDS_URL}${feed.feedPath}",
-            //     controller: controller,
-            //     // controller: _controller.videos.first!,
-            //     play: false
-            // ) :
             ImageWidget(
               url: "${Constants.FEEDS_URL}${feed.feedPath}",
               height: 250,

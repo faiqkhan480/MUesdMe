@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -164,12 +165,12 @@ class FeedCard extends StatelessWidget {
                   ),
                 ),
 
-                if(post?.feedType == "Video")
-                  const GlassMorphism(
-                    start: 0.3,
-                    end: 0.3,
-                    child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 60),
-                  )
+                // if(post?.feedType == "Video")
+                //   const GlassMorphism(
+                //     start: 0.3,
+                //     end: 0.3,
+                //     child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 60),
+                //   )
               ],
             ),
           ),
@@ -189,7 +190,6 @@ class FeedCard extends StatelessWidget {
   }
 
   Widget _video() {
-    // return VideoListWidget(feed: post,);
     return SizedBox(
         height: 250,
         child: ClipRRect(
@@ -213,13 +213,27 @@ class FeedCard extends StatelessWidget {
               ),
               configuration: const BetterPlayerConfiguration(
                 autoDispose: false,
-                  looping: false,
+                  looping: true,
                   fit: BoxFit.cover,
                   autoPlay: false,
                   aspectRatio: 1,
-                  handleLifecycle: true,
+                  // handleLifecycle: true,
                 controlsConfiguration: BetterPlayerControlsConfiguration(
-                  showControls: false
+                    enableFullscreen: false,
+                    showControlsOnInitialize: true,
+                    enablePlaybackSpeed: false,
+                    enableProgressBar: false,
+                    enableOverflowMenu: false,
+                    enableProgressText: false,
+                    enablePip: false,
+                    enableSkips: false,
+                    // loadingWidget: Loader(),
+                    controlBarColor: Colors.transparent,
+                    playIcon: FontAwesome5Solid.play_circle,
+                    pauseIcon: FontAwesome5Solid.pause_circle,
+                    muteIcon: FontAwesome5Solid.volume_up,
+                    unMuteIcon: FontAwesome5Solid.volume_mute,
+                    enablePlayPause: false
                 )
               ),
               //key: Key(videoListData.hashCode.toString()),
