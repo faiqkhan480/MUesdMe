@@ -8,6 +8,7 @@ import '../models/auths/user_model.dart';
 import '../models/chat.dart';
 import '../models/message.dart';
 import '../routes/app_routes.dart';
+import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
 
@@ -16,6 +17,7 @@ class AgoraController extends GetxController {
   RxBool isLogin = false.obs;
 
   final AuthService _service = Get.find<AuthService>();
+  final ApiService _apiService = Get.find<ApiService>();
 
   User? get currentUser => _service.currentUser;
 
@@ -65,8 +67,7 @@ class AgoraController extends GetxController {
         // logController.addLog('Logout.');
       }
     };
-    client?.onRemoteInvitationReceivedByPeer = (invite) {
-    };
+    client?.onRemoteInvitationReceivedByPeer = (invite) {};
     await _login();
   }
 
@@ -159,5 +160,15 @@ class AgoraController extends GetxController {
     client?.logout();
     Get.offAllNamed(AppRoutes.LOGIN);
     Get.snackbar("Session Logout", "Your login session is Expired!", backgroundColor: Colors.red, colorText: Colors.white);
+  }
+
+  sndInviteToUsers(List<User> users) async {
+    for (var u in users) {
+      var res = await _apiService.sendMessage(
+          "0",
+          '<a href="/golive?appid=d7c60d2d306241c49386d0f998fffb4f&channel=MusedByMe_${currentUser?.userId}&token=${_service.rtc}&role=host">Invites You To Join</a>'.toString(),
+          // "${currentUser?.userName} has invited you to join in live",
+          u.userId.toString(), 0);
+    }
   }
 }

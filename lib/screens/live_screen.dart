@@ -297,15 +297,15 @@ class LiveScreen extends StatelessWidget {
     final List<StatefulWidget> list = [];
     // debugPrint();
     if (isBroadcaster) {
-      // list.add(RtcLocalView.SurfaceView(channelId: "${Constants.agoraBaseId}${_currUser.userId!}"));
-      list.add(RtcLocalView.SurfaceView());
+      list.add(RtcLocalView.SurfaceView(channelId: "${Constants.agoraBaseId}${_currUser.userId!}"));
     }
-    // else {
-    //   list.add(RtcRemoteView.SurfaceView(uid: _controller.broadcaster!.userId!, channelId: "${Constants.agoraBaseId}${_controller.broadcaster!.userId!}"));
-    // }
     for (var uid in _controller.users) {
       // broadcaster
-      list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster!.userId!}"));
+      debugPrint("::::::::::::::::${uid}");
+      if(_controller.broadcaster?.userId != null) {
+        list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster!.userId!}"));
+        // list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster!.userId!}"));
+      }
     }
     return list;
   }

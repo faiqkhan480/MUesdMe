@@ -119,7 +119,8 @@ class LiveController extends GetxController {
     //   },
     // ));
 
-    await engine?.joinChannel(rtcToken, channelName, null, uid);
+    // await engine?.joinChannel(rtcToken, channelName, null, uid);
+    await engine?.joinChannel(rtcToken, channelName, null, 0);
 
     await _joinChannel();
 
@@ -208,17 +209,17 @@ class LiveController extends GetxController {
     if(channel != null) {
       channel.onMemberJoined = (AgoraRtmMember member) {
         if(kDebugMode) {
-          Get.snackbar("Member joined", member.userId.toString(), backgroundColor: AppColors.successColor, colorText: Colors.white);
+          Get.snackbar("Member joined", getId(member.userId), backgroundColor: AppColors.successColor, colorText: Colors.white);
         }
-        debugPrint('Member joined: ${member.userId}');
+        // debugPrint('Member joined: ${member.userId}');
         views.value = views.value+1;
-        comments.insert(0, ChatMessage(uid: member.userId, message: "Member joined: ${member.userId}"));
+        comments.insert(0, ChatMessage(uid: member.userId, message: "Member joined: ${getId(member.userId)}"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
         update();
       };
       channel.onMemberLeft = (AgoraRtmMember member) {
         views.value = views.value-1;
-        comments.insert(0, ChatMessage(uid: member.userId, message: "Member left: ${member.userId}"));
+        comments.insert(0, ChatMessage(uid: member.userId, message: "Member left: ${getId(getId(member.userId))}"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
       };
       channel.onMessageReceived = (AgoraRtmMessage message, AgoraRtmMember member) {
@@ -273,5 +274,9 @@ class LiveController extends GetxController {
         }
       }
     }
+  }
+
+  String getId(String text) {
+    return text.replaceAll(Constants.agoraBaseId, "");
   }
 }

@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 
 import '../controllers/agora_controller.dart';
 import '../controllers/feed_controller.dart';
+import '../models/auths/user_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
+import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
 import 'search_field.dart';
 
@@ -19,7 +21,8 @@ class UsersSheet extends StatefulWidget {
 }
 
 class _UsersSheetState extends State<UsersSheet> {
-  final List<int> _selections = [];
+  final List<User> _selections = [];
+  bool loading = false;
 
   FeedController get controller => Get.find<FeedController>();
   AgoraController get _agora => Get.find<AgoraController>();
@@ -39,7 +42,7 @@ class _UsersSheetState extends State<UsersSheet> {
           children: [
             // CLOSE BUTTON
             InkWell(
-              onTap: () => Navigator.pop(context),
+              onTap: () => Get.back(),
               borderRadius: BorderRadius.circular(20),
               child: Ink(
                 decoration: BoxDecoration(
@@ -129,7 +132,13 @@ class _UsersSheetState extends State<UsersSheet> {
                     itemBuilder: (context, index) => Material(
                       color: Colors.white,
                       child: InkWell(
-                        onTap: () => setState(() => (_selections.contains(index) ? _selections.remove(index) : _selections.add(index))),
+                        onTap: () => setState(() {
+                          if(_selections.contains(controller.users.elementAt(index))) {
+                            _selections.remove(controller.users.elementAt(index));
+                          } else {
+                            _selections.add(controller.users.elementAt(index)!);
+                          }
+                        }),
                         borderRadius: BorderRadius.circular(20),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -140,8 +149,8 @@ class _UsersSheetState extends State<UsersSheet> {
                                   badgeColor: AppColors.lightGrey,
                                   position: BadgePosition.topEnd(top: -1, end: 4),
                                   elevation: 0,
-                                  padding: _selections.contains(index) ? EdgeInsets.zero : const EdgeInsets.all(5.0),
-                                  badgeContent: _selections.contains(index) ? SvgPicture.asset(Assets.iconsSelection) : null,
+                                  padding: _selections.contains(controller.users.elementAt(index)) ? EdgeInsets.zero : const EdgeInsets.all(5.0),
+                                  badgeContent: _selections.contains(controller.users.elementAt(index)) ? SvgPicture.asset(Assets.iconsSelection) : null,
                                   borderSide: const BorderSide(color: Colors.transparent, width: 0),
                                   child: CircleAvatar(
                                       backgroundColor: Colors.white,
@@ -166,6 +175,7 @@ class _UsersSheetState extends State<UsersSheet> {
           ],
         ),
 
+        // if(loading)
         InkWell(
           onTap: _handleSubmit,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
@@ -184,7 +194,10 @@ class _UsersSheetState extends State<UsersSheet> {
             child: SizedBox(
               height: 54,
               width: double.infinity,
-              child: Row(
+              child: loading ? const Center(
+                child: Loader(),
+              ) :
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(Assets.iconsLive, color: Colors.white),
@@ -199,5 +212,16 @@ class _UsersSheetState extends State<UsersSheet> {
     );
   }
 
-  _handleSubmit() {}
+  _handleSubmit() async {
+    if(_selections.isNotEmpty && !loading) {
+      setState(() {
+        loading = true;
+      });
+      await _agora.sndInviteToUsers(_selections);
+      setState(() {
+        loading = false;
+      });
+      Get.back();
+    }
+  }
 }

@@ -208,8 +208,13 @@ class Header extends StatelessWidget {
     if(index == 0) {
       Get.toNamed(AppRoutes.PICKER);
     }
-    else if(controller.users.elementAt(index-1)?.isLive == 1){
-      controller.watchLive(controller.users.elementAt(index-1)!);
+    else {
+      if(controller.users.elementAt(index-1)?.isLive == 1) {
+        controller.watchLive(controller.users.elementAt(index-1)!);
+      }
+      else {
+        controller.gotoProfile(controller.users.elementAt(index-1)!);
+      }
     }
   }
 }

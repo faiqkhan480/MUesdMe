@@ -211,14 +211,19 @@ class FeedCard extends StatelessWidget {
                     bufferForPlaybackMs: 1000,
                     bufferForPlaybackAfterRebufferMs: 2000),
               ),
-              configuration: const BetterPlayerConfiguration(
+              configuration: BetterPlayerConfiguration(
                 autoDispose: false,
                   looping: true,
                   fit: BoxFit.cover,
                   autoPlay: false,
                   aspectRatio: 1,
+                  eventListener: (p0) {
+                    if(p0.betterPlayerEventType == BetterPlayerEventType.setVolume) {
+                      _feedController.betterCtrl;
+                    }
+                  },
                   // handleLifecycle: true,
-                controlsConfiguration: BetterPlayerControlsConfiguration(
+                controlsConfiguration: const BetterPlayerControlsConfiguration(
                     enableFullscreen: false,
                     showControlsOnInitialize: true,
                     enablePlaybackSpeed: false,

@@ -40,6 +40,8 @@ class FeedController extends GetxController {
     super.onInit();
     getData();
     betterCtrl = BetterPlayerListVideoPlayerController();
+    betterCtrl.setVolume(0);
+
     // betterPlayerConfiguration = const BetterPlayerConfiguration(autoPlay: true);
   }
 
