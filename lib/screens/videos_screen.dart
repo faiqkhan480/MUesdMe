@@ -31,9 +31,9 @@ class VideosScreen extends StatelessWidget {
   int get _currIndex => _controller.currIndex.value;
   int get _currTab => _controller.currTab.value;
   List<Feed?> get _feeds => _controller.feeds;
-  List<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList();
-  List<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video" && v!.postLikes! > 0).toList().obs;
-  List<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(v!.feedDate!)).toList().obs;
+  RxList<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList().obs;
+  RxList<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video" && v!.postLikes! > 0).toList().obs;
+  RxList<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(v!.feedDate!)).toList().obs;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class VideosScreen extends StatelessWidget {
     );
   }
 
-  Widget _view(List<Feed?> items, int tab) {
+  Widget _view(RxList<Feed?> items, int tab) {
     if(!_loading && items.isEmpty) {
       return SvgPicture.asset(Assets.searchUsers, height: 300);
     //     Column(
@@ -104,52 +104,37 @@ class VideosScreen extends StatelessWidget {
     //   ],
     // );
     }
-    return ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        itemBuilder: (context, index) => Obx(() => FeedCard(
-          index: index,
-          isInView: true,
-          post: items.elementAt(index),
-          onDownload: _controller.handleDownload,
-          handleNavigate: () => onTap(index, items.elementAt(index)!),
-          // controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == items.elementAt(index)?.feedPath),
-          actions: FeedActions(
+    return RefreshIndicator(
+      onRefresh: _controller.getFeeds,
+      child: ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          itemBuilder: (context, index) => Obx(() => FeedCard(
             index: index,
-            loader: _fetching && _currIndex == index && _currTab == tab,
-            liked: items.elementAt(index)?.postLiked == "Liked",
-            commentsCount: items.elementAt(index)?.postComments ?? 0,
-            likeCount: items.elementAt(index)?.postLikes ?? 0,
-            onLikeTap: (value) => handleLikeTap(index, items.elementAt(index)!, tab),
-            onCommentTap: () =>   handleComment(index, items.elementAt(index)!),
-            onShareTap: () => handleShare(items.elementAt(index)!),
-          ),
-        ),),
-        separatorBuilder: (context, index) => const SizedBox(height: 20),
-        itemCount: items.length
+            isInView: true,
+            post: items.elementAt(index),
+            onDownload: _controller.handleDownload,
+            handleNavigate: () => onTap(index, items.elementAt(index)!),
+            // controller: _controller.videos.firstWhereOrNull((v) => v?.dataSource.substring(50) == items.elementAt(index)?.feedPath),
+            actions: Obx(() => FeedActions(
+              index: index,
+              loader: _fetching && _currIndex == index && _currTab == tab,
+              liked: items.elementAt(index)?.postLiked == "Liked",
+              commentsCount: items.elementAt(index)?.postComments ?? 0,
+              likeCount: items.elementAt(index)?.postLikes ?? 0,
+              onLikeTap: (value) => handleLikeTap(index, items.elementAt(index)!, tab),
+              onCommentTap: () =>   handleComment(index, items.elementAt(index)!),
+              onShareTap: () => handleShare(items.elementAt(index)!),
+            )),
+          ),),
+          separatorBuilder: (context, index) => const SizedBox(height: 20),
+          itemCount: items.length
+      ),
     );
-    // return RefreshIndicator(
-    //   onRefresh: _controller.getFeeds,
-    //   child: InViewNotifierList(
-    //       isInViewPortCondition:
-    //           (double deltaTop, double deltaBottom, double viewPortDimension) {
-    //         return deltaTop < (0.5 * viewPortDimension) &&
-    //             deltaBottom > (0.5 * viewPortDimension);
-    //       },
-    //       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-    //       builder: (context, index) => InViewNotifierWidget(
-    //         id: '$index',
-    //         builder: (BuildContext context, bool isInView, Widget? child) => Padding(
-    //           padding: const EdgeInsets.only(top: 20),
-    //           child:
-    //       )),
-    //       itemCount: items.length
-    //   ),
-    // );
   }
 
   // COMMENT SHEET
   handleComment(int index, Feed item) async {
-    Get.create(() => CommentController(feedId: item.feedId.toString()));
+    Get.create(() => CommentController(feedId: item.feedId.toString(),  action: _controller.updateCommentCount));
     await Get.bottomSheet(
         const CommentSheet(),
         clipBehavior: Clip.antiAlias,

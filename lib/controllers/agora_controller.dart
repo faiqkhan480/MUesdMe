@@ -66,7 +66,6 @@ class AgoraController extends GetxController {
       }
     };
     client?.onRemoteInvitationReceivedByPeer = (invite) {
-
     };
     await _login();
   }
