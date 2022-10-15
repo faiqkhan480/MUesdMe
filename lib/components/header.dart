@@ -149,7 +149,7 @@ class Header extends StatelessWidget {
                               const TextWidget("Live", color: AppColors.primaryColor, weight: FontWeight.normal, size: 10),
                             ],
                           ),
-                          showBadge: false,
+                          showBadge: index != 0 && controller.users.elementAt(index-1)?.isLive == 1,
                           elevation: 3,
                           child: Container(
                             decoration: BoxDecoration(
@@ -207,6 +207,9 @@ class Header extends StatelessWidget {
   void presentEditor(index) async {
     if(index == 0) {
       Get.toNamed(AppRoutes.PICKER);
+    }
+    else if(controller.users.elementAt(index-1)?.isLive == 1){
+      controller.watchLive(controller.users.elementAt(index-1)!);
     }
   }
 }

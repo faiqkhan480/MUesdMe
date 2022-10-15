@@ -23,6 +23,7 @@ Map<String, dynamic> _$ApiResToJson(ApiRes instance) => <String, dynamic>{
       'Message': instance.message,
       'Users': instance.users,
       'User': instance.user,
+      'Feeds': instance.feeds,
       'Feed': instance.feed,
       'Token': instance.token,
       'FeedComments': instance.feedComments,

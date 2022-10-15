@@ -3,6 +3,7 @@ import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../models/auths/user_model.dart';
 import '../models/feed.dart';
@@ -150,5 +151,12 @@ class FeedController extends GetxController {
     users.clear();
     users.addAll(res);
     gettingUsers.value = false;
+  }
+
+
+  // GO TO LIVE SCREEN TO WATCH LIVE BROADCAST
+  Future watchLive(User u) async {
+    await [Permission.camera, Permission.microphone].request();
+    Get.toNamed(AppRoutes.LIVE, arguments: {"isBroadcaster": false, 'broadcaster': u});
   }
 }

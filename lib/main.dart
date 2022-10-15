@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,27 @@ void main() async {
   await di.initServices(); /// AWAIT SERVICES INITIALIZATION.();
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  AwesomeNotifications().initialize(
+    // set the icon to null if you want to use the default app icon
+      null,
+      [
+        NotificationChannel(
+            channelGroupKey: 'musedme_channel_group',
+            channelKey: 'musedme_channel',
+            channelName: 'MusedMe notifications',
+            channelDescription: 'Notification channel for MusedMe',
+            defaultColor: const Color(0xFF9D50DD),
+            ledColor: Colors.white)
+      ],
+      // Channel groups are only visual and are not required
+      channelGroups: [
+        NotificationChannelGroup(
+            channelGroupKey: 'musedme_channel',
+            channelGroupName: 'MusedMe group')
+      ],
+      debug: true
+  );
   runApp(const MyApp());
 }
 

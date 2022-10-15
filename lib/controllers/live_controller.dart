@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:musedme/controllers/agora_controller.dart';
 
+import '../models/auths/user_model.dart';
 import '../models/chat.dart';
+import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -16,6 +18,7 @@ class LiveController extends GetxController {
   TextEditingController chatController = TextEditingController();
 
   final AuthService _service = Get.find<AuthService>();
+  final ApiService _apiService = Get.find<ApiService>();
 
   final AgoraRtmClient? _client = Get.find<AgoraController>().client;
   AgoraRtmChannel? _channel;
@@ -26,6 +29,7 @@ class LiveController extends GetxController {
   RxBool flash = false.obs;
   RxBool loading = true.obs;
 
+  User? broadcaster;
   RxBool isBroadcaster = true.obs;
   int? streamId;
   // String userId = "abc";
@@ -42,12 +46,14 @@ class LiveController extends GetxController {
     super.onInit();
     if(args != null) {
       isBroadcaster.value = args["isBroadcaster"];
+      broadcaster = args['broadcaster'];
     }
     initializeAgora();
   }
 
   @override
   void onClose() {
+    _apiService.goLive(false);
     // clear users
     users.clear();
     // destroy sdk and leave channel
@@ -58,82 +64,120 @@ class LiveController extends GetxController {
     super.onClose();
   }
 
+  // Push Live status
+  Future<void> updateLiveStatus({bool? d}) async {
+    var res = await _apiService.goLive(d ?? isBroadcaster());
+    if(res != true) {
+      users.clear();
+      // destroy sdk and leave channel
+      engine?.destroy();
+      _channel?.leave();
+      Get.back();
+      Get.snackbar("Failed!", "Enable to go live!",
+          backgroundColor: AppColors.pinkColor,
+          colorText: Colors.white
+      );
+    }
+  }
+
   Future<void> initializeAgora() async {
+    String rtcToken = args["isBroadcaster"] ? _service.rtc! : broadcaster!.rtcToken!;
+    String channelName = args["isBroadcaster"] ? "${Constants.agoraBaseId}${_service.currentUser?.userId}" : "${Constants.agoraBaseId}${broadcaster!.userId!}";
+    // int uid = args["isBroadcaster"] ? _service.currentUser!.userId! : broadcaster!.userId!;
+    int uid = _service.currentUser!.userId!;
     await _initAgoraRtcEngine();
 
-    if (args["isBroadcaster"]) streamId = await engine!.createDataStream(false, false);
+    if (args["isBroadcaster"]) streamId = await engine?.createDataStream(false, false);
 
-    engine!.setEventHandler(RtcEngineEventHandler(
-      joinChannelSuccess: (channel, uid, elapsed) {
-        debugPrint('onJoinChannel: $channel, uid: $uid');
-      },
-      leaveChannel: (stats) {
-        debugPrint('onLeaveChannel');
-        users.clear();
-      },
-      userJoined: (uid, elapsed) {
-        debugPrint('userJoined: $uid');
-        users.add(uid);
-      },
-      userOffline: (uid, elapsed) {
-        debugPrint('userOffline: $uid');
-        users.remove(uid);
-      },
-      streamMessage: (_, __, message) {
-        final String info = "here is the message $message";
-        debugPrint(info);
-      },
-      streamMessageError: (_, __, error, ___, ____) {
-        final String info = "here is the error $error";
-        debugPrint(info);
-      },
-    ));
 
-    await engine?.joinChannel(_service.rtc, "${Constants.agoraBaseId}${_service.currentUser?.userId}", null, 0);
+    // engine?.setEventHandler(RtcEngineEventHandler(
+    //   joinChannelSuccess: (channel, uid, elapsed) {
+    //     // debugPrint('onJoinChannel: $channel, uid: $uid');
+    //     // users.add(uid);
+    //     // update();
+    //   },
+    //   leaveChannel: (stats) {
+    //     debugPrint('onLeaveChannel');
+    //     users.clear();
+    //   },
+    //   userJoined: (uid, elapsed) {
+    //     debugPrint('userJoined RTC::::::::: $uid');
+    //     users.add(uid);
+    //     update();
+    //   },
+    //   userOffline: (uid, elapsed) {
+    //     debugPrint('userOffline: $uid');
+    //     users.remove(uid);
+    //   },
+    //   streamMessage: (_, __, message) {
+    //     final String info = "here is the message $message";
+    //     debugPrint(info);
+    //   },
+    //   streamMessageError: (_, __, error, ___, ____) {
+    //     final String info = "here is the error $error";
+    //     debugPrint(info);
+    //   },
+    // ));
+
+    await engine?.joinChannel(rtcToken, channelName, null, uid);
 
     await _joinChannel();
+
+    if(args["isBroadcaster"]) {
+      await updateLiveStatus();
+    }
   }
 
   // <----------------START RTC------------------> //
   Future<void> _initAgoraRtcEngine() async {
-    engine = await RtcEngine.createWithContext(RtcEngineContext(Constants.appId));
+    // engine = await RtcEngine.createWithContext(RtcEngineContext(Constants.appId));
+    engine = await RtcEngine.create(Constants.appId);
     _addListeners();
-    await engine!.enableVideo();
+    await engine?.enableVideo();
 
-    await engine!.startPreview();
+    await engine?.startPreview();
 
-    await engine!.setChannelProfile(ChannelProfile.LiveBroadcasting);
+    await engine?.setChannelProfile(ChannelProfile.LiveBroadcasting);
     if (args["isBroadcaster"]) {
-      await engine!.setClientRole(ClientRole.Broadcaster);
+      await engine?.setClientRole(ClientRole.Broadcaster);
     } else {
-      await engine!.setClientRole(ClientRole.Audience);
+      await engine?.setClientRole(ClientRole.Audience);
     }
   }
 
   void _addListeners() {
-    engine!.setEventHandler(RtcEngineEventHandler(
+    engine?.setEventHandler(RtcEngineEventHandler(
       warning: (warningCode) {
-        debugPrint('warning::::: $warningCode');
+        debugPrint('RTC warning::::: $warningCode');
       },
       error: (errorCode) {
-        debugPrint('error $errorCode');
+        debugPrint('RTC error:::::: $errorCode');
       },
       joinChannelSuccess: (channel, uid, elapsed) {
-        debugPrint('joinChannelSuccess $channel $uid $elapsed');
+        debugPrint('RTC joinChannelSuccess $channel $uid $elapsed');
         //   isJoined = true;
       },
       userJoined: (uid, elapsed) {
-        debugPrint('userJoined  $uid $elapsed');
+        debugPrint('userJoined RTC::::::::: $uid $elapsed');
+        users.add(uid);
+        update();
         //   remoteUid.add(uid);
       },
       userOffline: (uid, reason) {
         debugPrint('userOffline  $uid $reason');
-        //   remoteUid.removeWhere((element) => element == uid);
+        users.removeWhere((element) => element == uid);
+        if(uid == broadcaster!.userId) {
+          Get.back();
+          Get.snackbar("Broadcast is Finished!", "User end the broadcast!",
+              backgroundColor: AppColors.blue,
+              colorText: Colors.white
+          );
+        }
       },
       leaveChannel: (stats) {
-        debugPrint('leaveChannel ${stats.toJson()}');
-        //   isJoined = false;
-        //   remoteUid.clear();
+        debugPrint('RTC leaveChannel ${stats.toJson()}');
+          // isJoined = false;
+        users.clear();
       },
     ));
   }
@@ -143,8 +187,9 @@ class LiveController extends GetxController {
   // <----------------START RTM CHANNEL------------------> //
   Future _joinChannel() async {
     try {
-      _channel = await _createChannel("${Constants.agoraBaseId}${_service.currentUser?.userId}");
-      debugPrint('Join channel success. ${Constants.agoraBaseId}${_service.currentUser?.userId}');
+      String _channedId = args["isBroadcaster"] ? "${Constants.agoraBaseId}${_service.currentUser?.userId}" : "${Constants.agoraBaseId}${broadcaster!.userId!}";
+      _channel = await _createChannel(_channedId);
+      debugPrint('Join channel success. ${_channedId}');
       await _channel?.join();
       if(kDebugMode) {
         Get.snackbar("Success", "Join channel success.", backgroundColor: AppColors.successColor, colorText: Colors.white);
@@ -203,19 +248,18 @@ class LiveController extends GetxController {
 
   void onToggleFlash() {
     flash.value = !flash();
-    engine!.setCameraTorchOn(flash());
+    engine?.setCameraTorchOn(flash());
   }
 
   void onSwitchCamera() {
     List<int> list = "mute user blet".codeUnits;
     Uint8List bytes = Uint8List.fromList(list);
     if (streamId != null) engine?.sendStreamMessage(streamId!, bytes);
-    engine!.switchCamera();
+    engine?.switchCamera();
   }
 
   void handleSubmit([String? val]) async {
     String text = chatController.text;
-    debugPrint(":::::::::::${text}");
     if (text.isNotEmpty) {
       try {
         await _channel?.sendMessage(AgoraRtmMessage.fromText(text));

@@ -31,6 +31,9 @@ dependencies:
   firebase_core: ^1.24.0
   firebase_messaging: ^13.0.4
 
+# Used to handle local notifications
+  awesome_notifications: ^0.7.2
+
 #  Used for state management
   get: ^4.6.5
   get_storage: ^2.0.3

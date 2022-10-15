@@ -418,14 +418,14 @@ class ApiService extends GetxService {
     }
   }
 
-  // GET USERS FROM SEARCH
+  // GET ACTIVE USERS
   Future<List<User?>> fetchActiveUsers() async {
     try {
       var payload = {
         "UserID": _userId,
       };
       final json = await Network.post(url: Constants.ACTIVE_USERS, headers: _header, payload: payload);
-      // debugPrint("RES:::::::::::: $json");
+      debugPrint("RES:::::::::::: $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.users != null) {
@@ -437,6 +437,34 @@ class ApiService extends GetxService {
     } catch (e) {
       debugPrint("ERROR >>>>>>>>>> $e");
       return [];
+    }
+  }
+
+  // GO LIVE
+  Future goLive(bool status) async {
+    try {
+      var payload = {
+        "UserID": _userId,
+        "IsLive": status ? "1" : "0",
+      };
+      final json = await Network.post(url: Constants.GO_LIVE, headers: _header, payload: payload);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.message != null) {
+          return true;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
     }
   }
 }

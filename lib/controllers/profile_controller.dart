@@ -47,8 +47,7 @@ class ProfileController extends GetxController {
     User? res = await _authService.getUser(uid: profileId);
     user.value = res!;
     loading.value = false;
-    bool status = await _agora.isUserOnline(user.value.userId!.toString());
-    isOnline.value = status;
+    checkStatus();
   }
 
   // FETCH USER'S FEEDS
@@ -65,19 +64,14 @@ class ProfileController extends GetxController {
         feeds.addAll(res as List<Feed?>);
         // feeds.replaceRange(0, (feeds.length-1), res as List<Feed?>);
       }
-      // for (var f in feeds) {
-      //   if(f?.feedType == "Video") {
-      //     String url = "${Constants.FEEDS_URL}${f?.feedPath}";
-      //     if(videos.isEmpty || videos.any((v) => v?.dataSource != url)) {
-      //       CachedVideoPlayerController c = CachedVideoPlayerController.network(url);
-      //       await c.initialize();
-      //       videos.add(c);
-      //     }
-      //   }
-      // }
-      // update();
     }
     feedsLoading.value = false;
+  }
+
+  // Check user active status
+  Future<void> checkStatus() async {
+    bool status = await _agora.isUserOnline(user.value.userId!.toString());
+    isOnline.value = status;
   }
 
   void handleClick() {

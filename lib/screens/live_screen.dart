@@ -38,7 +38,6 @@ class LiveScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint("COMMENTS::::::::::::: ${views}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       // extendBody: true,
@@ -60,13 +59,13 @@ class LiveScreen extends StatelessWidget {
               child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
           ),
         ),
-        title: Row(
+        title: (_controller.isBroadcaster()) ? Row(
           children: [
             badge("Live", true),
             const SizedBox(width: 10,),
             Obx(() => badge("$views views", false)),
           ],
-        ),
+        ) : null,
         actions: [
           FractionallySizedBox(
             heightFactor: .7,
@@ -103,11 +102,6 @@ class LiveScreen extends StatelessWidget {
       body: Obx(() => Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: <Widget>[
-          // Container(
-          //   color: Colors.amberAccent,
-          //   height: MediaQuery.of(context).size.height,
-          //   width: MediaQuery.of(context).size.width,
-          // ),
           _broadcastView(),
 
           if(_controller.loading())
@@ -301,11 +295,17 @@ class LiveScreen extends StatelessWidget {
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
+    // debugPrint();
     if (isBroadcaster) {
-      list.add(const RtcLocalView.SurfaceView(channelId: "firstChannel",));
+      // list.add(RtcLocalView.SurfaceView(channelId: "${Constants.agoraBaseId}${_currUser.userId!}"));
+      list.add(RtcLocalView.SurfaceView());
     }
+    // else {
+    //   list.add(RtcRemoteView.SurfaceView(uid: _controller.broadcaster!.userId!, channelId: "${Constants.agoraBaseId}${_controller.broadcaster!.userId!}"));
+    // }
     for (var uid in _controller.users) {
-      list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "firstChannel"));
+      // broadcaster
+      list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster!.userId!}"));
     }
     return list;
   }

@@ -29,6 +29,9 @@ class User {
     this.followers,
     this.followings,
     this.posts,
+    this.isLive,
+    this.rtcToken,
+    this.rtmToken
   });
 
   @JsonKey(name: 'UserID')
@@ -94,7 +97,18 @@ class User {
   @JsonKey(name: 'Posts')
   final int? posts;
 
+  @JsonKey(name: 'IsLive')
+  final int? isLive;
+
+  @JsonKey(name: 'RTCToken')
+  final String? rtcToken;
+
+  @JsonKey(name: 'RTMToken')
+  final String? rtmToken;
+
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
 }
 
