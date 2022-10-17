@@ -50,9 +50,9 @@ class ChatsScreen extends GetView<ChatController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Padding(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 30, top: 30),
-              child: SearchField(),
+            Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30, top: 30),
+              child: SearchField(controller: controller.search, onSubmit: controller.onChange,),
             ),
 
             const Padding(
@@ -77,14 +77,14 @@ class ChatsScreen extends GetView<ChatController> {
                         child: ListView.separated(
                             padding: const EdgeInsets.only(top: 20, bottom: 0),
                             itemBuilder: (context, index) => Container(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      right: BorderSide(
-                                          color: index == 1 ? AppColors.progressColor : index == 5 ? AppColors.successColor : Colors.white,
-                                          width: 4
-                                      )
-                                  )
-                              ),
+                              // decoration: BoxDecoration(
+                              //     border: Border(
+                              //         right: BorderSide(
+                              //             color: index == 1 ? AppColors.progressColor : index == 5 ? AppColors.successColor : Colors.white,
+                              //             width: 4
+                              //         )
+                              //     )
+                              // ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
