@@ -33,6 +33,7 @@ class LiveScreen extends StatelessWidget {
   List<ChatMessage?> get comments => _controller.comments;
   bool get isBroadcaster => _controller.isBroadcaster();
   bool get loading => _controller.loading();
+  bool get flashSupported => _controller.flashSupported();
   bool get flash => _controller.flash();
   bool get muted => _controller.muted();
 
@@ -170,18 +171,20 @@ class LiveScreen extends StatelessWidget {
       right: -10,
       child: Column(
         children: [
+          Obx(() => (flashSupported) ?
           RawMaterialButton(
-            onPressed: _controller.onToggleFlash,
-            shape: const CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
-            child: Icon(
-              flash ? Ionicons.ios_flash_sharp : Ionicons.ios_flash_outline,
-              color: AppColors.lightGrey,
-              size: 20.0,
-            ),
-          ),
+      onPressed: _controller.onToggleFlash,
+      shape: const CircleBorder(),
+      elevation: 2.0,
+      fillColor: Colors.white,
+      padding: const EdgeInsets.all(12.0),
+      child: Icon(
+        flash ? Ionicons.ios_flash_sharp : Ionicons.ios_flash_outline,
+        color: AppColors.lightGrey,
+        size: 20.0,
+      ),
+    ) :
+          const SizedBox.shrink()),
           const SizedBox(height: 5,),
           RawMaterialButton(
             onPressed: _controller.onSwitchCamera,
@@ -295,17 +298,12 @@ class LiveScreen extends StatelessWidget {
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    // debugPrint();
     if (isBroadcaster) {
       list.add(RtcLocalView.SurfaceView(channelId: "${Constants.agoraBaseId}${_currUser.userId!}"));
     }
     for (var uid in _controller.users) {
       // broadcaster
-      debugPrint("::::::::::::::::${uid}");
-      if(_controller.broadcaster?.userId != null) {
-        list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster!.userId!}"));
-        // list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster!.userId!}"));
-      }
+        list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster?.userId ?? _currUser.userId!}"));
     }
     return list;
   }

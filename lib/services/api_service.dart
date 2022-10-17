@@ -350,7 +350,7 @@ class ApiService extends GetxService {
         "UserID": _userId,
       };
       final json = await Network.post(url: Constants.GET_CHAT, headers: _header, payload: payload);
-      debugPrint("json::::::$json");
+      // debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.messages != null) {
@@ -388,14 +388,15 @@ class ApiService extends GetxService {
   }
 
   // SAVE MESSAGE TO SERVER
-  Future sendMessage(String chatId, String message, String chatWithUser, int isActive) async {
+  Future sendMessage(String chatId, String message, String chatWithUser, int isActive, {String? type}) async {
     try {
       var payload = {
         "ChatID": chatId,
         "UserID": _userId,
         "Message": message,
         "ChatWithUser": chatWithUser,
-        "IsActive": 0 //isActive,
+        "IsActive": 0,
+        "Type": type
       };
       final json = await Network.post(url: Constants.SEND_MESSAGE, headers: _header, payload: payload);
       // debugPrint("json::::::$json");

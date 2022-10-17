@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:musedme/utils/app_colors.dart';
-import 'package:musedme/widgets/text_widget.dart';
 
+import '../models/chat.dart';
+import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
+import '../widgets/text_widget.dart';
 
 class InvitationCard extends StatelessWidget {
-  const InvitationCard({Key? key}) : super(key: key);
+  final Chat? user;
+  final VoidCallback? onTap;
+  const InvitationCard({Key? key, this.user, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: AppColors.secondaryColor,
         borderRadius: BorderRadius.circular(10)
       ),
-      margin: const EdgeInsets.only(bottom: 10, left: 20, right: 50),
-      // padding: EdgeInsets.symmetric(),
+      margin: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
+      padding: const EdgeInsets.only(right: 10, bottom: 5, top: 5),
       // alignment: Alignment.center,
       child: Row(
         children: [
@@ -39,13 +42,22 @@ class InvitationCard extends StatelessWidget {
                   const SizedBox(height: 10,),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 18,
-                          backgroundImage: NetworkImage(Constants.albumArt)),
-                      SizedBox(width: 10,),
-                      Expanded(child: TextWidget("Max Anderson has just sent you invitation to be live with him.", weight: FontWeight.normal, color: Colors.white)),
+                          backgroundImage: NetworkImage(
+                              user?.profilePic != null && user!.profilePic!.isNotEmpty ?
+                              Constants.IMAGE_URL + user!.profilePic! :
+                              Constants.dummyImage
+                          ),),
+                      const SizedBox(width: 10,),
+                      Flexible(
+                          child: Text("${user?.fullName} has just sent you invitation to be live with him.",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.white)
+                          )),
                     ],
                   ),
                 ],
@@ -54,14 +66,14 @@ class InvitationCard extends StatelessWidget {
           ),
 
           InkWell(
-            onTap: () => null,
+            onTap: onTap,
             borderRadius: BorderRadius.circular(10),
             child: Container(
               decoration: BoxDecoration(
                   color: AppColors.successColor,
                   borderRadius: BorderRadius.circular(10)
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

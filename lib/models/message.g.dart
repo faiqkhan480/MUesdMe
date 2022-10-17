@@ -13,6 +13,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       messageDate: json['MessageDate'] == null
           ? null
           : DateTime.parse(json['MessageDate'] as String),
+      type: json['Type'] as String?,
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
@@ -20,4 +21,5 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'ChatID': instance.chatId,
       'Message': instance.message,
       'MessageDate': instance.messageDate?.toIso8601String(),
+      'Type': instance.type,
     };

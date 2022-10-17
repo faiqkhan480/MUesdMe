@@ -48,6 +48,7 @@ class AgoraController extends GetxController {
           message: message.text,
           chatId: c.chat.value.chatId,
           userId: uid,
+          type: "Message"
         ));
       }
       // if(uid == currentId.value) {
@@ -167,8 +168,8 @@ class AgoraController extends GetxController {
     for (var u in users) {
       var res = await _apiService.sendMessage(
           "0",
-          '<a href="/golive?appid=${Constants.appId}&channel=${Constants.agoraBaseId}${currentUser?.userId}&token=${_service.rtc}&role=host">Invites You To Join</a>'.toString(),
-          u.userId.toString(), 0);
+          '<a href="/golive?appid=${Constants.appId}&channel=${Constants.agoraBaseId}${currentUser?.userId}&token=${_service.rtc}&role=host">Live Invitation</a>'.toString(),
+          u.userId.toString(), 0, type: "Invite");
     }
   }
 }

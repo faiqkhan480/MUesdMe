@@ -1,22 +1,18 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:badges/badges.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../components/invitation_card.dart';
 import '../components/message_input.dart';
 import '../components/message_tile.dart';
 import '../controllers/message_controller.dart';
-import '../models/auths/user_model.dart';
 import '../models/chat.dart';
 import '../models/message.dart';
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
-import '../utils/assets.dart';
 import '../utils/constants.dart';
 import '../utils/style_config.dart';
 import '../widgets/loader.dart';
@@ -39,7 +35,7 @@ class MessageScreen extends GetView<MessageController> {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Get.back(),
               style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -95,8 +91,15 @@ class MessageScreen extends GetView<MessageController> {
             padding: const EdgeInsets.only(top: 10,bottom: 60),
             // physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
+              if(_messages.elementAt(index)?.type == "Invite"){
+                if(_messages.elementAt(index)?.userId != _authService.currentUser?.userId) {
+                  return Center(
+                    child: InvitationCard(user: _chatUser, onTap: () => controller.handleInvite(_messages.elementAt(index)!),),
+                  );
+                }
+                return const SizedBox.shrink();
+              }
               return MessageTile(
-                // message: controller.comments.elementAt(index),
                 message: _messages.elementAt(index)!,
                 senderImage: _authService.currentUser?.profilePic,
                 receiverImage: _chatUser?.profilePic,

@@ -26,38 +26,39 @@ class ChatsScreen extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0, top: 5),
-          child: TextButton(
-              onPressed: () => (Navigator.canPop(context)) ? Navigator.pop(context) : null,
-              style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
-                  ),
-                  // padding: const EdgeInsets.symmetric(vertical: 18),
-                  textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
-              ),
-              child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
-          ),
-        ),
-        title: const SearchField(),
-      ),
+      // appBar: AppBar(
+      //   leading: Padding(
+      //     padding: const EdgeInsets.only(left: 8.0, top: 5),
+      //     child: TextButton(
+      //         onPressed: () => (Navigator.canPop(context)) ? Navigator.pop(context) : null,
+      //         style: TextButton.styleFrom(
+      //             backgroundColor: Colors.white,
+      //             shape: RoundedRectangleBorder(
+      //                 borderRadius: BorderRadius.circular(8),
+      //                 side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
+      //             ),
+      //             // padding: const EdgeInsets.symmetric(vertical: 18),
+      //             textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+      //         ),
+      //         child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
+      //     ),
+      //   ),
+      //   title: const SearchField(),
+      // ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Padding(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 30, top: 30),
+              child: SearchField(),
+            ),
+
+            const Padding(
               padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10),
               child: TextWidget("Messages", size: 28, weight: FontWeight.bold,),
             ),
-            // const Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 20.0),
-            //   child: TextWidget("You have 2 new messages", color: AppColors.lightGrey, weight: FontWeight.normal,),
-            // ),
 
             Obx(() => _loading ?
                 const Loader() :

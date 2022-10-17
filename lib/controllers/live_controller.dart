@@ -27,6 +27,7 @@ class LiveController extends GetxController {
   RxInt views = 0.obs;
   RxBool muted = false.obs;
   RxBool flash = false.obs;
+  RxBool flashSupported = false.obs;
   RxBool loading = true.obs;
 
   User? broadcaster;
@@ -81,8 +82,10 @@ class LiveController extends GetxController {
   }
 
   Future<void> initializeAgora() async {
-    String rtcToken = args["isBroadcaster"] ? _service.rtc! : broadcaster!.rtcToken!;
-    String channelName = args["isBroadcaster"] ? "${Constants.agoraBaseId}${_service.currentUser?.userId}" : "${Constants.agoraBaseId}${broadcaster!.userId!}";
+    String rtcToken = args["isBroadcaster"] && broadcaster == null ? _service.rtc! : broadcaster!.rtcToken!;
+    String channelName = args["isBroadcaster"] && broadcaster == null ?
+    "${Constants.agoraBaseId}${_service.currentUser?.userId}" :
+    "${Constants.agoraBaseId}${broadcaster!.userId!}";
     // int uid = args["isBroadcaster"] ? _service.currentUser!.userId! : broadcaster!.userId!;
     int uid = _service.currentUser!.userId!;
     await _initAgoraRtcEngine();
@@ -120,7 +123,7 @@ class LiveController extends GetxController {
     // ));
 
     // await engine?.joinChannel(rtcToken, channelName, null, uid);
-    await engine?.joinChannel(rtcToken, channelName, null, 0);
+    await engine?.joinChannel(rtcToken, channelName, null, uid);
 
     await _joinChannel();
 
@@ -137,6 +140,9 @@ class LiveController extends GetxController {
     await engine?.enableVideo();
 
     await engine?.startPreview();
+
+    bool? suported = await engine?.isCameraTorchSupported();
+    flashSupported.value = suported ?? false;
 
     await engine?.setChannelProfile(ChannelProfile.LiveBroadcasting);
     if (args["isBroadcaster"]) {
@@ -167,7 +173,8 @@ class LiveController extends GetxController {
       userOffline: (uid, reason) {
         debugPrint('userOffline  $uid $reason');
         users.removeWhere((element) => element == uid);
-        if(uid == broadcaster!.userId) {
+        update();
+        if(uid == broadcaster?.userId) {
           Get.back();
           Get.snackbar("Broadcast is Finished!", "User end the broadcast!",
               backgroundColor: AppColors.blue,
@@ -250,13 +257,17 @@ class LiveController extends GetxController {
   void onToggleFlash() {
     flash.value = !flash();
     engine?.setCameraTorchOn(flash());
+
   }
 
-  void onSwitchCamera() {
-    List<int> list = "mute user blet".codeUnits;
-    Uint8List bytes = Uint8List.fromList(list);
-    if (streamId != null) engine?.sendStreamMessage(streamId!, bytes);
-    engine?.switchCamera();
+  void onSwitchCamera() async {
+    // List<int> list = "mute user blet".codeUnits;
+    // Uint8List bytes = Uint8List.fromList(list);
+    // // if (streamId != null) engine?.sendStreamMessage(streamId!, bytes);
+    await engine?.switchCamera();
+    // bool? supported = await engine?.isCameraTorchSupported();
+    // debugPrint("::::::::::: $supported");
+    flashSupported.value = !flashSupported.value;
   }
 
   void handleSubmit([String? val]) async {

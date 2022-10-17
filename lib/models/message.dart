@@ -13,6 +13,7 @@ class Message {
     required this.chatId,
     required this.message,
     required this.messageDate,
+    required this.type,
   });
 
   @JsonKey(name: 'UserID')
@@ -26,6 +27,9 @@ class Message {
 
   @JsonKey(name: 'MessageDate')
   final DateTime? messageDate;
+
+  @JsonKey(name: 'Type')
+  final String? type;
 
   factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
 

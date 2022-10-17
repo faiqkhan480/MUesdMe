@@ -216,6 +216,7 @@ class _EditorScreenState extends State<EditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("image::::::::::: $image");
     return DefaultTabController(
       length: 2,
       child: Scaffold(

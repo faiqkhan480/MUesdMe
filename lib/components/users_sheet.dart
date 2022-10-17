@@ -5,12 +5,14 @@ import 'package:get/get.dart';
 
 import '../controllers/agora_controller.dart';
 import '../controllers/feed_controller.dart';
+import '../controllers/live_controller.dart';
 import '../models/auths/user_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
+import '../widgets/user_avatar.dart';
 import 'search_field.dart';
 
 class UsersSheet extends StatefulWidget {
@@ -25,6 +27,7 @@ class _UsersSheetState extends State<UsersSheet> {
   bool loading = false;
 
   FeedController get controller => Get.find<FeedController>();
+  LiveController get _live => Get.find<LiveController>();
   AgoraController get _agora => Get.find<AgoraController>();
 
   @override
@@ -110,8 +113,8 @@ class _UsersSheetState extends State<UsersSheet> {
                             const TextWidget("Invite People to Join live", size: 16, color: AppColors.primaryColor, weight: FontWeight.normal),
                           ],
                         ),
-                        const SizedBox(height: 20,),
-                        const SearchField(placeHolder: "Write name of people you want to invite...")
+                        // const SizedBox(height: 20,),
+                        // const SearchField(placeHolder: "Write name of people you want to invite...")
                       ],
                     ),
                   ),
@@ -129,45 +132,38 @@ class _UsersSheetState extends State<UsersSheet> {
                     shrinkWrap: true,
                     // physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 50),
-                    itemBuilder: (context, index) => Material(
-                      color: Colors.white,
-                      child: InkWell(
-                        onTap: () => setState(() {
-                          if(_selections.contains(controller.users.elementAt(index))) {
-                            _selections.remove(controller.users.elementAt(index));
-                          } else {
-                            _selections.add(controller.users.elementAt(index)!);
-                          }
-                        }),
-                        borderRadius: BorderRadius.circular(20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:[
-                            StreamBuilder(
-                                stream: _agora.checkStatus(controller.users.elementAt(index)!.userId.toString()),
-                                builder: (context, snapshot) => Badge(
-                                  badgeColor: AppColors.lightGrey,
-                                  position: BadgePosition.topEnd(top: -1, end: 4),
-                                  elevation: 0,
-                                  padding: _selections.contains(controller.users.elementAt(index)) ? EdgeInsets.zero : const EdgeInsets.all(5.0),
-                                  badgeContent: _selections.contains(controller.users.elementAt(index)) ? SvgPicture.asset(Assets.iconsSelection) : null,
-                                  borderSide: const BorderSide(color: Colors.transparent, width: 0),
-                                  child: CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 25,
-                                      backgroundImage: NetworkImage(
-                                        controller.users.elementAt(index)?.profilePic != null && controller.users.elementAt(index)!.profilePic!.isNotEmpty ?
-                                        "${Constants.IMAGE_URL}${controller.users.elementAt(index)?.profilePic}" :
-                                        Constants.dummyImage,
-                                      )),
-                                )
-                            ),
-                            const SizedBox(height: 5,),
-                            TextWidget(controller.users.elementAt(index)?.userName ?? "")
-                          ],
+                    itemBuilder: (context, index) {
+
+                      return Material(
+                        color: Colors.white,
+                        child: InkWell(
+                          onTap: () => setState(() {
+                            if(_selections.contains(controller.users.elementAt(index))) {
+                              _selections.remove(controller.users.elementAt(index));
+                            } else {
+                              _selections.add(controller.users.elementAt(index)!);
+                            }
+                          }),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:[
+                              UserAvatar(
+                                  controller.users.elementAt(index)?.profilePic != null && controller.users.elementAt(index)!.profilePic!.isNotEmpty ?
+                                  "${Constants.IMAGE_URL}${controller.users.elementAt(index)?.profilePic}" :
+                                  Constants.dummyImage,
+                                  controller.users.elementAt(index)!.userId.toString(),
+                                padding: _selections.contains(controller.users.elementAt(index)) ? EdgeInsets.zero : const EdgeInsets.all(5.0),
+                                badgeContent: _selections.contains(controller.users.elementAt(index)) ? SvgPicture.asset(Assets.iconsSelection) : null,
+                                radius: 25,
+                              ),
+                              const SizedBox(height: 5,),
+                              TextWidget(controller.users.elementAt(index)?.userName ?? "")
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   )),
                 ],
               ),
