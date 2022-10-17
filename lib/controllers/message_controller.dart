@@ -116,13 +116,13 @@ class MessageController extends GetxController {
       try {
         AgoraRtmMessage msg = AgoraRtmMessage.fromText(message.text);
         await _agora.client?.sendMessageToPeer("MusedByMe_${chat.value.userId}", msg, false);
-        _addMessage();
         fetching.value = false;
       } catch (errorCode) {
         debugPrint(message.text + errorCode.toString());
         fetching.value = false;
         Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
       }
+      _addMessage();
     }
     // FOR OFFLINE USER
     else {

@@ -37,28 +37,23 @@ class AgoraController extends GetxController {
     client = await AgoraRtmClient.createInstance(Constants.appId);
 
     client?.onMessageReceived = (AgoraRtmMessage message, String peerId) async {
-      debugPrint("Public Message from $peerId: ${message.text}");
+      // debugPrint("Public Message from $peerId: ${message.text}");
       int uid = int.parse(peerId.replaceAll("MusedByMe_", ""));
-      debugPrint("Public::::::::::: ${Get.isRegistered<MessageController>()}");
+      // debugPrint("Public::::::::::: ${Get.isRegistered<MessageController>()}");
       bool test = Get.isRegistered<MessageController>();
+
       if(test) {
         MessageController c = Get.find<MessageController>();
-        c.messages.insert(0, Message(
-          messageDate: DateTime.now(),
-          message: message.text,
-          chatId: c.chat.value.chatId,
-          userId: uid,
-          type: "Message"
-        ));
+        if(c.chat.value.userId == uid) {
+          c.messages.insert(0, Message(
+              messageDate: DateTime.now(),
+              message: message.text,
+              chatId: c.chat.value.chatId,
+              userId: uid,
+              type: "Message"
+          ));
+        }
       }
-      // if(uid == currentId.value) {
-      //   comments.insert(0, Message(
-      //     messageDate: DateTime.now(),
-      //     message: message.text,
-      //     chatId: 0,
-      //     userId: uid,
-      //   ));
-      // }
     };
     client?.onConnectionStateChanged = (int state, int reason) {
       debugPrint('Connection state changed::::::::::: $state, reason: $reason');

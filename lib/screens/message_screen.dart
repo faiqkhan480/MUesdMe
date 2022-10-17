@@ -91,6 +91,10 @@ class MessageScreen extends GetView<MessageController> {
             padding: const EdgeInsets.only(top: 10,bottom: 60),
             // physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
+              debugPrint(":::::::::::: ${_messages.elementAt(index)?.chatId}");
+              if(_messages.elementAt(index)?.chatId != _chatUser?.chatId){
+                return const SizedBox.shrink();
+              }
               if(_messages.elementAt(index)?.type == "Invite"){
                 if(_messages.elementAt(index)?.userId != _authService.currentUser?.userId) {
                   return Center(

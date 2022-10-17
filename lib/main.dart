@@ -44,7 +44,7 @@ void main() async {
       // Channel groups are only visual and are not required
       channelGroups: [
         NotificationChannelGroup(
-            channelGroupKey: 'musedme_channel',
+            channelGroupKey: 'musedme_channel_group',
             channelGroupName: 'MusedMe group')
       ],
       debug: true
