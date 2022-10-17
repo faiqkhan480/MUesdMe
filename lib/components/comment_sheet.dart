@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:musedme/controllers/feed_controller.dart';
 
 import '../controllers/comment_controller.dart';
+import '../models/auths/user_model.dart';
 import '../models/comment.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -12,6 +14,7 @@ class CommentSheet extends GetWidget<CommentController> {
   const CommentSheet({Key? key}) : super(key: key);
 
   List<Comment?> get _comments => controller.comments;
+  FeedController get _feeds => Get.find<FeedController>();
   bool get _loading => controller.loading();
 
   @override
@@ -55,7 +58,10 @@ class CommentSheet extends GetWidget<CommentController> {
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     itemBuilder: (context, index) => Row(
                       children: [
-                        _imageView(_comments.elementAt(index)?.profilePic),
+                        GestureDetector(
+                          onTap: () => onTap(index),
+                          child: _imageView(_comments.elementAt(index)?.profilePic),
+                        ),
                         const SizedBox(width: 5,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,6 +127,12 @@ class CommentSheet extends GetWidget<CommentController> {
         ),
       ),
     );
+  }
+
+  onTap(int index) {
+    User u = User(userId: _comments.elementAt(index)?.userId,);
+    Get.back();
+    _feeds.gotoProfile(u);
   }
 
 

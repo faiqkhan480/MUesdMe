@@ -93,7 +93,8 @@ class FeedCard extends StatelessWidget {
                         onSelected: handleOption,
                         icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
                         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                          const PopupMenuItem<String>(
+                          if(post?.feedType == "Video")
+                            const PopupMenuItem<String>(
                             value: "0",
                             child: Text('Add to watch later'),
                           ),
