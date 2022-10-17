@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:video_compress/video_compress.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
@@ -31,7 +32,7 @@ class UploadScreen extends StatefulWidget {
 
 class _UploadScreenState extends State<UploadScreen> {
   bool loading = false;
-  String? get img => widget.post?.image.substring(7);
+  String? get img => widget.post?.image.substring(7).replaceAll("%20", " ");
   String? get video => widget.video?.video.substring(7);
   String value = "Public";
 
@@ -58,6 +59,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
   @override
   void initState() {
+    requestLocationPermission();
     // TODO: implement initState
     super.initState();
     if(video != null) {
@@ -78,6 +80,20 @@ class _UploadScreenState extends State<UploadScreen> {
     }
   }
 
+  Future<void> requestLocationPermission() async {
+    final status = await Permission.storage.request();
+    Permission.photos.request();
+
+    if (status == PermissionStatus.granted) {
+      print('Permission Granted');
+    } else if (status == PermissionStatus.denied) {
+      print('Permission denied');
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      print('Permission Permanently Denied');
+      await openAppSettings();
+    }
+  }
+
   @override
   void dispose() {
     // _subscription.unsubscribe;
@@ -87,7 +103,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(":::::::::::::::: ${video}");
+    debugPrint(":::::::::::::::: ${widget.post?.image}");
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -109,7 +125,6 @@ class _UploadScreenState extends State<UploadScreen> {
                   borderRadius: BorderRadius.circular(20),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Image.file(
-                    // file:///data/user/0/com.gesolucions.musedme/cache/imgly_5123618383305505258.png
                     File(img!),
                     height: MediaQuery.of(context).size.height * 0.45,
                     width: MediaQuery.of(context).size.width,
