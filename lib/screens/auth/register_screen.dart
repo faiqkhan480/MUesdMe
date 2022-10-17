@@ -32,10 +32,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController dobController = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
-  bool isMale = true;
   bool passSecure = true;
   bool confirmPassSecure = true;
   bool loader = false;
+  Gender? _gender = Gender.male;
   // String? selectedCountry;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -62,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child: Form(
               key: _formKey,
               child: Column(
@@ -116,92 +116,90 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20,),
                   // GENDER SELECTION
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => setState(() => isMale = true),
-                          style: TextButton.styleFrom(
-                              backgroundColor: isMale ? AppColors.secondaryColor : Colors.white,
-                              foregroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: AppColors.lightGrey)
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                              textStyle: const TextStyle(fontSize: 20, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.male_rounded, size: 20),
-                              Text("\t\tMale"),
-                            ],
-                          ),
-                        ),
+                      Radio(
+                        value: Gender.male,
+                        groupValue: _gender,
+                        activeColor: AppColors.secondaryColor,
+                        onChanged: (Gender? value) {
+                          setState(() {
+                            _gender = value;
+                          });
+                        },
                       ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => setState(() => isMale = false),
-                          style: TextButton.styleFrom(
-                              backgroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
-                              foregroundColor: isMale ? AppColors.secondaryColor : Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: AppColors.lightGrey)
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                              textStyle: const TextStyle(
-                                  fontSize: 20,
-                                  fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.female_rounded, size: 20),
-                              Text("\t\tFemale"),
-                            ],
-                          ),
-                        ),
+                      const Text("\t\tMale"),
+
+                      Radio(
+                        value: Gender.female,
+                        groupValue: _gender,
+                        activeColor: AppColors.secondaryColor,
+                        onChanged: (Gender? value) {
+                          setState(() {
+                            _gender = value;
+                          });
+                        },
                       ),
+                      const Text("\t\tFemale"),
+                      // Expanded(
+                      //   child: TextButton(
+                      //     onPressed: () => setState(() => isMale = true),
+                      //     style: TextButton.styleFrom(
+                      //         backgroundColor: isMale ? AppColors.secondaryColor : Colors.white,
+                      //         foregroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(12),
+                      //           side: const BorderSide(color: AppColors.lightGrey)
+                      //         ),
+                      //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+                      //         textStyle: const TextStyle(fontSize: 20, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: const [
+                      //         Icon(Icons.male_rounded, size: 20),
+                      //         Text("\t\tMale"),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(width: 10,),
+                      // Expanded(
+                      //   child: TextButton(
+                      //     onPressed: () => setState(() => isMale = false),
+                      //     style: TextButton.styleFrom(
+                      //         backgroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
+                      //         foregroundColor: isMale ? AppColors.secondaryColor : Colors.white,
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(12),
+                      //           side: const BorderSide(color: AppColors.lightGrey)
+                      //         ),
+                      //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+                      //         textStyle: const TextStyle(
+                      //             fontSize: 20,
+                      //             fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: const [
+                      //         Icon(Icons.female_rounded, size: 20),
+                      //         Text("\t\tFemale"),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 20,),
-                  // DOB & COUNTRY FIELDS
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InputField(
-                          controller: country,
-                          hintText: "Country",
-                          readOnly: true,
-                          onTap: handleCountry,
-                          trailingIcon: country.text.isNotEmpty ? Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(countryCodeToEmoji(country.text),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 25),
-                            ),
-                          ) : null,
-                          keyboardType: TextInputType.text,
-                          validator: (String? value) => value!.isEmpty ? "Country is required!" : null,
-                          onSubmit: (_) => FocusScope.of(context).nextFocus(),
-                        ),
-                      ),
-                      const SizedBox(width: 20,),
-                      Expanded(
-                        child: InputField(
-                          controller: dobController,
-                          hintText: "DOB",
-                          readOnly: true,
-                          onTap: handleDate,
-                          keyboardType: TextInputType.text,
-                          validator: (String? value) => value!.isEmpty ? "Birth Date is required!" : null,
-                          onSubmit: (_) => FocusScope.of(context).nextFocus(),
-                        ),
-                      ),
-                    ],
+                  // Date Of Birth Fields
+                  InputField(
+                    controller: dobController,
+                    hintText: "Date of Birth",
+                    readOnly: true,
+                    onTap: handleDate,
+                    keyboardType: TextInputType.text,
+                    validator: (String? value) => value!.isEmpty ? "Birth Date is required!" : null,
+                    onSubmit: (_) => FocusScope.of(context).nextFocus(),
                   ),
 
                   const SizedBox(height: 20,),
@@ -229,6 +227,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     trailingIcon: IconButton(
                         onPressed: () => setState(() => confirmPassSecure = !confirmPassSecure),
                         icon: Icon(confirmPassSecure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.progressColor)),
+                  ),
+                  const SizedBox(height: 20,),
+
+                  // COUNTRY FIELDS
+                  InputField(
+                    controller: country,
+                    hintText: "Country",
+                    readOnly: true,
+                    onTap: handleCountry,
+                    trailingIcon: country.text.isNotEmpty ? Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(countryCodeToEmoji(country.text),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                    ) : null,
+                    keyboardType: TextInputType.text,
+                    validator: (String? value) => value!.isEmpty ? "Country is required!" : null,
+                    onSubmit: (_) => FocusScope.of(context).nextFocus(),
                   ),
                   const SizedBox(height: 20,),
 
@@ -320,7 +337,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           lastName.text, // LAST NAME
           userName.text, // USER NAME
           email.text, // EMAIL CONTROLLER
-          isMale ? "Male" : "Female", // GENDER
+          _gender == Gender.male ? "Male" : "Female", // GENDER
           country.text, // COUNTRY
           dobController.text, // DATE OF BIRTH
           password.text // PASSWORD
@@ -339,3 +356,5 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 }
+
+enum Gender { male, female }

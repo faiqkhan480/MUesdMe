@@ -156,8 +156,9 @@ class AgoraController extends GetxController {
 
   // Going back all route/pages until LOGIN page you can even pass a predicate/ condition to pop until that condition passes
   backToLogin () async {
+    debugPrint("Token Expired:::::::: ReLogin");
     await _service.clearUser();
-    client?.logout();
+    // client?.logout();
     Get.offAllNamed(AppRoutes.LOGIN);
     Get.snackbar("Session Logout", "Your login session is Expired!", backgroundColor: Colors.red, colorText: Colors.white);
   }
@@ -166,8 +167,7 @@ class AgoraController extends GetxController {
     for (var u in users) {
       var res = await _apiService.sendMessage(
           "0",
-          '<a href="/golive?appid=d7c60d2d306241c49386d0f998fffb4f&channel=MusedByMe_${currentUser?.userId}&token=${_service.rtc}&role=host">Invites You To Join</a>'.toString(),
-          // "${currentUser?.userName} has invited you to join in live",
+          '<a href="/golive?appid=${Constants.appId}&channel=${Constants.agoraBaseId}${currentUser?.userId}&token=${_service.rtc}&role=host">Invites You To Join</a>'.toString(),
           u.userId.toString(), 0);
     }
   }
