@@ -213,7 +213,7 @@ class _UsersSheetState extends State<UsersSheet> {
       setState(() {
         loading = true;
       });
-      await _agora.sndInviteToUsers(_selections);
+      await _agora.sndInviteToUsers(_selections, broadcaster: _live.broadcaster);
       setState(() {
         loading = false;
       });

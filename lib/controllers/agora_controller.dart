@@ -159,11 +159,11 @@ class AgoraController extends GetxController {
     Get.snackbar("Session Logout", "Your login session is Expired!", backgroundColor: Colors.red, colorText: Colors.white);
   }
 
-  sndInviteToUsers(List<User> users) async {
+  sndInviteToUsers(List<User> users, {User? broadcaster}) async {
     for (var u in users) {
       var res = await _apiService.sendMessage(
           "0",
-          '<a href="/golive?appid=${Constants.appId}&channel=${Constants.agoraBaseId}${currentUser?.userId}&token=${_service.rtc}&role=host">Live Invitation</a>'.toString(),
+          '<a href="/golive?appid=${Constants.appId}&channel=${Constants.agoraBaseId}${broadcaster?.userId ?? currentUser?.userId}&token=${_service.rtc}&role=host">Live Invitation</a>'.toString(),
           u.userId.toString(), 0, type: "Invite");
     }
   }

@@ -140,10 +140,15 @@ class MessageController extends GetxController {
   }
 
   handleInvite(Message invite) async {
-    await [Permission.camera, Permission.microphone].request();
-    Get.toNamed(AppRoutes.LIVE, arguments: {
-      "isBroadcaster": true,
-      'broadcaster': _users.firstWhereOrNull((u) => u?.userId == invite.userId)
-    });
+    if(invite.message!.isNotEmpty) {
+      var msg = invite.message!.split("MusedByMe_");
+      var msgList = msg.last.split("&");
+      await [Permission.camera, Permission.microphone].request();
+      debugPrint("::::::::::::::::${int.parse(msgList.first)}");
+      Get.toNamed(AppRoutes.LIVE, arguments: {
+        "isBroadcaster": true,
+        'broadcaster': _users.firstWhereOrNull((u) => u?.userId == int.parse(msgList.first))
+      });
+    }
   }
 }

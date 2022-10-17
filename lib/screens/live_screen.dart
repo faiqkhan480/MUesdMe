@@ -41,6 +41,7 @@ class LiveScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      backgroundColor: AppColors.secondaryColor,
       // extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
