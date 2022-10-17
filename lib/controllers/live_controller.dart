@@ -11,6 +11,7 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
+import 'feed_controller.dart';
 
 class LiveController extends GetxController {
   RtcEngine? engine;
@@ -21,6 +22,7 @@ class LiveController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
 
   final AgoraRtmClient? _client = Get.find<AgoraController>().client;
+  final List<User?> _users = Get.find<FeedController>().users;
   AgoraRtmChannel? _channel;
 
   RxList<int> users = <int>[].obs;
@@ -93,36 +95,6 @@ class LiveController extends GetxController {
     if (args["isBroadcaster"]) streamId = await engine?.createDataStream(false, false);
 
 
-    // engine?.setEventHandler(RtcEngineEventHandler(
-    //   joinChannelSuccess: (channel, uid, elapsed) {
-    //     // debugPrint('onJoinChannel: $channel, uid: $uid');
-    //     // users.add(uid);
-    //     // update();
-    //   },
-    //   leaveChannel: (stats) {
-    //     debugPrint('onLeaveChannel');
-    //     users.clear();
-    //   },
-    //   userJoined: (uid, elapsed) {
-    //     debugPrint('userJoined RTC::::::::: $uid');
-    //     users.add(uid);
-    //     update();
-    //   },
-    //   userOffline: (uid, elapsed) {
-    //     debugPrint('userOffline: $uid');
-    //     users.remove(uid);
-    //   },
-    //   streamMessage: (_, __, message) {
-    //     final String info = "here is the message $message";
-    //     debugPrint(info);
-    //   },
-    //   streamMessageError: (_, __, error, ___, ____) {
-    //     final String info = "here is the error $error";
-    //     debugPrint(info);
-    //   },
-    // ));
-
-    // await engine?.joinChannel(rtcToken, channelName, null, uid);
     await engine?.joinChannel(rtcToken, channelName, null, uid);
 
     await _joinChannel();
@@ -216,17 +188,17 @@ class LiveController extends GetxController {
     if(channel != null) {
       channel.onMemberJoined = (AgoraRtmMember member) {
         if(kDebugMode) {
-          Get.snackbar("Member joined", getId(member.userId), backgroundColor: AppColors.successColor, colorText: Colors.white);
+          Get.snackbar("Member joined", getUsername(member.userId)!, backgroundColor: AppColors.successColor, colorText: Colors.white);
         }
         // debugPrint('Member joined: ${member.userId}');
         views.value = views.value+1;
-        comments.insert(0, ChatMessage(uid: member.userId, message: "Member joined: ${getId(member.userId)}"));
+        comments.insert(0, ChatMessage(uid: member.userId, message: "Member joined: ${getUsername(member.userId)}"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
         update();
       };
       channel.onMemberLeft = (AgoraRtmMember member) {
         views.value = views.value-1;
-        comments.insert(0, ChatMessage(uid: member.userId, message: "Member left: ${getId(getId(member.userId))}"));
+        comments.insert(0, ChatMessage(uid: member.userId, message: "Member left: ${getUsername(member.userId)}"));
         key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
       };
       channel.onMessageReceived = (AgoraRtmMessage message, AgoraRtmMember member) {
@@ -289,5 +261,10 @@ class LiveController extends GetxController {
 
   String getId(String text) {
     return text.replaceAll(Constants.agoraBaseId, "");
+  }
+
+  String? getUsername(String uid) {
+    int id = int.parse(getId(uid));
+    return _users.firstWhereOrNull((u) => u?.userId == id)?.userName;
   }
 }

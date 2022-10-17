@@ -191,7 +191,7 @@ class Header extends StatelessWidget {
                     ),
                   );
                 },
-                separatorBuilder: (context, index) => const SizedBox(width: 30,),
+                separatorBuilder: (context, index) => const SizedBox(width: 20),
               ),
             )),
         ],

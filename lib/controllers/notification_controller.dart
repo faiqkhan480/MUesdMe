@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'chat_controller.dart';
+import 'feed_controller.dart';
 
 class PushNotification extends GetxController {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -63,6 +64,9 @@ class PushNotification extends GetxController {
     if (message.notification != null) {
       if(Get.isRegistered<ChatController>()) {
         Get.find<ChatController>().getChats();
+      }
+      if(Get.isRegistered<FeedController>()) {
+        Get.find<FeedController>().getActiveUsers();
       }
       debugPrint('Message also contained a notification: ${message.notification}');
 

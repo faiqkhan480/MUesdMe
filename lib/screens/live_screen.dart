@@ -114,7 +114,7 @@ class LiveScreen extends StatelessWidget {
         ],
       )),
 
-      bottomNavigationBar: InkWell(
+      bottomNavigationBar: (_controller.isBroadcaster()) ? InkWell(
         onTap: _handleBottomSheet,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
         child: Container(
@@ -142,7 +142,7 @@ class LiveScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ) : null,
     );
   }
 
