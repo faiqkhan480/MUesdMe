@@ -33,8 +33,6 @@ class MessageController extends GetxController {
 
   var args = Get.arguments;
 
-  AgoraRtmChannel? _channel;
-
   // RxList comments = [].obs;
   // RxList get comments => _agora.comments;
 

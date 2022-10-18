@@ -1,27 +1,46 @@
+import 'package:agora_rtm/agora_rtm.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../models/args.dart';
 import '../models/auths/user_model.dart';
 import '../services/auth_service.dart';
+import '../utils/constants.dart';
 import 'agora_controller.dart';
 
 class CallController extends GetxController {
   RxBool loading = true.obs;
 
   Rx<User> user = User().obs;
+  Rx<CallType> type = CallType.outgoing.obs;
 
   final AuthService _authService = Get.find<AuthService>();
 
   final AgoraController _agora = Get.find<AgoraController>();
 
-  var args = Get.arguments;
+  Args? args = Get.arguments;
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     if(args != null) {
-      user.value = args;
+      user.value = args!.broadcaster!;
       loading.value = false;
+      type.value = args!.callType;
+      _sndCallInvite();
+    }
+  }
+
+  _sndCallInvite() async {
+
+
+    try {
+      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation("${Constants.agoraBaseId}${user.value.userId}", content: "Call");
+      await _agora.client?.sendLocalInvitation(invitation.toJson());
+    } catch (errorCode) {
+      Get.snackbar("Failed!", "Cant connect call right now!", backgroundColor: Colors.red, colorText: Colors.white);
+      Get.back(closeOverlays: false);
     }
   }
 

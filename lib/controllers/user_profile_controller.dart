@@ -1,13 +1,13 @@
 // import 'package:cached_video_player/cached_video_player.dart';
 import 'package:get/get.dart';
 
+import '../models/args.dart';
 import '../models/auths/user_model.dart';
 import '../models/chat.dart';
 import '../models/feed.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
-import '../utils/constants.dart';
 import 'agora_controller.dart';
 import 'chat_controller.dart';
 import 'profile_controller.dart';
@@ -115,7 +115,7 @@ class UserProfileController extends GetxController {
   }
 
   navigateToCall() {
-    Get.toNamed(AppRoutes.CALL, arguments: user.value);
+    Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: user.value, callType: CallType.outgoing));
   }
 
   // LIKE ON FEED

@@ -223,7 +223,10 @@ class LiveController extends GetxController {
 
   void onToggleMute() {
     muted.value = !muted();
-    engine!.muteLocalAudioStream(muted());
+    engine?.muteLocalAudioStream(muted());
+    for (var uid in users) {
+      engine?.muteRemoteAudioStream(uid, muted());
+    }
   }
 
   void onToggleFlash() {
