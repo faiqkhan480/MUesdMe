@@ -43,6 +43,7 @@ class Assets {
   // LOTTIE ANIMATIONS
   static const String loader = 'assets/lottie/lf30.json';
   static const String callLoader = 'assets/lottie/call_loader.json';
+  static const String circleLoader = 'assets/lottie/circle_loader.json';
 
   static const List<String> menuIcons = [
     iconsFeed,

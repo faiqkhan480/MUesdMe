@@ -30,16 +30,24 @@ class CallScreen extends GetView<CallController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 80,
-                backgroundImage: NetworkImage(
-                    chatUser?.profilePic != null && chatUser!.profilePic!.isNotEmpty?
-                    Constants.IMAGE_URL + chatUser!.profilePic! :
-                    Constants.dummyImage
-                ),
+              Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  if(_type == CallType.incoming)
+                    const CircleLoader(),
+
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 80,
+                    backgroundImage: NetworkImage(
+                        chatUser?.profilePic != null && chatUser!.profilePic!.isNotEmpty?
+                        Constants.IMAGE_URL + chatUser!.profilePic! :
+                        Constants.dummyImage
+                    ),
+                  ),
+                ],
               ),
-              const Spacer(),
+              // const Spacer(),
               Column(
                 children: [
                   TextWidget(
@@ -70,29 +78,61 @@ class CallScreen extends GetView<CallController> {
 
               // SizedBox.shrink(),
 
-              const CallLoader(),
+              if(_type == CallType.outgoing)
+                const CallLoader()
+              else
+                const Spacer(),
 
-              TextButton(
-                onPressed: controller.endCall,
-                style: TextButton.styleFrom(
-                    backgroundColor: _type == CallType.outgoing ? AppColors.primaryColor : AppColors.successColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)
+              Row(
+                children: [
+                  Expanded(child: TextButton(
+                    onPressed: controller.endCall,
+                    style: TextButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
+                        textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-                    textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
-                ),
-                child: Row(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(CupertinoIcons.phone_down, color: Colors.white,),
-                    // SvgPicture.asset(Assets.iconsDelete),
-                    SizedBox(width: 5,),
-                    TextWidget("End Call", weight: FontWeight.w500, size: 18, color: Colors.white),
+                    child: Row(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(CupertinoIcons.phone_down, color: Colors.white,),
+                        // SvgPicture.asset(Assets.iconsDelete),
+                        // const SizedBox(width: 5,),
+                        // TextWidget(_type == CallType.outgoing ? "End Call" : "Accept Call", weight: FontWeight.w500, size: 18, color: Colors.white),
+                      ],
+                    ),
+                  )),
+                  if(_type == CallType.incoming) ...[
+                    const SizedBox(width: 10,),
+                    Expanded(child: TextButton(
+                      onPressed: controller.acceptCallInvite,
+                      style: TextButton.styleFrom(
+                          backgroundColor: AppColors.successColor,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
+                          textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+                      ),
+                      child: Row(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(CupertinoIcons.phone, color: Colors.white,),
+                          // SvgPicture.asset(Assets.iconsDelete),
+                          // const SizedBox(width: 5,),
+                          // TextWidget(_type == CallType.outgoing ? "End Call" : "Accept Call", weight: FontWeight.w500, size: 18, color: Colors.white),
+                        ],
+                      ),
+                    )),
                   ],
-                ),
+                ],
               ),
             ],
           ),

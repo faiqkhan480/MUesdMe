@@ -20,3 +20,12 @@ class CallLoader extends StatelessWidget {
     return Lottie.asset(Assets.callLoader);
   }
 }
+
+class CircleLoader extends StatelessWidget {
+  const CircleLoader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Lottie.asset(Assets.circleLoader);
+  }
+}

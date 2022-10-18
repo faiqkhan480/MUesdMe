@@ -32,7 +32,7 @@ class CallController extends GetxController {
     }
   }
 
-  _sndCallInvite() async {
+  Future<void> _sndCallInvite() async {
 
 
     try {
@@ -44,7 +44,29 @@ class CallController extends GetxController {
     }
   }
 
-  void endCall() {
+  Future<void> endCall() async {
+    if(type.value == CallType.incoming) {
+      try {
+        AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation("${Constants.agoraBaseId}${user.value.userId}", content: "Call");
+        await _agora.client?.refuseRemoteInvitation(invitation.toJson());
+      } catch (errorCode) {
+        debugPrint("Error::::::::::::::::$errorCode");
+      }
+    }
     Get.back();
+  }
+
+  Future<void> acceptCallInvite() async {
+    try {
+      AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation("${Constants.agoraBaseId}${user.value.userId}", content: "Call");
+      await _agora.client?.acceptRemoteInvitation(invitation.toJson());
+    } catch (errorCode) {
+      Get.snackbar("Failed!", "Cant connect call right now!", backgroundColor: Colors.red, colorText: Colors.white);
+      Get.back(closeOverlays: false);
+    }
+  }
+
+  Future<void> startCall(User u) async {
+
   }
 }
