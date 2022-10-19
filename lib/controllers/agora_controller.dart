@@ -2,7 +2,8 @@ import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:musedme/controllers/message_controller.dart';
+import 'package:ringtone_player/ringtone_player.dart';
+
 
 import '../models/args.dart';
 import '../models/auths/user_model.dart';
@@ -15,6 +16,7 @@ import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import 'call_controller.dart';
 import 'feed_controller.dart';
+import 'message_controller.dart';
 
 class AgoraController extends GetxController {
   AgoraRtmClient? client;
@@ -67,23 +69,24 @@ class AgoraController extends GetxController {
         // logController.addLog('Logout.');
       }
     };
+
     client?.onRemoteInvitationReceivedByPeer = (invite) {
-      if(kDebugMode) {
-        Get.snackbar("Invitation", invite.callerId, backgroundColor: AppColors.primaryColor, colorText: Colors.white);
-      }
       debugPrint('Invitation::::::::::: ${invite.callerId}, Content: ${invite.content}');
       bool test = Get.isRegistered<FeedController>();
+      bool call = Get.isRegistered<CallController>();
 
-      if(test) {
+      if(test && !call) {
         FeedController c = Get.find<FeedController>();
         String id = invite.callerId.substring(Constants.agoraBaseId.length);
         User? caller = c.users.firstWhereOrNull((element) => element!.userId!.toString() == id);
+        RingtonePlayer.ringtone();
         Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: caller, callType: CallType.incoming));
       }
     };
 
     client?.onRemoteInvitationFailure = (invite, errorCode) {
       debugPrint('Remote Invitation Failure::::::::::: ${invite.callerId}, Reason: ${errorCode}');
+      RingtonePlayer.stop();
       Get.back();
     };
 
@@ -94,12 +97,15 @@ class AgoraController extends GetxController {
 
     client?.onLocalInvitationAccepted = (invite) {
       debugPrint('Local Invitation Accepted::::::::::: ${invite.calleeId}, Content: ${invite.content}');
-      bool isALive = Get.isRegistered<FeedController>();
-      if(isALive) {
+      bool isFeedALive = Get.isRegistered<FeedController>();
+      bool isCallControllerALive = Get.isRegistered<CallController>();
+      if(isFeedALive && isCallControllerALive) {
         FeedController c = Get.find<FeedController>();
+        CallController call = Get.find<CallController>();
         String id = invite.calleeId.substring(Constants.agoraBaseId.length);
-        User? caller = c.users.firstWhereOrNull((element) => element!.userId!.toString() == id);
-        // Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: caller, callType: CallType.incoming));
+        User? callee = c.users.firstWhereOrNull((element) => element!.userId!.toString() == id);
+        call.startCall(callee);
+      //   // Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: caller, callType: CallType.incoming));
       }
     };
 
@@ -107,22 +113,44 @@ class AgoraController extends GetxController {
       debugPrint('Remote Invitation Accepted::::::::::: ${invite.callerId}, Content: ${invite.content}');
       bool isFeedALive = Get.isRegistered<FeedController>();
       bool isCallControllerALive = Get.isRegistered<CallController>();
-      if(isFeedALive && isCallControllerALive) {
-        FeedController c = Get.find<FeedController>();
-        CallController call = Get.find<CallController>();
-        String id = invite.callerId.substring(Constants.agoraBaseId.length);
-        User? caller = c.users.firstWhereOrNull((element) => element!.userId!.toString() == id);
-        call.startCall(caller!);
-        // Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: caller, callType: CallType.incoming));
-      }
+      // if(isFeedALive && isCallControllerALive) {
+      //   FeedController c = Get.find<FeedController>();
+      //   CallController call = Get.find<CallController>();
+      //   String id = invite.callerId.substring(Constants.agoraBaseId.length);
+      //   User? caller = c.users.firstWhereOrNull((element) => element!.userId!.toString() == id);
+      //   call.startCall(caller!);
+      //   // Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: caller, callType: CallType.incoming));
+      // }
     };
 
     client?.onLocalInvitationRefused = (invite) {
-      debugPrint('Remote Invitation Refused::::::::::: ${invite.calleeId}, Content: ${invite.content}');
+      debugPrint('Local Invitation Refused::::::::::: ${invite.calleeId}, Content: ${invite.content}');
+      bool isCallControllerALive = Get.isRegistered<CallController>();
+      if(isCallControllerALive) {
+        Get.back();
+      }
     };
 
     client?.onRemoteInvitationRefused = (invite) {
       debugPrint('Remote Invitation Refused::::::::::: ${invite.callerId}, Content: ${invite.content}');
+      RingtonePlayer.stop();
+      // Get.back();
+    };
+
+    client?.onLocalInvitationCanceled = (invite) {
+      debugPrint('Local Invitation Cancelled::::::::::: ${invite.calleeId}, Content: ${invite.content}');
+      RingtonePlayer.stop();
+      // Get.back();
+    };
+
+    client?.onRemoteInvitationCanceled = (invite) {
+      debugPrint('Remote Invitation Canceled::::::::::: ${invite.callerId}, Content: ${invite.content}');
+      RingtonePlayer.stop();
+      bool isCallControllerALive = Get.isRegistered<CallController>();
+      if(isCallControllerALive) {
+        Get.back();
+      }
+      // Get.back();
     };
 
     await _login();

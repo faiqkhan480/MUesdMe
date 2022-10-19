@@ -47,6 +47,7 @@ dependencies:
   path_provider: ^2.0.11
   permission_handler: ^10.0.0
   popover: ^0.2.6+3
+  ringtone_player: ^0.1.1
 
 #  IMGLY Photo & Video editor
   photo_editor_sdk: ^2.7.0
