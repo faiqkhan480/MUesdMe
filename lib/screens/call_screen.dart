@@ -215,10 +215,27 @@ class CallScreen extends GetView<CallController> {
     if (_remoteUid != 0) {
       return RtcRemoteView.SurfaceView(uid: _remoteUid!, channelId: channelId,);
     } else {
-      return const Text(
-        'Please wait remote user join',
-        textAlign: TextAlign.center,
+      return Padding(
+        padding: const EdgeInsets.only(top: 50.0, bottom: 20, right: 20, left: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 80,
+              backgroundImage: NetworkImage(
+                  chatUser?.profilePic != null && chatUser!.profilePic!.isNotEmpty?
+                  Constants.IMAGE_URL + chatUser!.profilePic! :
+                  Constants.dummyImage
+              ),
+            ),
+          ],
+        ),
       );
+      // return const Text(
+      //   'Please wait remote user join',
+      //   textAlign: TextAlign.center,
+      // );
     }
   }
 

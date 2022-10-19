@@ -2,6 +2,7 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:musedme/routes/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ringtone_player/ringtone_player.dart';
 
@@ -106,10 +107,13 @@ class CallController extends GetxController {
       userOffline: (uid, reason) {
         debugPrint('userOffline  $uid $reason');
         remoteUid.value = 0;
+        if(reason == UserOfflineReason.Quit && type.value == CallType.ongoing) {
+          endCall();
+        }
       },
       leaveChannel: (stats) {
         debugPrint('RTC leaveChannel ${stats.toJson()}');
-        if(type.value == CallType.ongoing) {
+        if(type.value == CallType.ongoing && Get.currentRoute == AppRoutes.CALL) {
           endCall();
         }
         // localUserJoined.value = false;
@@ -190,11 +194,12 @@ class CallController extends GetxController {
   }
 
   void endBroadcast() async {
-    engine?.leaveChannel();
+    await engine?.leaveChannel();
   }
 
   void switchVideo() async {
     try{
+      // engine?.joinChannel(token, channelName, optionalInfo, optionalUid)
       engine?.leaveChannel();
       User? callee = _feedController.users.firstWhereOrNull((u) => u?.userId == 1);
       await initializeAgora(channelId.value, callee!.rtcToken!, _authService.currentUser!.userId!);
