@@ -143,8 +143,9 @@ class CallController extends GetxController {
     // debugPrint("sndCallInvite:::::::::::::::::::$channelId");
     try {
       await initializeAgora(channelId.value, _authService.rtc!, _authService.currentUser!.userId!);
-      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: "Call");
-      await _agora.client?.sendLocalInvitation(invitation.toJson());
+      startCall();
+      // AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: "Call");
+      // await _agora.client?.sendLocalInvitation(invitation.toJson());
     }
     catch (errorCode) {
       debugPrint("ERROR::::::::::::::$errorCode");
@@ -174,9 +175,7 @@ class CallController extends GetxController {
   Future<void> acceptCallInvite() async {
     channelId.value = "${Constants.agoraBaseId}${user.value.userId}";
     User? callee = _feedController.users.firstWhereOrNull((u) => u?.userId == user.value.userId);
-    // debugPrint("ACCEPT INVITE::::::::${channelId.value}");
-    // debugPrint("MY RTC::::::::${_authService.rtc}");
-    // debugPrint("USER RTC::::::::${callee?.rtcToken}");
+    RingtonePlayer.stop();
 
     try {
       await initializeAgora(channelId.value, callee!.rtcToken!, _authService.currentUser!.userId!);
@@ -198,7 +197,7 @@ class CallController extends GetxController {
     type.value = CallType.ongoing;
     // await engine?.enableVideo();
     await engine?.setEnableSpeakerphone(speakerOn());
-    await engine?.startPreview();
+    // await engine?.startPreview();
   }
 
   // <----------------END RTM HANDLERS------------------> //
@@ -215,23 +214,29 @@ class CallController extends GetxController {
   // CHANGE CALL MODE
   void switchVideo() async {
 
-    try {
-      await engine?.disableVideo();
-      // await engine?.disableVideo();
-    }
-    catch (errorCode) {
-      debugPrint("ERROR::::::::::::::$errorCode");
-      // Get.snackbar("Failed!", "Cant connect call right now!", backgroundColor: Colors.red, colorText: Colors.white);
-      // Get.back(closeOverlays: false);
-    }
-    // isVideo.value = !isVideo();
-    // debugPrint(":::::::::::::::${isVideo()}");
-    // if(isVideo()) {
-    //   await engine?.enableVideo();
-    // }
-    // else {
+    // try {
     //   await engine?.disableVideo();
+    //   // await engine?.disableVideo();
     // }
+    // catch (errorCode) {
+    //   debugPrint("ERROR::::::::::::::$errorCode");
+    //   // Get.snackbar("Failed!", "Cant connect call right now!", backgroundColor: Colors.red, colorText: Colors.white);
+    //   // Get.back(closeOverlays: false);
+    // }
+    // engine?.stopPreview();
+    // await engine?.enableLocalVideo(false);
+    isVideo.value = !isVideo();
+
+    if(isVideo()) {
+      await engine?.enableLocalVideo(isVideo());
+      await engine?.enableVideo();
+      await engine?.startPreview();
+    }
+    else {
+      await engine?.enableLocalVideo(isVideo());
+      await engine?.disableVideo();
+      // await engine?.stopPreview();
+    }
   }
 
   // TOGGLE MUTE

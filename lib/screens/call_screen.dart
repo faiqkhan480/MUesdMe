@@ -7,8 +7,10 @@ import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 
 import '../controllers/call_controller.dart';
+import '../controllers/feed_controller.dart';
 import '../models/args.dart';
 import '../models/auths/user_model.dart';
+import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../widgets/loader.dart';
@@ -18,6 +20,9 @@ class CallScreen extends GetView<CallController> {
   const CallScreen({Key? key}) : super(key: key);
 
   User? get chatUser => controller.user.value;
+
+  AuthService get _authService => Get.find<AuthService>();
+  List<User?> get _activeUsers => Get.find<FeedController>().users;
 
   CallType get _type => controller.type.value;
   List get _users => controller.users;
@@ -163,47 +168,6 @@ class CallScreen extends GetView<CallController> {
     );
   }
 
-  // current user video
-  // Widget _renderLocalPreview() {
-  //   if (_localUserJoined) {
-  //     return RtcLocalView.SurfaceView(channelId: channelId);
-  //   } else {
-  //     return const Text(
-  //       'Please join channel first',
-  //       textAlign: TextAlign.center,
-  //     );
-  //   }
-  // }
-  //
-  // // remote user video
-  // Widget _renderRemoteVideo() {
-  //   if (_remoteUid != 0) {
-  //     return RtcRemoteView.SurfaceView(uid: _remoteUid!, channelId: channelId,);
-  //   } else {
-  //     return Padding(
-  //       padding: const EdgeInsets.only(top: 50.0, bottom: 20, right: 20, left: 20),
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //         children: [
-  //           CircleAvatar(
-  //             backgroundColor: Colors.white,
-  //             radius: 80,
-  //             backgroundImage: NetworkImage(
-  //                 chatUser?.profilePic != null && chatUser!.profilePic!.isNotEmpty?
-  //                 Constants.IMAGE_URL + chatUser!.profilePic! :
-  //                 Constants.dummyImage
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //     // return const Text(
-  //     //   'Please wait remote user join',
-  //     //   textAlign: TextAlign.center,
-  //     // );
-  //   }
-
-
   Widget _vertToolbar() {
     return Positioned(
       top: 50,
@@ -243,7 +207,7 @@ class CallScreen extends GetView<CallController> {
             fillColor: Colors.white,
             padding: const EdgeInsets.all(12.0),
             child: Icon(
-              speakerOn ? Feather.volume_x : Feather.volume_2,
+              speakerOn ? Feather.volume_2 : Feather.volume_x,
               color: AppColors.lightGrey,
               size: 20.0,
             ),
@@ -310,54 +274,45 @@ class CallScreen extends GetView<CallController> {
   /// Video layout wrapper
   Widget _broadcastView() {
     final views = _getRenderViews();
+    List ids = [_authService.currentUser!.userId!, ..._users];
     switch (views.length) {
       case 1:
         return Column(
           children: <Widget>[
-            _expandedVideoView([views[0]])
+            _expandedVideoView([views[0]], ids),
+            // _expandedVideoView([views[0]], ids),
           ],
         );
       case 2:
         return Column(
           children: <Widget>[
-            _expandedVideoView([views[0]]),
-            _expandedVideoView([views[1]])
+            _expandedVideoView([views[0]], [ids[0]]),
+            _expandedVideoView([views[1]], [ids[1]])
           ],
         );
       case 3:
         return Column(
-          children: <Widget>[_expandedVideoView(views.sublist(0, 2)), _expandedVideoView(views.sublist(2, 3))],
+          children: <Widget>[_expandedVideoView(views.sublist(0, 2), ids.sublist(0, 2)), _expandedVideoView(views.sublist(2, 3), ids.sublist(2, 3))],
         );
       case 4:
         return Column(
-          children: <Widget>[_expandedVideoView(views.sublist(0, 2)), _expandedVideoView(views.sublist(2, 4))],
+          children: <Widget>[_expandedVideoView(views.sublist(0, 2), ids.sublist(0, 2)), _expandedVideoView(views.sublist(2, 4), ids.sublist(2, 4))],
         );
       case 5:
         return Column(
           children: <Widget>[
-            _expandedVideoView(views.sublist(1, 2)),
-            _expandedVideoView(views.sublist(2, 4)),
-            _expandedVideoView(views.sublist(0, 1)),
+            _expandedVideoView(views.sublist(0, 2), ids.sublist(0, 2)),
+            _expandedVideoView(views.sublist(2, 4), ids.sublist(2, 4)),
+            _expandedVideoView(views.sublist(4, 1), ids.sublist(4, 1)),
           ],
         );
-      case 6:
-        return Column(
-          children: <Widget>[
-            _expandedVideoView(views.sublist(1, 2)),
-            _expandedVideoView(views.sublist(2, 4)),
-            _expandedVideoView(views.sublist(0, 1)),
-          ],
-        );
+      // case 6:
         // return Column(
-        //   children: List.generate(views.length, (index) {
-        //     if( (index % 2 == 0)) {
-        //       debugPrint("VIEW1::: ${(index+1)-2}");
-        //       debugPrint("VIEW2::: ${index+1}");
-        //       return _expandedVideoView(views.sublist((index+1)-2, (index+1)));
-        //     }
-        //     return _expandedVideoView([views[index]]);
-        //     // return const SizedBox.shrink();
-        //   }),
+        //   children: <Widget>[
+        //     _expandedVideoView(views.sublist(1, 2)),
+        //     _expandedVideoView(views.sublist(2, 4)),
+        //     _expandedVideoView(views.sublist(0, 1)),
+        //   ],
         // );
       default:
       //   return Column(
@@ -382,65 +337,63 @@ class CallScreen extends GetView<CallController> {
   }
 
   /// Video view row wrapper
-  Widget _expandedVideoView(List<Widget> views) {
-    final wrappedViews = views.map<Widget>((view) => Expanded(child: Container(child: view))).toList();
+  Widget _expandedVideoView(List<Widget> views, List ids) {
+    debugPrint(":::::::::::::::${ids}");
+    final List<Widget> wrappedViews = [];
+    for(var i = 0; i < views.length; i++) {
+      User? user = i == 0 ? _authService.currentUser : _activeUsers.firstWhereOrNull((u) => u?.userId == ids[i]);
+      wrappedViews.add(Expanded(
+          child: Stack(
+            children: [
+              Center(
+                // padding: const EdgeInsets.only(top: 50.0, bottom: 20, right: 20, left: 20),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 80,
+                  backgroundImage: NetworkImage(
+                      user?.profilePic != null && user!.profilePic!.isNotEmpty?
+                      Constants.IMAGE_URL + user.profilePic! :
+                      Constants.dummyImage
+                  ),
+                ),
+              ),
+              if(isVideo)
+                Positioned.fill(child: views[i]),
+            ],
+          )
+      ));
+    }
+    // final wrappedViews = views.map<Widget>((view) {
+    //   // User? _u = _activeUsers.firstWhereOrNull((u) => u.userId == )
+    //   return Expanded(
+    //       child: Stack(
+    //         children: [
+    //           Container(
+    //             padding: const EdgeInsets.only(top: 50.0, bottom: 20, right: 20, left: 20),
+    //             child: Column(
+    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //               children: [
+    //                 CircleAvatar(
+    //                   backgroundColor: Colors.white,
+    //                   radius: 80,
+    //                   backgroundImage: NetworkImage(
+    //                       chatUser?.profilePic != null && chatUser!.profilePic!.isNotEmpty?
+    //                       Constants.IMAGE_URL + chatUser!.profilePic! :
+    //                       Constants.dummyImage
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //           Positioned.fill(child: view),
+    //         ],
+    //       )
+    //   );
+    // }).toList();
     return Expanded(
       child: Row(
         children: wrappedViews,
       ),
     );
   }
-
-  // /// Helper function to get list of native views
-  // List<Widget> _getRenderViews() {
-  //   final List<StatefulWidget> list = [];
-  //   if (isBroadcaster) {
-  //     list.add(RtcLocalView.SurfaceView(channelId: "${Constants.agoraBaseId}${_currUser.userId!}"));
-  //   }
-  //   for (var uid in _controller.users) {
-  //     // broadcaster
-  //     list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster?.userId ?? _currUser.userId!}"));
-  //   }
-  //   return list;
-  // }
-  //
-  // /// Video view row wrapper
-  // Widget _expandedVideoView(List<Widget> views) {
-  //   final wrappedViews = views.map<Widget>((view) => Expanded(child: Container(child: view))).toList();
-  //   return Expanded(
-  //     child: Row(
-  //       children: wrappedViews,
-  //     ),
-  //   );
-  // }
-  //
-  // /// Video layout wrapper
-  // Widget _broadcastView() {
-  //   final views = _getRenderViews();
-  //   switch (views.length) {
-  //     case 1:
-  //       return Column(
-  //         children: <Widget>[
-  //           _expandedVideoView([views[0]])
-  //         ],
-  //       );
-  //     case 2:
-  //       return Column(
-  //         children: <Widget>[
-  //           _expandedVideoView([views[0]]),
-  //           _expandedVideoView([views[1]])
-  //         ],
-  //       );
-  //     case 3:
-  //       return Column(
-  //         children: <Widget>[_expandedVideoView(views.sublist(0, 2)), _expandedVideoView(views.sublist(2, 3))],
-  //       );
-  //     case 4:
-  //       return Column(
-  //         children: <Widget>[_expandedVideoView(views.sublist(0, 2)), _expandedVideoView(views.sublist(2, 4))],
-  //       );
-  //     default:
-  //   }
-  //   return const SizedBox.shrink();
-  // }
 }
