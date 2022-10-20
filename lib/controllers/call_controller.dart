@@ -21,6 +21,8 @@ class CallController extends GetxController {
   RxInt remoteUid = 0.obs;
   Rx<CallType> type = CallType.outgoing.obs;
 
+  RxList<int> users = <int>[].obs;
+
   RxString channelId = ''.obs;
 
   final AuthService _authService = Get.find<AuthService>();
@@ -31,6 +33,12 @@ class CallController extends GetxController {
   Args? args = Get.arguments;
 
   RtcEngine? engine;
+
+  RxBool speakerOn = false.obs;
+  RxBool mic = false.obs;
+  RxBool cameraBack = false.obs;
+  RxBool isVideo = false.obs;
+
 
   @override
   void onInit() {
@@ -102,14 +110,18 @@ class CallController extends GetxController {
       userJoined: (uid, elapsed) {
         debugPrint('userJoined RTC::::::::: $uid $elapsed');
         remoteUid.value = uid;
+        users.add(uid);
+        update();
         //   remoteUid.add(uid);
       },
       userOffline: (uid, reason) {
         debugPrint('userOffline  $uid $reason');
         remoteUid.value = 0;
-        if(reason == UserOfflineReason.Quit && type.value == CallType.ongoing) {
-          endCall();
-        }
+        users.removeWhere((u) => u == uid);
+        update();
+        // if(reason == UserOfflineReason.Quit && type.value == CallType.ongoing) {
+        //   endCall();
+        // }
       },
       leaveChannel: (stats) {
         debugPrint('RTC leaveChannel ${stats.toJson()}');
@@ -124,6 +136,7 @@ class CallController extends GetxController {
 
   // <----------------END RTC------------------> //
 
+  // <----------------RTM HANDLERS------------------> //
   Future<void> _sndCallInvite() async {
     channelId.value = "${Constants.agoraBaseId}${_authService.currentUser?.userId}";
     String callee = "${Constants.agoraBaseId}${user.value.userId}";
@@ -183,10 +196,12 @@ class CallController extends GetxController {
   Future<void> startCall([User? u]) async {
     debugPrint("StartCall::::::::");
     type.value = CallType.ongoing;
-    await engine?.enableVideo();
-
+    // await engine?.enableVideo();
+    await engine?.setEnableSpeakerphone(speakerOn());
     await engine?.startPreview();
   }
+
+  // <----------------END RTM HANDLERS------------------> //
 
   void endCall() {
     RingtonePlayer.stop();
@@ -197,22 +212,45 @@ class CallController extends GetxController {
     await engine?.leaveChannel();
   }
 
+  // CHANGE CALL MODE
   void switchVideo() async {
-    try{
-      // engine?.joinChannel(token, channelName, optionalInfo, optionalUid)
-      engine?.leaveChannel();
-      User? callee = _feedController.users.firstWhereOrNull((u) => u?.userId == 1);
-      await initializeAgora(channelId.value, callee!.rtcToken!, _authService.currentUser!.userId!);
-      await engine?.enableVideo();
 
-      await engine?.startPreview();
-      // debugPrint("SwitchVideo::::::::::::::");
-      // await engine?.enableVideo();
-      // await engine?.enableAudio();
-      // await engine?.startPreview();
+    try {
+      await engine?.disableVideo();
+      // await engine?.disableVideo();
     }
-    catch(error) {
-      debugPrint("::::::::::::RRR:::${error}");
+    catch (errorCode) {
+      debugPrint("ERROR::::::::::::::$errorCode");
+      // Get.snackbar("Failed!", "Cant connect call right now!", backgroundColor: Colors.red, colorText: Colors.white);
+      // Get.back(closeOverlays: false);
     }
+    // isVideo.value = !isVideo();
+    // debugPrint(":::::::::::::::${isVideo()}");
+    // if(isVideo()) {
+    //   await engine?.enableVideo();
+    // }
+    // else {
+    //   await engine?.disableVideo();
+    // }
+  }
+
+  // TOGGLE MUTE
+  void onToggleSpeaker() {
+    speakerOn.value = !speakerOn();
+    engine?.setEnableSpeakerphone(speakerOn());
+  }
+
+  // TOGGLE MIC
+  void onToggleMic() {
+    mic.value = !mic();
+    engine?.muteLocalAudioStream(mic());
+    // for (var uid in users) {
+    //   engine?.muteRemoteAudioStream(uid, mic());
+    // }
+  }
+
+  // SWITCH CAMERA
+  void onSwitchCamera() async {
+    await engine?.switchCamera();
   }
 }
