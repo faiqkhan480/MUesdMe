@@ -23,7 +23,8 @@ class CustomHeader extends StatelessWidget {
     this.buttonColor,
     this.img,
     this.onClick,
-    this.onSave
+    this.onSave,
+    this.actions,
   }) : super(key: key);
 
   final String title;
@@ -37,6 +38,7 @@ class CustomHeader extends StatelessWidget {
   final bool showSearch;
   final VoidCallback? onSave;
   final VoidCallback? onClick;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +126,18 @@ class CustomHeader extends StatelessWidget {
                             fontWeight: FontWeight.normal)),
                     child: const Text("Save changes"),
                   ),
+
+                  if(actions != null && actions!.isNotEmpty)...[
+                    const Spacer(),
+                    Material(
+                      color: Colors.white,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: actions as List<Widget>,
+                      ),
+                    )
+                  ]
                 ],
               ),
 

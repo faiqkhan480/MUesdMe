@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:musedme/models/args.dart';
 
 import '../../components/comment_sheet.dart';
 import '../../components/custom_header.dart';
@@ -41,11 +43,25 @@ class UserProfileScreen extends GetView<UserProfileController> {
            Container(
                decoration: StyleConfig.gradientBackground,
                height: 100,
-               child: const CustomHeader(
+               child: CustomHeader(
                  title: "Profile",
                  buttonColor: AppColors.primaryColor,
                  showBottom: false,
-                 showSave: false
+                 showSave: false,
+                 actions: [
+                   IconButton(
+                       onPressed: () => handleOption(2),
+                       icon: const Icon(Feather.video)
+                   ),
+                   IconButton(
+                       onPressed: () => handleOption(1),
+                       icon: const Icon(Feather.phone)
+                   ),
+                   IconButton(
+                       onPressed: () => handleOption(0),
+                       icon: const Icon(Feather.message_square)
+                   ),
+                 ],
              )
            ),
 
@@ -93,21 +109,25 @@ class UserProfileScreen extends GetView<UserProfileController> {
                      isOnline: controller.isOnline(),
                      feeds:  controller.feeds,
                      fetchingFeeds: controller.feedsLoading(),
-                     options: PopupMenuButton<int>(
-                         padding: const EdgeInsets.only(left: 10, right: 0),
-                         onSelected: handleOption,
-                         icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
-                         itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                           const PopupMenuItem<int>(
-                             value: 0,
-                             child: Text('Message'),
-                           ),
-                           const PopupMenuItem<int>(
-                             value: 1,
-                             child: Text("Call"),
-                           ),
-                         ]
-                     ),
+                     // options: PopupMenuButton<int>(
+                     //     padding: const EdgeInsets.only(left: 10, right: 0),
+                     //     onSelected: handleOption,
+                     //     icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
+                     //     itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+                     //       const PopupMenuItem<int>(
+                     //         value: 0,
+                     //         child: Text('Message'),
+                     //       ),
+                     //       const PopupMenuItem<int>(
+                     //         value: 1,
+                     //         child: Text("Audio Call"),
+                     //       ),
+                     //       const PopupMenuItem<int>(
+                     //         value: 2,
+                     //         child: Text("Vidoe Call"),
+                     //       ),
+                     //     ]
+                     // ),
                      button: ButtonWidget(
                        text: _user?.follow == 0 ? "Follow" : "Un Follow",
                        onPressed: controller.sendFollowReq,
@@ -137,7 +157,10 @@ class UserProfileScreen extends GetView<UserProfileController> {
         controller.navigateToChat();
         break;
       case 1:
-        controller.navigateToCall();
+        controller.navigateToCall(CallType.audio);
+        break;
+      case 2:
+        controller.navigateToCall(CallType.video);
         break;
     }
   }

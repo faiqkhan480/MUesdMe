@@ -80,7 +80,7 @@ class AgoraController extends GetxController {
         String id = invite.callerId.substring(Constants.agoraBaseId.length);
         User? caller = c.users.firstWhereOrNull((element) => element!.userId!.toString() == id);
         RingtonePlayer.ringtone();
-        Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: caller, callType: CallType.incoming));
+        Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: caller, callType: CallType.incoming, callMode: invite.content == "Video" ? CallType.video : CallType.audio));
       }
     };
 

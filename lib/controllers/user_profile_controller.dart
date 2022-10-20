@@ -114,8 +114,8 @@ class UserProfileController extends GetxController {
     ));
   }
 
-  navigateToCall() {
-    Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: user.value, callType: CallType.outgoing));
+  navigateToCall(type) {
+    Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: user.value, callType: CallType.outgoing, callMode: type));
   }
 
   // LIKE ON FEED

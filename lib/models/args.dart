@@ -10,6 +10,7 @@ class Args {
     this.isBroadcaster,
     required this.broadcaster,
     required this.callType,
+    required this.callMode,
   });
 
   @JsonKey(name: 'is_broadcaster')
@@ -19,15 +20,20 @@ class Args {
   @JsonKey(name: 'call_type')
   final CallType callType;
 
+  @JsonKey(name: 'call_mode')
+  final CallType callMode;
+
   Args copyWith({
     bool? isBroadcaster,
     User? broadcaster,
     required CallType callType,
+    required CallType callMode,
   }) {
     return Args(
       isBroadcaster: isBroadcaster ?? this.isBroadcaster,
       broadcaster: broadcaster ?? this.broadcaster,
       callType: callType ?? CallType.outgoing,
+      callMode: callMode ?? CallType.audio,
     );
   }
 

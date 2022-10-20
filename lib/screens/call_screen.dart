@@ -174,6 +174,7 @@ class CallScreen extends GetView<CallController> {
       right: -10,
       child: Column(
         children: [
+          // MIC ON/OFF
           RawMaterialButton(
             onPressed: controller.onToggleMic,
             shape: const CircleBorder(),
@@ -187,6 +188,7 @@ class CallScreen extends GetView<CallController> {
             ),
           ),
           const SizedBox(height: 5,),
+          // SWITCH CAMERA
           RawMaterialButton(
             onPressed: controller.onSwitchCamera,
             shape: const CircleBorder(),
@@ -200,6 +202,7 @@ class CallScreen extends GetView<CallController> {
             ),
           ),
           const SizedBox(height: 5,),
+          // SWITCH SPEAKER
           RawMaterialButton(
             onPressed: controller.onToggleSpeaker,
             shape: const CircleBorder(),
@@ -213,6 +216,7 @@ class CallScreen extends GetView<CallController> {
             ),
           ),
           const SizedBox(height: 5,),
+          // SWITCH VIDEO
           RawMaterialButton(
             onPressed: controller.switchVideo,
             shape: const CircleBorder(),
@@ -341,7 +345,7 @@ class CallScreen extends GetView<CallController> {
     debugPrint(":::::::::::::::${ids}");
     final List<Widget> wrappedViews = [];
     for(var i = 0; i < views.length; i++) {
-      User? user = i == 0 ? _authService.currentUser : _activeUsers.firstWhereOrNull((u) => u?.userId == ids[i]);
+      User? user = ids[i] == _authService.currentUser?.userId ? _authService.currentUser : _activeUsers.firstWhereOrNull((u) => u?.userId == ids[i]);
       wrappedViews.add(Expanded(
           child: Stack(
             children: [
@@ -357,7 +361,7 @@ class CallScreen extends GetView<CallController> {
                   ),
                 ),
               ),
-              if(isVideo)
+              // if(isVideo)
                 Positioned.fill(child: views[i]),
             ],
           )

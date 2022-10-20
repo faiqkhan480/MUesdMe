@@ -2,12 +2,12 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:musedme/routes/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ringtone_player/ringtone_player.dart';
 
 import '../models/args.dart';
 import '../models/auths/user_model.dart';
+import '../routes/app_routes.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
 import 'agora_controller.dart';
@@ -68,6 +68,7 @@ class CallController extends GetxController {
     super.onClose();
   }
 
+  // INITIALIZE AGORA RTC ENGINE
   Future<void> initializeAgora(String channelName, String rtcToken, int uid) async {
     // retrieve permissions
     await [Permission.microphone, Permission.camera].request();
@@ -81,6 +82,7 @@ class CallController extends GetxController {
   }
 
   // <----------------START RTC------------------> //
+  // CREATE RTC ENGINE
   Future<void> _initAgoraRtcEngine() async {
     engine = await RtcEngine.create(Constants.appId);
     _addListeners();
@@ -95,6 +97,7 @@ class CallController extends GetxController {
     await engine?.setClientRole(ClientRole.Broadcaster);
   }
 
+  // RTC EVENT LISTENER
   void _addListeners() {
     engine?.setEventHandler(RtcEngineEventHandler(
       warning: (warningCode) {
@@ -131,18 +134,31 @@ class CallController extends GetxController {
         // localUserJoined.value = false;
       },
 
+      videoPublishStateChanged: (channel, oldState, newState, elapseSinceLastState) {
+
+      },
+
+      localVideoStateChanged: (localVideoState, error) {
+        debugPrint("LocalVideoState :::::: STATE$localVideoState., ERROR$error");
+      },
+
+      remoteVideoStateChanged: (uid, state, reason, elapsed) {
+        debugPrint("RemoteVideoState :::::: UID$uid., STATE$state, REASON$reason");
+      },
+
     ));
   }
 
   // <----------------END RTC------------------> //
 
   // <----------------RTM HANDLERS------------------> //
+  // SND RTM INVITE TO CALLEE
   Future<void> _sndCallInvite() async {
     channelId.value = "${Constants.agoraBaseId}${_authService.currentUser?.userId}";
     String callee = "${Constants.agoraBaseId}${user.value.userId}";
     try {
       await initializeAgora(channelId.value, _authService.rtc!, _authService.currentUser!.userId!);
-      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: "Call");
+      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: "Video");
       await _agora.client?.sendLocalInvitation(invitation.toJson());
     }
     catch (errorCode) {
@@ -152,6 +168,7 @@ class CallController extends GetxController {
     }
   }
 
+  // REJECT RTM INVITE COMES FROM REMOTE USER
   Future<void> _refuseRemoteInvitation() async {
     try {
       AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation("${Constants.agoraBaseId}${user.value.userId}", content: "Call");
@@ -161,6 +178,7 @@ class CallController extends GetxController {
     }
   }
 
+  // CANCEL THE RTM LOCAL INVITE
   Future<void> _refuseLocalInvitation() async {
     try {
       AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation("${Constants.agoraBaseId}${user.value.userId}", content: "Call");
@@ -170,6 +188,7 @@ class CallController extends GetxController {
     }
   }
 
+  // ACCEPT RTM INVITE COMES FROM REMOTE USER
   Future<void> acceptCallInvite() async {
     channelId.value = "${Constants.agoraBaseId}${user.value.userId}";
     User? callee = _feedController.users.firstWhereOrNull((u) => u?.userId == user.value.userId);
@@ -190,39 +209,33 @@ class CallController extends GetxController {
     }
   }
 
+  // <----------------END RTM HANDLERS------------------> //
+
+  // CHANGE SCREEN TO CALL SCREEN
   Future<void> startCall([User? u]) async {
     debugPrint("StartCall::::::::");
     type.value = CallType.ongoing;
-    // await engine?.enableVideo();
     await engine?.setEnableSpeakerphone(speakerOn());
-    // await engine?.startPreview();
+
+    if(args?.callMode == CallType.video) {
+      await engine?.enableVideo();
+      await engine?.startPreview();
+    }
   }
 
-  // <----------------END RTM HANDLERS------------------> //
-
+  // END THE CALL ANY TIME
   void endCall() {
     RingtonePlayer.stop();
     Get.back();
   }
 
+  // LEAVE RTC CHANNEL
   void endBroadcast() async {
     await engine?.leaveChannel();
   }
 
   // CHANGE CALL MODE
   void switchVideo() async {
-
-    // try {
-    //   await engine?.disableVideo();
-    //   // await engine?.disableVideo();
-    // }
-    // catch (errorCode) {
-    //   debugPrint("ERROR::::::::::::::$errorCode");
-    //   // Get.snackbar("Failed!", "Cant connect call right now!", backgroundColor: Colors.red, colorText: Colors.white);
-    //   // Get.back(closeOverlays: false);
-    // }
-    // engine?.stopPreview();
-    // await engine?.enableLocalVideo(false);
     isVideo.value = !isVideo();
 
     if(isVideo()) {
@@ -233,7 +246,7 @@ class CallController extends GetxController {
     else {
       await engine?.enableLocalVideo(isVideo());
       await engine?.disableVideo();
-      // await engine?.stopPreview();
+      await engine?.stopPreview();
     }
   }
 
