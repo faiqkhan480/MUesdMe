@@ -140,12 +140,10 @@ class CallController extends GetxController {
   Future<void> _sndCallInvite() async {
     channelId.value = "${Constants.agoraBaseId}${_authService.currentUser?.userId}";
     String callee = "${Constants.agoraBaseId}${user.value.userId}";
-    // debugPrint("sndCallInvite:::::::::::::::::::$channelId");
     try {
       await initializeAgora(channelId.value, _authService.rtc!, _authService.currentUser!.userId!);
-      startCall();
-      // AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: "Call");
-      // await _agora.client?.sendLocalInvitation(invitation.toJson());
+      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: "Call");
+      await _agora.client?.sendLocalInvitation(invitation.toJson());
     }
     catch (errorCode) {
       debugPrint("ERROR::::::::::::::$errorCode");
