@@ -15,6 +15,7 @@ import '../navigation/profile_middle.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
 import '../screens/call_screen.dart';
+import '../screens/market_screen.dart';
 import '../screens/profile/edit_profile_screen.dart';
 import '../screens/feed_screen.dart';
 import '../screens/live_screen.dart';
@@ -103,6 +104,11 @@ class AppPages {
         name: AppRoutes.CALL,
         binding: CallBinding(),
         page: () => const CallScreen()
+    ),
+    GetPage(
+        name: AppRoutes.MARKET,
+        // binding: CallBinding(),
+        page: () => const MarketScreen()
     ),
   ];
 }

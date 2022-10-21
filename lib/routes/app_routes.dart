@@ -6,6 +6,7 @@ class AppRoutes {
   static const String FEEDS = "/feeds";
   static const String VIDEOS = "/videos";
   static const String FAVORITE = "/fav";
+  static const String MARKET = "/market";
   static const String MESSAGES = "/messages";
   static const String CHAT = "/chat";
   static const String CALL = "/call";

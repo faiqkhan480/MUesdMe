@@ -342,59 +342,35 @@ class CallScreen extends GetView<CallController> {
 
   /// Video view row wrapper
   Widget _expandedVideoView(List<Widget> views, List ids) {
-    debugPrint(":::::::::::::::${ids}");
     final List<Widget> wrappedViews = [];
     for(var i = 0; i < views.length; i++) {
       User? user = ids[i] == _authService.currentUser?.userId ? _authService.currentUser : _activeUsers.firstWhereOrNull((u) => u?.userId == ids[i]);
-      wrappedViews.add(Expanded(
-          child: Stack(
-            children: [
-              Center(
-                // padding: const EdgeInsets.only(top: 50.0, bottom: 20, right: 20, left: 20),
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 80,
-                  backgroundImage: NetworkImage(
-                      user?.profilePic != null && user!.profilePic!.isNotEmpty?
-                      Constants.IMAGE_URL + user.profilePic! :
-                      Constants.dummyImage
+      if((isVideo && ids[i] == _authService.currentUser?.userId) || ids[i] != _authService.currentUser?.userId) {
+        wrappedViews.add(Expanded(
+            child: Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                Center(
+                  // padding: const EdgeInsets.only(top: 50.0, bottom: 20, right: 20, left: 20),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 80,
+                    backgroundImage: NetworkImage(
+                        user?.profilePic != null && user!.profilePic!.isNotEmpty?
+                        Constants.IMAGE_URL + user.profilePic! :
+                        Constants.dummyImage
+                    ),
                   ),
                 ),
-              ),
-              // if(isVideo)
+                // if(isVideo)
                 Positioned.fill(child: views[i]),
-            ],
-          )
-      ));
+              ],
+            )
+        ));
+      }
     }
-    // final wrappedViews = views.map<Widget>((view) {
-    //   // User? _u = _activeUsers.firstWhereOrNull((u) => u.userId == )
-    //   return Expanded(
-    //       child: Stack(
-    //         children: [
-    //           Container(
-    //             padding: const EdgeInsets.only(top: 50.0, bottom: 20, right: 20, left: 20),
-    //             child: Column(
-    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //               children: [
-    //                 CircleAvatar(
-    //                   backgroundColor: Colors.white,
-    //                   radius: 80,
-    //                   backgroundImage: NetworkImage(
-    //                       chatUser?.profilePic != null && chatUser!.profilePic!.isNotEmpty?
-    //                       Constants.IMAGE_URL + chatUser!.profilePic! :
-    //                       Constants.dummyImage
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //           Positioned.fill(child: view),
-    //         ],
-    //       )
-    //   );
-    // }).toList();
-    return Expanded(
+    // debugPrint(":::::::::::::::${wrappedViews.isEmpty}");
+    return wrappedViews.isEmpty ? const SizedBox.shrink() : Expanded(
       child: Row(
         children: wrappedViews,
       ),

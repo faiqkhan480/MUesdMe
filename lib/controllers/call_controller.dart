@@ -87,9 +87,14 @@ class CallController extends GetxController {
     engine = await RtcEngine.create(Constants.appId);
     _addListeners();
 
-    // await engine?.enableVideo();
-    //
-    // await engine?.startPreview();
+    if(args?.callMode == CallType.video) {
+      await engine?.enableVideo();
+      await engine?.startPreview();
+    }
+    else {
+      await engine?.disableVideo();
+      await engine?.enableLocalVideo(false);
+    }
 
     // bool? suported = await engine?.isCameraTorchSupported();
 
@@ -122,9 +127,9 @@ class CallController extends GetxController {
         remoteUid.value = 0;
         users.removeWhere((u) => u == uid);
         update();
-        // if(reason == UserOfflineReason.Quit && type.value == CallType.ongoing) {
-        //   endCall();
-        // }
+        if(reason == UserOfflineReason.Quit && type.value == CallType.ongoing && users.isEmpty) {
+          endCall();
+        }
       },
       leaveChannel: (stats) {
         debugPrint('RTC leaveChannel ${stats.toJson()}');
@@ -135,7 +140,15 @@ class CallController extends GetxController {
       },
 
       videoPublishStateChanged: (channel, oldState, newState, elapseSinceLastState) {
+        debugPrint("VideoPublishStateChanged :::::: channel$channel., oldState$oldState newState$newState");
+      },
 
+      localPublishFallbackToAudioOnly: (isFallbackOrRecover) {
+        debugPrint("LocalPublishFallbackToAudioOnly :::::: $isFallbackOrRecover");
+      },
+
+      remoteSubscribeFallbackToAudioOnly: (uid, isFallbackOrRecover) {
+        debugPrint("RemotePublishFallbackToAudioOnly :::::: uid$uid :: $isFallbackOrRecover");
       },
 
       localVideoStateChanged: (localVideoState, error) {
@@ -157,8 +170,8 @@ class CallController extends GetxController {
     channelId.value = "${Constants.agoraBaseId}${_authService.currentUser?.userId}";
     String callee = "${Constants.agoraBaseId}${user.value.userId}";
     try {
-      await initializeAgora(channelId.value, _authService.rtc!, _authService.currentUser!.userId!);
-      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: "Video");
+      // await initializeAgora(channelId.value, _authService.rtc!, _authService.currentUser!.userId!);
+      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: args?.callMode == CallType.video ? "Video" : "Audio");
       await _agora.client?.sendLocalInvitation(invitation.toJson());
     }
     catch (errorCode) {
@@ -171,7 +184,7 @@ class CallController extends GetxController {
   // REJECT RTM INVITE COMES FROM REMOTE USER
   Future<void> _refuseRemoteInvitation() async {
     try {
-      AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation("${Constants.agoraBaseId}${user.value.userId}", content: "Call");
+      AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation("${Constants.agoraBaseId}${user.value.userId}", content: args?.callMode == CallType.video ? "Video" : "Audio");
       await _agora.client?.refuseRemoteInvitation(invitation.toJson());
     } catch (errorCode) {
       debugPrint("Error::::::::::::::::$errorCode");
@@ -181,7 +194,7 @@ class CallController extends GetxController {
   // CANCEL THE RTM LOCAL INVITE
   Future<void> _refuseLocalInvitation() async {
     try {
-      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation("${Constants.agoraBaseId}${user.value.userId}", content: "Call");
+      AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation("${Constants.agoraBaseId}${user.value.userId}", content: args?.callMode == CallType.video ? "Video" : "Audio");
       await _agora.client?.cancelLocalInvitation(invitation.toJson());
     } catch (errorCode) {
       debugPrint("Error::::::::::::::::$errorCode");
@@ -190,22 +203,18 @@ class CallController extends GetxController {
 
   // ACCEPT RTM INVITE COMES FROM REMOTE USER
   Future<void> acceptCallInvite() async {
+    debugPrint("AcceptCall::::::::");
     channelId.value = "${Constants.agoraBaseId}${user.value.userId}";
     User? callee = _feedController.users.firstWhereOrNull((u) => u?.userId == user.value.userId);
     RingtonePlayer.stop();
 
     try {
-      await initializeAgora(channelId.value, callee!.rtcToken!, _authService.currentUser!.userId!);
-      // await engine?.enableVideo();
-      //
-      // await engine?.startPreview();
-      AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation(channelId.value, content: "Call");
+      AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation(channelId.value, content: args?.callMode == CallType.video ? "Video" : "Audio");
       await _agora.client?.acceptRemoteInvitation(invitation.toJson());
-      startCall(callee);
+      await initializeAgora(channelId.value, callee!.rtcToken!, _authService.currentUser!.userId!);
+      startCall();
     } catch (errorCode) {
       debugPrint("::::::::::::::$errorCode");
-      // Get.snackbar("Failed!", "Cant connect call right now!", backgroundColor: Colors.red, colorText: Colors.white);
-      // Get.back(closeOverlays: false);
     }
   }
 
@@ -213,13 +222,16 @@ class CallController extends GetxController {
 
   // CHANGE SCREEN TO CALL SCREEN
   Future<void> startCall([User? u]) async {
-    debugPrint("StartCall::::::::");
-    type.value = CallType.ongoing;
-    await engine?.setEnableSpeakerphone(speakerOn());
-
-    if(args?.callMode == CallType.video) {
-      await engine?.enableVideo();
-      await engine?.startPreview();
+    debugPrint("StartCall::::::::${args?.callMode}");
+    try{
+      if(u != null) {
+        await initializeAgora(channelId.value, _authService.rtc!, _authService.currentUser!.userId!);
+      }
+      type.value = CallType.ongoing;
+      await engine?.setEnableSpeakerphone(speakerOn());
+    }
+    catch(error) {
+      debugPrint("Error::::::::$error");
     }
   }
 

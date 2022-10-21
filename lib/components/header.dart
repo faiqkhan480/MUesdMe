@@ -23,6 +23,7 @@ class Header extends StatelessWidget {
     this.showLives = false,
     this.showShadow = true,
     this.isProfile = false,
+    this.hideButton = false,
     this.height,
     this.lives,
     this.handleSearch,
@@ -34,6 +35,7 @@ class Header extends StatelessWidget {
   final Widget? lives;
   final bool showShadow;
   final bool isProfile;
+  final bool hideButton;
   final double? height;
   final VoidCallback? action;
   final VoidCallback? handleSearch;
@@ -89,7 +91,8 @@ class Header extends StatelessWidget {
                       child: const Icon(CupertinoIcons.search, color: AppColors.secondaryColor),
                   ),
                 const SizedBox(width: 15),
-                SmallButton(
+                if(!hideButton)
+                  SmallButton(
                   onPressed: action ?? handleLive,
                   title: isProfile ? "Edit Profile" : "Go Live",
                   icon: SvgPicture.asset(isProfile ? Assets.iconsEditProfile : Assets.iconsLive),

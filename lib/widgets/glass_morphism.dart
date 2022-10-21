@@ -7,9 +7,11 @@ class GlassMorphism extends StatelessWidget {
   final double? start;
   final double? end;
   final BoxShape? shape;
+  final EdgeInsets? padding;
   const GlassMorphism({
     Key? key,
     required this.child,
+    this.padding,
     this.start,
     this.end,
     this.shape
@@ -39,6 +41,7 @@ class GlassMorphism extends StatelessWidget {
             //   color: Colors.white.withOpacity(0.2),
             // ),
           ),
+          padding: padding,
           child: child,
         ),
       ),

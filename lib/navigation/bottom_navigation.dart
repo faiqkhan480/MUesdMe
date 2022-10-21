@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:musedme/screens/feed_screen.dart';
 import 'package:musedme/utils/app_colors.dart';
@@ -8,6 +9,7 @@ import 'package:musedme/widgets/text_widget.dart';
 import '../controllers/root_controller.dart';
 import '../screens/library_screen.dart';
 import '../screens/chat_screen.dart';
+import '../screens/market_screen.dart';
 import '../utils/assets.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/videos_screen.dart';
@@ -20,7 +22,7 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  List<String> menu = ["Feed", "Videos", "Favorites", "Messages", "Profile"];
+  List<String> menu = ["Feed", "Videos", "Market", "Messages", "Profile"];
 
   final RootController _controller = Get.find<RootController>();
 
@@ -35,7 +37,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
             children: const [
               FeedScreen(),
               VideosScreen(),
-              LibraryScreen(),
+              MarketScreen(),
+              // LibraryScreen(),
               ChatsScreen(),
               ProfileScreen(),
             ],
@@ -65,7 +68,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         // mainAxisSize: MainAxisSize.min,
                         children: [
-                          SvgPicture.asset(Assets.menuIcons.elementAt(index),
+                          index == 2 ? Icon(MaterialCommunityIcons.storefront_outline, size: 22, color: currIndex == index ? AppColors.primaryColor : null,
+                          ) : SvgPicture.asset(Assets.menuIcons.elementAt(index),
                             color: currIndex == index ? AppColors.primaryColor : null,
                           ),
                           const SizedBox(height: 10,),

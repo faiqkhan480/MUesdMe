@@ -2,6 +2,7 @@ import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:musedme/controllers/feed_controller.dart';
+import 'package:musedme/utils/constants.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../models/auths/user_model.dart';
@@ -56,13 +57,15 @@ class MessageController extends GetxController {
 
     isOnline.addListener(GetStream(
       onListen: () async {
-        bool res = await _agora.isUserOnline(chat.value.userId.toString());
+        bool res = await _isUserOnline(chat.value.userId.toString());
         isOnline.value = res;
       },
     ));
   }
 
   Future getMessages() async {
+    bool val = await _isUserOnline(chat.value.userId.toString());
+    isOnline.value = val;
     _agora.setCurrentId(chat.value.chatId!);
     List res = await _service.getAllMessages(chat.value.chatId.toString());
     if(res.isNotEmpty) {
@@ -80,9 +83,9 @@ class MessageController extends GetxController {
 
   Future<bool> _isUserOnline(String uid) async {
     try {
-      Map<dynamic, dynamic>? result = await _agora.client?.queryPeersOnlineStatus(["MusedByMe_$uid"]);
+      Map<dynamic, dynamic>? result = await _agora.client?.queryPeersOnlineStatus(["${Constants.agoraBaseId}$uid"]);
       debugPrint('Query result: $result');
-      bool r = result!["MusedByMe_$uid"] as bool;
+      bool r = result!["${Constants.agoraBaseId}$uid"] as bool;
       return r;
     } catch (errorCode) {
       debugPrint('Query error: $errorCode');
