@@ -12,11 +12,14 @@ class MarketController extends GetxController {
   Rx<Alignment> alignment = const Alignment(0.6, 0).obs;
   Rx<BorderRadius> borderRadius = BorderRadius.circular(30).obs;
 
+  Rx<PaletteGenerator?> palette = Rxn<PaletteGenerator?>();
+
   RxDouble height = Get.height.obs;
   RxDouble width = Get.width.obs;
 
-  void setItem(String item ) {
+  void setItem(String item ) async {
     nft.value = item;
+    await updatePaletteGenerator();
     Get.toNamed(AppRoutes.ITEM);
   }
 
@@ -30,23 +33,27 @@ class MarketController extends GetxController {
   }
 
   resetValues() {
+    if(!buy()) {
+      Get.back();
+    }
     buy.value = false;
     // boxFit.value = buy() ? BoxFit.none : BoxFit.cover;
     height.value = Get.height;
     borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
-    Get.back();
   }
 
-  Future<bool> onWillPop() async {
-    resetValues();
-    return true;
-  }
+  // Future onWillPop(){
+  //   resetValues();
+  //   // return true;
+  //   // return buy() ? false : true;
+  // }
 
-  Future updatePaletteGenerator () async {
+  Future updatePaletteGenerator() async {
     PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(
-      Image.asset(nft.value).image,
+      Image.network(nft.value).image,
     );
 
+    palette = paletteGenerator.obs;
     debugPrint("::::::::::::$paletteGenerator");
     // return paletteGenerator;
   }

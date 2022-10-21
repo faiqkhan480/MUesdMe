@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 import '../../controllers/market_controller.dart';
 import '../../utils/app_colors.dart';
@@ -24,39 +25,46 @@ class ItemScreen extends StatelessWidget {
   double get width => controller.width.value;
   bool get buy => controller.buy.value;
 
+  PaletteGenerator? get palette => controller.palette.value;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: controller.onWillPop,
-        child: Scaffold(
-          backgroundColor: AppColors.secondaryColor,
-          body: Obx(() => Stack(
-            children: [
-              SizedBox(
-                height: Get.height,
-                width: Get.width,
-              ),
+      // onWillPop: controller.onWillPop,
+      onWillPop: () async {
+        controller.resetValues();
+        return false;
+      },
+        child: Hero(
+          tag: "pop",
+          child: Scaffold(
+            backgroundColor: palette?.dominantColor?.color ?? AppColors.secondaryColor,
+            // backgroundColor: AppColors.secondaryColor,
+            body: Obx(() => Stack(
+              children: [
+                SizedBox(
+                  height: Get.height,
+                  width: Get.width,
+                ),
 
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 1000),
-                height: height,
-                width: 500,
-                left: buy ? 0 : -100,
-                // top: 0,
-                curve: Curves.linearToEaseOut,
-                child: Hero(
-                  tag: "pop",
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 1000),
+                  height: height,
+                  width: 500,
+                  left: buy ? 0 : -100,
+                  // top: 0,
+                  curve: Curves.linearToEaseOut,
                   child: Image.network(nft, fit: boxFit, alignment: alignment,),
                 ),
-              ),
 
-              _sheet(),
+                _sheet(),
 
-              _buyButton(),
+                _buyButton(),
 
-              _headerBar(),
-            ],
-          ),),
+                _headerBar(),
+              ],
+            ),),
+          ),
         ),
     );
   }
@@ -103,6 +111,7 @@ class ItemScreen extends StatelessWidget {
         left: 10,
         right: 10,
         child: TextButton(
+      // onPressed: controller.updatePaletteGenerator,
       onPressed: controller.buyItem,
       style: TextButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
@@ -110,16 +119,21 @@ class ItemScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100)
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          padding: const EdgeInsets.only(left: 15, right: 5, top: 8, bottom: 8),
           textStyle: const TextStyle(fontSize: 18, fontFamily: Constants.fontFamily)
       ),
       child: Row(
-        // crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Text("Buy This"),
-          // Spacer(),
-          Icon(AntDesign.arrowright)
+        children: [
+          const Text("Buy This"),
+          Container(
+            decoration: const BoxDecoration(
+              color: AppColors.secondaryColor,
+              shape: BoxShape.circle
+            ),
+            padding: const EdgeInsets.all(15),
+            child: const Icon(AntDesign.arrowright),
+          )
         ],
       ),
     ));
@@ -130,7 +144,7 @@ class ItemScreen extends StatelessWidget {
       height: buy ? Get.height * 0.50 : 0,
         width: Get.width,
         bottom: 0,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 500),
         child: ClipRRect(
           // clipBehavior: Clip.antiAliasWithSaveLayer,
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
@@ -140,8 +154,8 @@ class ItemScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.secondaryColor.withOpacity(0.3),
-                    AppColors.secondaryColor.withOpacity(0.3),
+                    (palette?.dominantColor?.color ?? AppColors.secondaryColor).withOpacity(0.3),
+                    (palette?.dominantColor?.color ?? AppColors.secondaryColor).withOpacity(0.3),
                   ],
                   begin: AlignmentDirectional.topStart,
                   end: AlignmentDirectional.bottomEnd,

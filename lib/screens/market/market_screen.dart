@@ -24,6 +24,10 @@ final List<String> nfts = [
   "https://i.pinimg.com/564x/6c/48/8e/6c488e35f38e165f2225253d02d15385.jpg",
   "https://i.pinimg.com/564x/42/51/de/4251de661abe34271344e8bf674b0963.jpg",
   "https://i.pinimg.com/564x/62/cf/f2/62cff255396fd582a5ef398c95bbb4df.jpg",
+  "https://i.pinimg.com/564x/79/f3/ec/79f3ec1cb93a6799aabe9b5d23abd282.jpg",
+  "https://i.pinimg.com/564x/aa/d6/4d/aad64de8eaf1f176b9a9b63df8710de5.jpg",
+  "https://i.pinimg.com/564x/81/08/0a/81080ab220d59ae816de056a6d27bc42.jpg",
+  "https://i.pinimg.com/564x/01/55/9a/01559aab5e56a731157240f6458ea267.jpg",
 ];
 
 class MarketScreen extends GetView<MarketController> {
@@ -50,25 +54,27 @@ class MarketScreen extends GetView<MarketController> {
             ),
             itemCount: nfts.length,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            itemBuilder: (context, index) => InkWell(
-              onTap: () => onTap(index),
-              child: Hero(
-                tag: "pop",
-                  child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryColor,
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(image: NetworkImage(nfts.elementAt(index)), fit: BoxFit.cover),
-                  ),
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const TextWidget("Hype Beast", color: Colors.white, size: 22),
-                      const SizedBox(height: 5,),
-                      GlassMorphism(
+            itemBuilder: (context, index) => Hero(
+              tag: "pop",
+              child: InkWell(
+                onTap: () => onTap(index),
+                child: Stack(
+                  // mainAxisAlignment: MainAxisAlignment.end,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.network(nfts.elementAt(index), fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
+                    ),
+
+                    const Positioned(
+                      bottom: 36,
+                      left: 10,
+                      child: TextWidget("Hype Beast", color: Colors.white, size: 22),),
+                    Positioned(
+                      bottom: 10,
+                      left: 10,
+                      child: GlassMorphism(
                         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
                         shape: BoxShape.rectangle,
                         child: Row(
@@ -78,11 +84,14 @@ class MarketScreen extends GetView<MarketController> {
                             TextWidget("10\$", color: Colors.white, size: 16, weight: FontWeight.w600),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
+                      ),),
+
+                    // const TextWidget("Hype Beast", color: Colors.white, size: 22),
+                    // const SizedBox(height: 5,),
+
+                  ],
                 ),
-              )
+              ),
             ),
             // itemBuilder: (context, index) => CachedNetworkImage(
             //   imageUrl: nfts.elementAt(index),

@@ -76,6 +76,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'Larsseit'
       ),
+      transitionDuration: const Duration(milliseconds: 500),
       // initialRoute: AppRoutes.LOGIN,
       initialRoute: getInitialRoute(),
       getPages: AppPages.list,
