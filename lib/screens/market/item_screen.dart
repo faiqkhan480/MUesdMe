@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -6,6 +8,7 @@ import 'package:get/get.dart';
 import '../../controllers/market_controller.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
+import '../../widgets/text_widget.dart';
 import '../../widgets/user_avatar.dart';
 
 class ItemScreen extends StatelessWidget {
@@ -14,62 +17,61 @@ class ItemScreen extends StatelessWidget {
   MarketController get controller => Get.find<MarketController>();
 
   String get nft => controller.nft.value;
+  BoxFit get boxFit => controller.boxFit.value;
+  Alignment get alignment => controller.alignment.value;
+  BorderRadius get borderRadius => controller.borderRadius.value;
+  double? get height => controller.height.value;
+  double get width => controller.width.value;
+  bool get buy => controller.buy.value;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: AppColors.secondaryColor,
-          // borderRadius: BorderRadius.circular(30),
-          image: DecorationImage(
-            image: NetworkImage(nft),
-            fit: BoxFit.cover,
-            alignment: const Alignment(0.6, 0)
-          ),
-        ),
-        padding: const EdgeInsets.only(top: 40, left: 10, right: 10, bottom: 20),
-        child: Column(
-          children: [
-            // HEADER
-            _headerBar(),
-
-            const Spacer(),
-
-            TextButton(
-              onPressed: controller.buyItem,
-              style: TextButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100)
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  textStyle: const TextStyle(fontSize: 18, fontFamily: Constants.fontFamily)
+    return WillPopScope(
+      onWillPop: controller.onWillPop,
+        child: Scaffold(
+          backgroundColor: AppColors.secondaryColor,
+          body: Obx(() => Stack(
+            children: [
+              SizedBox(
+                height: Get.height,
+                width: Get.width,
               ),
-              child: Row(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text("Buy This"),
-                  // Spacer(),
-                  Icon(AntDesign.arrowright)
-                ],
+
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 1000),
+                height: height,
+                width: 500,
+                left: buy ? 0 : -100,
+                // top: 0,
+                curve: Curves.linearToEaseOut,
+                child: Hero(
+                  tag: "pop",
+                  child: Image.network(nft, fit: boxFit, alignment: alignment,),
+                ),
               ),
-            )
-          ],
+
+              _sheet(),
+
+              _buyButton(),
+
+              _headerBar(),
+            ],
+          ),),
         ),
-      ),
     );
   }
 
-  _headerBar() {
-    return Row(
+  Widget _headerBar() {
+    return Positioned(
+        top: 40,
+        left: 10,
+        right: 10,
+        child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // BACK BUTTON
         TextButton(
-            onPressed: () => Get.back(),
+            onPressed: controller.resetValues,
             style: TextButton.styleFrom(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -92,6 +94,138 @@ class ItemScreen extends StatelessWidget {
           radius: 25,
         ),
       ],
+    ));
+  }
+
+  Widget _buyButton() {
+    return Positioned(
+        bottom: 10,
+        left: 10,
+        right: 10,
+        child: TextButton(
+      onPressed: controller.buyItem,
+      style: TextButton.styleFrom(
+          backgroundColor: AppColors.primaryColor,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100)
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          textStyle: const TextStyle(fontSize: 18, fontFamily: Constants.fontFamily)
+      ),
+      child: Row(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: const [
+          Text("Buy This"),
+          // Spacer(),
+          Icon(AntDesign.arrowright)
+        ],
+      ),
+    ));
+  }
+
+  Widget _sheet() {
+    return AnimatedPositioned(
+      height: buy ? Get.height * 0.50 : 0,
+        width: Get.width,
+        bottom: 0,
+      duration: const Duration(milliseconds: 1000),
+        child: ClipRRect(
+          // clipBehavior: Clip.antiAliasWithSaveLayer,
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.secondaryColor.withOpacity(0.3),
+                    AppColors.secondaryColor.withOpacity(0.3),
+                  ],
+                  begin: AlignmentDirectional.topStart,
+                  end: AlignmentDirectional.bottomEnd,
+                ),
+                // borderRadius: BorderRadius.all(Radius.circular(10)),
+                // border: Border.all(
+                //   width: 1.5,
+                //   color: Colors.white.withOpacity(0.2),
+                // ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                // mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)
+                    ),
+                    padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 15),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            UserAvatar(
+                              "https://i.pinimg.com/564x/cd/32/18/cd3218b69445f9f0bd5eca70f4c0126e.jpg",
+                              1.toString(),
+                              padding: const EdgeInsets.all(5.0),
+                              badgeContent: null,
+                              radius: 20,
+                            ),
+                            const SizedBox(width: 5),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                TextWidget("Adam Nash", size: 16, weight: FontWeight.w600),
+                                TextWidget("Licensed to you ", color: AppColors.lightGrey, weight: FontWeight.w400, size: 12),
+                              ],
+                            ),
+                            const Spacer(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(nft, fit: BoxFit.cover, height: 50),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 30,),
+
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const TextWidget("Total Amount", color: AppColors.lightGrey, weight: FontWeight.w400, size: 12),
+                            // Spacer(),
+                            RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: "Larsseit"
+                                    ),
+                                    children: [
+                                    TextSpan(
+                                      text: "18.6",
+                                      style: TextStyle(fontSize: 34, fontWeight: FontWeight.w600),
+                                    ),
+                                    TextSpan(
+                                        text: "  Dollar",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ]
+                                )
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
     );
   }
 }
