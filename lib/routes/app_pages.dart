@@ -15,7 +15,8 @@ import '../navigation/profile_middle.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
 import '../screens/call_screen.dart';
-import '../screens/market_screen.dart';
+import '../screens/market/item_screen.dart';
+import '../screens/market/market_screen.dart';
 import '../screens/profile/edit_profile_screen.dart';
 import '../screens/feed_screen.dart';
 import '../screens/live_screen.dart';
@@ -109,6 +110,11 @@ class AppPages {
         name: AppRoutes.MARKET,
         // binding: CallBinding(),
         page: () => const MarketScreen()
+    ),
+    GetPage(
+        name: AppRoutes.ITEM,
+        // binding: CallBinding(),
+        page: () => const ItemScreen()
     ),
   ];
 }

@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:musedme/widgets/glass_morphism.dart';
-import 'package:musedme/widgets/text_widget.dart';
+import 'package:get/get.dart';
 
-import '../components/header.dart';
-import '../utils/app_colors.dart';
-import '../widgets/loader.dart';
+import '../../components/header.dart';
+import '../../controllers/market_controller.dart';
+import '../../utils/app_colors.dart';
+import '../../widgets/glass_morphism.dart';
+import '../../widgets/text_widget.dart';
 
 final List<String> nfts = [
   "https://i.pinimg.com/564x/79/6c/29/796c2975ae64e163566bade45f579e9c.jpg",
@@ -27,7 +26,7 @@ final List<String> nfts = [
   "https://i.pinimg.com/564x/62/cf/f2/62cff255396fd582a5ef398c95bbb4df.jpg",
 ];
 
-class MarketScreen extends StatelessWidget {
+class MarketScreen extends GetView<MarketController> {
   const MarketScreen({Key? key}) : super(key: key);
 
   @override
@@ -51,32 +50,35 @@ class MarketScreen extends StatelessWidget {
             ),
             itemCount: nfts.length,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            itemBuilder: (context, index) => Container(
-              decoration: BoxDecoration(
-                color: AppColors.secondaryColor,
-                borderRadius: BorderRadius.circular(30),
-                image: DecorationImage(image: NetworkImage(nfts.elementAt(index)), fit: BoxFit.cover),
-              ),
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const TextWidget("Hype Beast", color: Colors.white, size: 22),
-                  const SizedBox(height: 5,),
-                  GlassMorphism(
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                    shape: BoxShape.rectangle,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        TextWidget("Price ", color: AppColors.grayScale, weight: FontWeight.w400, size: 12),
-                        TextWidget("10\$", color: Colors.white, size: 16, weight: FontWeight.w600),
-                      ],
+            itemBuilder: (context, index) => InkWell(
+              onTap: () => onTap(index),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.secondaryColor,
+                  borderRadius: BorderRadius.circular(30),
+                  image: DecorationImage(image: NetworkImage(nfts.elementAt(index)), fit: BoxFit.cover),
+                ),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const TextWidget("Hype Beast", color: Colors.white, size: 22),
+                    const SizedBox(height: 5,),
+                    GlassMorphism(
+                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                      shape: BoxShape.rectangle,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          TextWidget("Price ", color: AppColors.grayScale, weight: FontWeight.w400, size: 12),
+                          TextWidget("10\$", color: Colors.white, size: 16, weight: FontWeight.w600),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             // itemBuilder: (context, index) => CachedNetworkImage(
@@ -96,6 +98,6 @@ class MarketScreen extends StatelessWidget {
   }
 
   void onTap(int index ) {
-
+   controller.setItem(nfts.elementAt(index));
   }
 }

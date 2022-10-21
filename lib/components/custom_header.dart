@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 
@@ -63,7 +64,7 @@ class CustomHeader extends StatelessWidget {
                 children: [
                   if(showBack)...[
                     TextButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => Get.back(),
                         style: TextButton.styleFrom(
                             backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
