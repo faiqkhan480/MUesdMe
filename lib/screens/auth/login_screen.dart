@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // EMAIL FIELD
                   InputField(
                     controller: emailController,
-                    hintText: "Email",
+                    labelText: "Email",
                     keyboardType: TextInputType.emailAddress,
                     validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // PASSWORD FIELD
                   InputField(
                     controller: passwordController,
-                    hintText: "Password",
+                    labelText: "Password",
                     keyboardType: TextInputType.text,
                     obscureText: secure,
                     validator: (String? value) => value!.isEmpty ? "Password is required!" : null,

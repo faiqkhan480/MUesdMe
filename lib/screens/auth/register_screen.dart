@@ -76,7 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Expanded(
                         child: InputField(
                           controller: firstName,
-                          hintText: "First Name",
+                          labelText: "First Name",
                           keyboardType: TextInputType.text,
                           validator: (String? value) => value!.isEmpty ? "First name is required!" : null,
                           onSubmit: (_) => FocusScope.of(context).nextFocus(),
@@ -86,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Expanded(
                         child: InputField(
                           controller: lastName,
-                          hintText: "Last Name",
+                          labelText: "Last Name",
                           keyboardType: TextInputType.text,
                           validator: (String? value) => value!.isEmpty ? "Last name is required!" : null,
                           onSubmit: (_) => FocusScope.of(context).nextFocus(),
@@ -98,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // USER NAME FIELD
                   InputField(
                     controller: userName,
-                    hintText: "User Name",
+                    labelText: "User Name",
                     keyboardType: TextInputType.text,
                     inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s')),],
                     validator: (String? value) => value!.isEmpty ? "User name is required!" : null,
@@ -108,7 +108,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // EMAIL FIELD
                   InputField(
                     controller: email,
-                    hintText: "Email",
+                    labelText: "Email",
                     keyboardType: TextInputType.text,
                     validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
@@ -194,7 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // Date Of Birth Fields
                   InputField(
                     controller: dobController,
-                    hintText: "Date of Birth",
+                    labelText: "Date of Birth",
                     readOnly: true,
                     onTap: handleDate,
                     keyboardType: TextInputType.text,
@@ -206,7 +206,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // PASSWORD FIELD
                   InputField(
                     controller: password,
-                    hintText: "Password",
+                    labelText: "Password",
                     keyboardType: TextInputType.text,
                     obscureText: passSecure,
                     validator: (String? value) => value!.isEmpty ? "Password is required!" : null,
@@ -219,7 +219,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // CONFIRM PASSWORD FIELD
                   InputField(
                     controller: confirmPassword,
-                    hintText: "Confirm Password",
+                    labelText: "Confirm Password",
                     keyboardType: TextInputType.text,
                     obscureText: confirmPassSecure,
                     validator: (String? value) => value!.isEmpty ? "Confirm Password is required!" : value != password.text ? "Confirm password is not matched!" : null,
@@ -233,7 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // COUNTRY FIELDS
                   InputField(
                     controller: country,
-                    hintText: "Country",
+                    labelText: "Country",
                     readOnly: true,
                     onTap: handleCountry,
                     trailingIcon: country.text.isNotEmpty ? Padding(

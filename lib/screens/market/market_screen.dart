@@ -6,6 +6,7 @@ import '../../components/header.dart';
 import '../../controllers/market_controller.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/glass_morphism.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/text_widget.dart';
 
 final List<String> nfts = [
@@ -34,69 +35,86 @@ final List<String> nfts = [
 class MarketScreen extends GetView<MarketController> {
   const MarketScreen({Key? key}) : super(key: key);
 
+  bool get _loading => controller.loading();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Obx(() => Stack(
+        alignment: AlignmentDirectional.center,
         children: [
-          const Header(
-            title: "Market",
-            isProfile: true,
-            hideButton: true,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Header(
+                title: "Market",
+                isProfile: true,
+                hideButton: true,
+              ),
+
+              Flexible(child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 0.8,
+                  ),
+                  itemCount: nfts.length,
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  itemBuilder: (context, index) => InkWell(
+                    onTap: () => onTap(index),
+                    child: Stack(
+                      // mainAxisAlignment: MainAxisAlignment.end,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Hero(
+                              tag: "pop$index",
+                              child: Image.network(nfts.elementAt(index), fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
+                            )
+                        ),
+
+                        const Positioned(
+                          bottom: 36,
+                          left: 10,
+                          child: TextWidget("Hype Beast", color: Colors.white, size: 22),),
+                        Positioned(
+                          bottom: 10,
+                          left: 10,
+                          child: GlassMorphism(
+                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                            shape: BoxShape.rectangle,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                TextWidget("Price ", color: AppColors.grayScale, weight: FontWeight.w400, size: 12),
+                                TextWidget("10\$", color: Colors.white, size: 16, weight: FontWeight.w600),
+                              ],
+                            ),
+                          ),),
+
+                        // const TextWidget("Hype Beast", color: Colors.white, size: 22),
+                        // const SizedBox(height: 5,),
+
+                      ],
+                    ),
+                  )
+              )),
+            ],
           ),
 
-          Flexible(child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: nfts.length,
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            itemBuilder: (context, index) => InkWell(
-              onTap: () => onTap(index),
-              child: Stack(
-                // mainAxisAlignment: MainAxisAlignment.end,
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Hero(
-                        tag: "pop$index",
-                        child: Image.network(nfts.elementAt(index), fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
-                      )
-                  ),
-
-                  const Positioned(
-                    bottom: 36,
-                    left: 10,
-                    child: TextWidget("Hype Beast", color: Colors.white, size: 22),),
-                  Positioned(
-                    bottom: 10,
-                    left: 10,
-                    child: GlassMorphism(
-                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                      shape: BoxShape.rectangle,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          TextWidget("Price ", color: AppColors.grayScale, weight: FontWeight.w400, size: 12),
-                          TextWidget("10\$", color: Colors.white, size: 16, weight: FontWeight.w600),
-                        ],
-                      ),
-                    ),),
-
-                  // const TextWidget("Hype Beast", color: Colors.white, size: 22),
-                  // const SizedBox(height: 5,),
-
-                ],
+          if(_loading)...[
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.4)
               ),
-            )
-          )),
+            ),
+
+            const Loader()
+          ],
         ],
-      ),
+      )),
 
       floatingActionButton: FloatingActionButton(
         onPressed: controller.uploadFile,

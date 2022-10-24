@@ -31,6 +31,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       isLive: json['IsLive'] as int?,
       rtcToken: json['RTCToken'] as String?,
       rtmToken: json['RTMToken'] as String?,
+      wallet: (json['Wallet'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -58,4 +59,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'IsLive': instance.isLive,
       'RTCToken': instance.rtcToken,
       'RTMToken': instance.rtmToken,
+      'Wallet': instance.wallet,
     };

@@ -31,7 +31,8 @@ class User {
     this.posts,
     this.isLive,
     this.rtcToken,
-    this.rtmToken
+    this.rtmToken,
+    this.wallet,
   });
 
   @JsonKey(name: 'UserID')
@@ -105,6 +106,9 @@ class User {
 
   @JsonKey(name: 'RTMToken')
   final String? rtmToken;
+
+  @JsonKey(name: 'Wallet')
+  final double? wallet;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

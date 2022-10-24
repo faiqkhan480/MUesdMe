@@ -9,6 +9,7 @@ import '../models/auths/user_model.dart';
 import '../models/chat.dart';
 import '../models/comment.dart';
 import '../models/feed.dart';
+import '../models/listing.dart';
 import '../models/message.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -469,15 +470,15 @@ class ApiService extends GetxService {
     }
   }
 
-  // UPLOAD LISTING FILE
+  // UPLOAD LISTING FILES
   Future<Listing?> uploadListingFile(List<String> filePath) async {
     try {
       final json = await Network.multipart(url: Constants.UPLOAD_LISTING_FILE, headers: _header, filePath: filePath);
-      debugPrint("json::::::$json");
+      // debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.listing != null) {
-          Listing? listing = Listing.fromJson(res.listing!.toJson());
+          Listing? listing = Listing.fromJson(res.listing);
           return listing;
         }
         else {
@@ -485,6 +486,36 @@ class ApiService extends GetxService {
               backgroundColor: AppColors.pinkColor,
               colorText: Colors.white
           );
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
+
+  // UPLOAD LISTING
+  Future uploadListing(Listing? listing) async {
+    try {
+      final json = await Network.post(url: Constants.UPLOAD_LISTING, headers: _header, payload: listing?.toJson());
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        // if(res.message != null && res.message!.isNotEmpty) {
+        //   Get.snackbar("Failed!", res.message ?? "",
+        //       backgroundColor: AppColors.pinkColor,
+        //       colorText: Colors.white
+        //   );
+        // }
+        if(res.code == 200 && res.message != null) {
+          //   List<Comment> comments = commentFromJson(jsonEncode(res.feedComments));
+          //   return comments;
+          //   Get.snackbar("Success!", res.message ?? "",
+          //       backgroundColor: AppColors.successColor,
+          //       colorText: Colors.white
+          //   );
+          return true;
         }
       }
       return null;

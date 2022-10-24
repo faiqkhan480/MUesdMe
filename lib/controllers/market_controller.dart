@@ -4,23 +4,29 @@ import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import '../models/api_res.dart';
+import '../models/listing.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 
 class MarketController extends GetxController {
   RxString nft = "".obs;
 
   RxBool buy = false.obs;
+  RxBool loading = false.obs;
   Rx<BoxFit> boxFit = BoxFit.cover.obs;
   Rx<Alignment> alignment = const Alignment(0.6, 0).obs;
   Rx<BorderRadius> borderRadius = BorderRadius.circular(30).obs;
 
   Rx<PaletteGenerator?> palette = Rxn<PaletteGenerator?>();
 
+  Rx<Listing?> listing = Rxn<Listing?>();
+
   RxDouble height = Get.height.obs;
   RxDouble width = Get.width.obs;
 
   final ApiService _service = Get.find<ApiService>();
+  final AuthService _authService = Get.find<AuthService>();
 
   void setItem(String item, index) async {
     nft.value = item;
@@ -57,21 +63,30 @@ class MarketController extends GetxController {
   }
 
   Future<void> uploadFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'mp3', 'mp4', 'gif']);
+    if(!loading()) {
+      loading.value = true;
+      FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'mp3', 'mp4', 'gif']);
 
-    if (result != null) {
-      List<String> files = result.paths.map((path) => path ?? "").toList();
+      if (result != null) {
+        List<String> files = result.paths.map((path) => path ?? "").toList();
 
-      // debugPrint("RESULT ::::::::::$files");
+        // debugPrint("RESULT ::::::::::$files");
 
-      Listing? res = await _service.uploadListingFile(files);
-      if(res != null) {
-
+        Listing? res = await _service.uploadListingFile(files);
+        if(res != null) {
+          listing = res.obs;
+          Get.toNamed(AppRoutes.ITEMUPLOAD);
+          //   res.copyWith(
+          //     userId: _authService.currentUser!.userId!,
+          //     type: ,
+          //   );
+        }
       }
+      loading.value = false;
     }
   }
 
   Future<void> _uploadListing() async {
-    
+
   }
 }

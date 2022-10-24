@@ -16,9 +16,7 @@ ApiRes _$ApiResFromJson(Map<String, dynamic> json) => ApiRes(
       token: json['Token'],
       feedComments: json['FeedComments'],
       messages: json['Messages'],
-      listing: json['Listing'] == null
-          ? null
-          : Listing.fromJson(json['Listing'] as Map<String, dynamic>),
+      listing: json['Listing'],
     );
 
 Map<String, dynamic> _$ApiResToJson(ApiRes instance) => <String, dynamic>{
@@ -32,31 +30,4 @@ Map<String, dynamic> _$ApiResToJson(ApiRes instance) => <String, dynamic>{
       'FeedComments': instance.feedComments,
       'Messages': instance.messages,
       'Listing': instance.listing,
-    };
-
-Listing _$ListingFromJson(Map<String, dynamic> json) => Listing(
-      itemId: json['ItemID'] as int?,
-      userId: json['UserID'] as int?,
-      price: json['Price'] as int?,
-      quantity: json['Quantity'] as int?,
-      files: (json['files'] as List<dynamic>?)
-          ?.map((e) => FileElement.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$ListingToJson(Listing instance) => <String, dynamic>{
-      'ItemID': instance.itemId,
-      'UserID': instance.userId,
-      'Price': instance.price,
-      'Quantity': instance.quantity,
-      'files': instance.files,
-    };
-
-FileElement _$FileElementFromJson(Map<String, dynamic> json) => FileElement(
-      filePath: json['FilePath'] as String?,
-    );
-
-Map<String, dynamic> _$FileElementToJson(FileElement instance) =>
-    <String, dynamic>{
-      'FilePath': instance.filePath,
     };
