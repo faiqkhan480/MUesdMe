@@ -73,7 +73,14 @@ class Network {
 
       request.headers.addAll(apiHeaders);
 
-      request.files.add(await http.MultipartFile.fromPath("field", filePath));
+      if(filePath is List<String>) {
+        for (var p in filePath) {
+          request.files.add(await http.MultipartFile.fromPath("field", p));
+        }
+      }
+      else {
+        request.files.add(await http.MultipartFile.fromPath("field", filePath));
+      }
 
       var response = await request.send();
 

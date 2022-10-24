@@ -468,4 +468,29 @@ class ApiService extends GetxService {
       return null;
     }
   }
+
+  // UPLOAD LISTING FILE
+  Future<Listing?> uploadListingFile(List<String> filePath) async {
+    try {
+      final json = await Network.multipart(url: Constants.UPLOAD_LISTING_FILE, headers: _header, filePath: filePath);
+      debugPrint("json::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.listing != null) {
+          Listing? listing = Listing.fromJson(res.listing!.toJson());
+          return listing;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
 }

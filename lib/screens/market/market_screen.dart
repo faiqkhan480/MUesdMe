@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 
 import '../../components/header.dart';
@@ -93,18 +94,13 @@ class MarketScreen extends GetView<MarketController> {
                 ],
               ),
             )
-            // itemBuilder: (context, index) => CachedNetworkImage(
-            //   imageUrl: nfts.elementAt(index),
-            //   // progressIndicatorBuilder: (context, url, progress) => Text("${progress.downloaded}"),
-            //   // progressIndicatorBuilder: (context, url, progress) => const Loader(),
-            //   // errorWidget: (context, url, error) => const Icon(FontAwesome.chain_broken),
-            //   imageBuilder: (context, imageProvider) => Container(
-            //     color: AppColors.secondaryColor,
-            //     width: double.infinity,
-            //   ),
-            // ),
           )),
         ],
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: controller.uploadFile,
+        child: const Icon(Feather.upload),
       ),
     );
   }
