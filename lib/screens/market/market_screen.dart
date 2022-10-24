@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 
@@ -116,10 +117,92 @@ class MarketScreen extends GetView<MarketController> {
         ],
       )),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: controller.uploadFile,
-        child: const Icon(Feather.upload),
+      // floatingActionButton: SpeedDial(
+      //   closedForegroundColor: Colors.white,
+      //   openForegroundColor: AppColors.primaryColor,
+      //   closedBackgroundColor: AppColors.primaryColor,
+      //   openBackgroundColor: Colors.black,
+      //   labelsBackgroundColor: Colors.white,
+      //   speedDialChildren: <SpeedDialChild>[
+      //     SpeedDialChild(
+      //       child: const Icon(Feather.image),
+      //       foregroundColor: Colors.white,
+      //       backgroundColor: AppColors.secondaryColor,
+      //       label: 'Upload Image',
+      //       onPressed: () {
+      //         controller.uploadFile("Image");
+      //       },
+      //       closeSpeedDialOnPressed: false,
+      //     ),
+      //     SpeedDialChild(
+      //       child: const Icon(Feather.film),
+      //       foregroundColor: Colors.white,
+      //       backgroundColor: AppColors.secondaryColor,
+      //       label: 'Upload Video File',
+      //       onPressed: () {
+      //         controller.uploadFile("Video");
+      //       },
+      //     ),
+      //     SpeedDialChild(
+      //       child: const Icon(Feather.headphones),
+      //       foregroundColor: Colors.white,
+      //       backgroundColor: AppColors.secondaryColor,
+      //       label: 'Upload audio file',
+      //       onPressed: () {
+      //         controller.uploadFile("Music");
+      //       },
+      //     ),
+      //   ],
+      //   child: const Icon(Icons.add),
+      // ),
+
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        animatedIconTheme: const IconThemeData(size: 22.0),
+        // this is ignored if animatedIcon is non null
+        // child: Icon(Icons.add),
+        visible: true,
+        curve: Curves.bounceIn,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.5,
+        tooltip: 'Speed Dial',
+        heroTag: 'speed-dial-hero-tag',
+        backgroundColor: AppColors.primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 8.0,
+        shape: const CircleBorder(),
+        children: [
+          SpeedDialChild(
+              child: const Icon(Feather.image),
+              backgroundColor: AppColors.secondaryColor,
+              foregroundColor: Colors.white,
+              label: 'Upload Image',
+              // labelStyle: TextTheme(fontSize: 18.0),
+              onTap: () => controller.uploadFile("Image")
+          ),
+          SpeedDialChild(
+            child: const Icon(Feather.film),
+            backgroundColor: AppColors.secondaryColor,
+            foregroundColor: Colors.white,
+            label: 'Upload Video File',
+            // labelStyle: TextTheme(fontSize: 18.0),
+            onTap: () => controller.uploadFile("Video"),
+          ),
+          SpeedDialChild(
+            child: const Icon(Feather.headphones),
+            backgroundColor: AppColors.secondaryColor,
+            foregroundColor: Colors.white,
+            label: 'Upload audio file',
+            // labelStyle: TextTheme(fontSize: 18.0),
+            onTap: () => controller.uploadFile("Music"),
+          ),
+        ],
       ),
+
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: controller.uploadFile,
+      //   child: const Icon(Feather.upload),
+      // ),
     );
   }
 

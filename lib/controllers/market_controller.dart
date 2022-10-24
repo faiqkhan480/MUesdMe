@@ -62,12 +62,15 @@ class MarketController extends GetxController {
     // return paletteGenerator;
   }
 
-  Future<void> uploadFile() async {
+  Future<void> uploadFile(String category) async {
     if(!loading()) {
-      loading.value = true;
-      FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'mp3', 'mp4', 'gif']);
+      FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true,
+          type: category == "Image" ? FileType.image : category == "Video" ? FileType.video : FileType.audio,
+          // allowedExtensions: ['jpg', 'jpeg', 'png', 'mp3', 'mp4', 'gif']
+      );
 
       if (result != null) {
+        loading.value = true;
         List<String> files = result.paths.map((path) => path ?? "").toList();
 
         // debugPrint("RESULT ::::::::::$files");
@@ -75,7 +78,7 @@ class MarketController extends GetxController {
         Listing? res = await _service.uploadListingFile(files);
         if(res != null) {
           listing = res.obs;
-          Get.toNamed(AppRoutes.ITEMUPLOAD);
+          Get.toNamed(AppRoutes.ITEMUPLOAD, arguments: category);
           //   res.copyWith(
           //     userId: _authService.currentUser!.userId!,
           //     type: ,
