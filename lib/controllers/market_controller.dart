@@ -17,10 +17,10 @@ class MarketController extends GetxController {
   RxDouble height = Get.height.obs;
   RxDouble width = Get.width.obs;
 
-  void setItem(String item ) async {
+  void setItem(String item, index) async {
     nft.value = item;
     await updatePaletteGenerator();
-    Get.toNamed(AppRoutes.ITEM);
+    Get.toNamed(AppRoutes.ITEM, arguments: index);
   }
 
   void buyItem() {

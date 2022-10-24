@@ -29,42 +29,43 @@ class ItemScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String heroKey = "pop${Get.arguments}";
     return WillPopScope(
       // onWillPop: controller.onWillPop,
       onWillPop: () async {
         controller.resetValues();
         return false;
       },
-        child: Hero(
-          tag: "pop",
-          child: Scaffold(
-            backgroundColor: palette?.dominantColor?.color ?? AppColors.secondaryColor,
-            // backgroundColor: AppColors.secondaryColor,
-            body: Obx(() => Stack(
-              children: [
-                SizedBox(
-                  height: Get.height,
-                  width: Get.width,
+        child: Scaffold(
+          backgroundColor: palette?.dominantColor?.color ?? AppColors.secondaryColor,
+          // backgroundColor: AppColors.secondaryColor,
+          body: Obx(() => Stack(
+            children: [
+              SizedBox(
+                height: Get.height,
+                width: Get.width,
+              ),
+
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 1000),
+                height: height,
+                width: 500,
+                left: buy ? 0 : -100,
+                // top: 0,
+                curve: Curves.linearToEaseOut,
+                child: Hero(
+                  tag: heroKey,
+                  child: Image.network(nft, fit: boxFit, alignment: alignment),
                 ),
+              ),
 
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 1000),
-                  height: height,
-                  width: 500,
-                  left: buy ? 0 : -100,
-                  // top: 0,
-                  curve: Curves.linearToEaseOut,
-                  child: Image.network(nft, fit: boxFit, alignment: alignment,),
-                ),
+              _sheet(),
 
-                _sheet(),
+              _buyButton(),
 
-                _buyButton(),
-
-                _headerBar(),
-              ],
-            ),),
-          ),
+              _headerBar(),
+            ],
+          ),),
         ),
     );
   }

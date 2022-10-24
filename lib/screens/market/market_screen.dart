@@ -54,45 +54,45 @@ class MarketScreen extends GetView<MarketController> {
             ),
             itemCount: nfts.length,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            itemBuilder: (context, index) => Hero(
-              tag: "pop",
-              child: InkWell(
-                onTap: () => onTap(index),
-                child: Stack(
-                  // mainAxisAlignment: MainAxisAlignment.end,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
+            itemBuilder: (context, index) => InkWell(
+              onTap: () => onTap(index),
+              child: Stack(
+                // mainAxisAlignment: MainAxisAlignment.end,
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-                      child: Image.network(nfts.elementAt(index), fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
-                    ),
+                      child: Hero(
+                        tag: "pop$index",
+                        child: Image.network(nfts.elementAt(index), fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
+                      )
+                  ),
 
-                    const Positioned(
-                      bottom: 36,
-                      left: 10,
-                      child: TextWidget("Hype Beast", color: Colors.white, size: 22),),
-                    Positioned(
-                      bottom: 10,
-                      left: 10,
-                      child: GlassMorphism(
-                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                        shape: BoxShape.rectangle,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            TextWidget("Price ", color: AppColors.grayScale, weight: FontWeight.w400, size: 12),
-                            TextWidget("10\$", color: Colors.white, size: 16, weight: FontWeight.w600),
-                          ],
-                        ),
-                      ),),
+                  const Positioned(
+                    bottom: 36,
+                    left: 10,
+                    child: TextWidget("Hype Beast", color: Colors.white, size: 22),),
+                  Positioned(
+                    bottom: 10,
+                    left: 10,
+                    child: GlassMorphism(
+                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                      shape: BoxShape.rectangle,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          TextWidget("Price ", color: AppColors.grayScale, weight: FontWeight.w400, size: 12),
+                          TextWidget("10\$", color: Colors.white, size: 16, weight: FontWeight.w600),
+                        ],
+                      ),
+                    ),),
 
-                    // const TextWidget("Hype Beast", color: Colors.white, size: 22),
-                    // const SizedBox(height: 5,),
+                  // const TextWidget("Hype Beast", color: Colors.white, size: 22),
+                  // const SizedBox(height: 5,),
 
-                  ],
-                ),
+                ],
               ),
-            ),
+            )
             // itemBuilder: (context, index) => CachedNetworkImage(
             //   imageUrl: nfts.elementAt(index),
             //   // progressIndicatorBuilder: (context, url, progress) => Text("${progress.downloaded}"),
@@ -110,6 +110,6 @@ class MarketScreen extends GetView<MarketController> {
   }
 
   void onTap(int index ) {
-   controller.setItem(nfts.elementAt(index));
+   controller.setItem(nfts.elementAt(index), index);
   }
 }
