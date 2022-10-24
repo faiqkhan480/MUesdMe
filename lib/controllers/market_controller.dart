@@ -8,9 +8,10 @@ import '../models/listing.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../utils/constants.dart';
 
 class MarketController extends GetxController {
-  RxString nft = "".obs;
+  Rx<Listing?> selectedItem = Rxn<Listing?>();
 
   RxBool buy = false.obs;
   RxBool loading = true.obs;
@@ -53,8 +54,8 @@ class MarketController extends GetxController {
   }
 
 
-  void setItem(String item, index) async {
-    nft.value = item;
+  void setItem(Listing item, index) async {
+    selectedItem = item.obs;
     await updatePaletteGenerator();
     Get.toNamed(AppRoutes.ITEM, arguments: index);
   }
@@ -80,7 +81,8 @@ class MarketController extends GetxController {
 
   Future updatePaletteGenerator() async {
     PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(
-      Image.network(nft.value).image,
+      // Image.network(nft.value).image,
+      Image.network("${Constants.LISTING_URL}${selectedItem.value?.mainFile}").image,
     );
 
     palette = paletteGenerator.obs;

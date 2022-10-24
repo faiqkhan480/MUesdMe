@@ -2,13 +2,17 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import '../../controllers/market_controller.dart';
+import '../../models/listing.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/assets.dart';
 import '../../utils/constants.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/text_widget.dart';
 import '../../widgets/user_avatar.dart';
 
@@ -17,7 +21,7 @@ class ItemScreen extends StatelessWidget {
 
   MarketController get controller => Get.find<MarketController>();
 
-  String get nft => controller.nft.value;
+  Listing? get selectedItem => controller.selectedItem.value;
   BoxFit get boxFit => controller.boxFit.value;
   Alignment get alignment => controller.alignment.value;
   BorderRadius get borderRadius => controller.borderRadius.value;
@@ -26,6 +30,8 @@ class ItemScreen extends StatelessWidget {
   bool get buy => controller.buy.value;
 
   PaletteGenerator? get palette => controller.palette.value;
+
+  List<Listing?> get _listing => controller.listing;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +61,20 @@ class ItemScreen extends StatelessWidget {
                 curve: Curves.linearToEaseOut,
                 child: Hero(
                   tag: heroKey,
-                  child: Image.network(nft, fit: boxFit, alignment: alignment),
+                  child: Image.network(
+                    "${Constants.LISTING_URL}${_listing.elementAt(Get.arguments)?.mainFile}",
+                    loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      decoration: const BoxDecoration(
+                        color: AppColors.secondaryColor,
+                        // borderRadius: BorderRadius.circular(20),
+                        // border: Border.all(color: AppColors.secondaryColor)
+                      ),
+                        // alignment: Alignment.center,
+                        child: const Icon(Feather.image, color: Colors.white, size: 100,)),
+                    // child: Icon(Feather.image, color: AppColors.secondaryColor, size: 40,)),
+                    fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
+                  // child: Image.network(nft, fit: boxFit, alignment: alignment),
                 ),
               ),
 
@@ -200,7 +219,18 @@ class ItemScreen extends StatelessWidget {
                             const Spacer(),
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: Image.network(nft, fit: BoxFit.cover, height: 50),
+                              // child: Image.network(nft, fit: BoxFit.cover, height: 50),
+                              child: Image.network(
+                                "${Constants.LISTING_URL}${_listing.elementAt(Get.arguments)?.mainFile}",
+                                loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
+                                errorBuilder: (context, error, stackTrace) => Container(
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.secondaryColor,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: const Icon(Feather.image, color: Colors.white)),
+                                fit: BoxFit.cover, height:50, width: 50,),
+                              // child: Image.network(nft, fit: boxFit, alignment: alignment),
                             ),
                           ],
                         ),

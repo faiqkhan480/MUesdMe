@@ -110,13 +110,13 @@ class AppPages {
     GetPage(
         name: AppRoutes.MARKET,
         // binding: CallBinding(),
-        transition: Transition.cupertino,
+        // transition: Transition.cupertino,
         page: () => const MarketScreen()
     ),
     GetPage(
         name: AppRoutes.ITEM,
         // binding: CallBinding(),
-        transition: Transition.cupertino,
+        // transition: Transition.cupertino,
         page: () => const ItemScreen()
     ),
     GetPage(
