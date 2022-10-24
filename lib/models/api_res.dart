@@ -16,6 +16,7 @@ class ApiRes {
     required this.feedComments,
     required this.messages,
     required this.listing,
+    required this.listings,
   });
 
   @JsonKey(name: 'Code')
@@ -47,6 +48,9 @@ class ApiRes {
 
   @JsonKey(name: 'Listing')
   final dynamic listing;
+
+  @JsonKey(name: 'Listings')
+  final dynamic listings;
 
   factory ApiRes.fromJson(Map<String, dynamic> json) => _$ApiResFromJson(json);
 

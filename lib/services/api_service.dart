@@ -524,4 +524,26 @@ class ApiService extends GetxService {
       return null;
     }
   }
+
+  // GET LISTING ITEMS
+  Future<List<Listing?>> fetchListing() async {
+    try {
+      var payload = {
+        "UserID": _userId,
+      };
+      final json = await Network.post(url: Constants.MARKET_LISTING, headers: _header, payload: payload);
+      // debugPrint("LISTING:::::::::::: $json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.listings != null) {
+          List<Listing?> listing = listingFromJson(jsonEncode(res.listings));
+          return listing;
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return [];
+    }
+  }
 }

@@ -37,7 +37,7 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
   AuthService get _authService => Get.find<AuthService>();
   ApiService get _apiService => Get.find<ApiService>();
   MarketController get _controller => Get.find<MarketController>();
-  Listing? get _listing => _controller.listing();
+  Listing? get _listing => _controller.uploadItem();
 
   @override
   Widget build(BuildContext context) {

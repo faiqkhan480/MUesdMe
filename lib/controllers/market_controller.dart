@@ -13,20 +13,45 @@ class MarketController extends GetxController {
   RxString nft = "".obs;
 
   RxBool buy = false.obs;
-  RxBool loading = false.obs;
+  RxBool loading = true.obs;
+  RxBool fetching = false.obs;
   Rx<BoxFit> boxFit = BoxFit.cover.obs;
   Rx<Alignment> alignment = const Alignment(0.6, 0).obs;
   Rx<BorderRadius> borderRadius = BorderRadius.circular(30).obs;
 
   Rx<PaletteGenerator?> palette = Rxn<PaletteGenerator?>();
 
-  Rx<Listing?> listing = Rxn<Listing?>();
+  Rx<Listing?> uploadItem = Rxn<Listing?>();
+  RxList<Listing?> listing = List<Listing?>.empty(growable: true).obs;
 
   RxDouble height = Get.height.obs;
   RxDouble width = Get.width.obs;
 
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    getAllListing();
+  }
+
+  // GET ALL LISTING ITEMS
+  Future<void> getAllListing() async {
+    List<Listing?> res = await _service.fetchListing();
+    if(res.isNotEmpty) {
+      if(listing.isEmpty) {
+        listing.addAll(res);
+      }
+      else {
+        listing.clear();
+        listing.addAll(res);
+      }
+    }
+    loading.value = false;
+  }
+
 
   void setItem(String item, index) async {
     nft.value = item;
@@ -63,21 +88,21 @@ class MarketController extends GetxController {
   }
 
   Future<void> uploadFile(String category) async {
-    if(!loading()) {
+    if(!fetching()) {
       FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true,
           type: category == "Image" ? FileType.image : category == "Video" ? FileType.video : FileType.audio,
           // allowedExtensions: ['jpg', 'jpeg', 'png', 'mp3', 'mp4', 'gif']
       );
 
       if (result != null) {
-        loading.value = true;
+        fetching.value = true;
         List<String> files = result.paths.map((path) => path ?? "").toList();
 
         // debugPrint("RESULT ::::::::::$files");
 
         Listing? res = await _service.uploadListingFile(files);
         if(res != null) {
-          listing = res.obs;
+          uploadItem = res.obs;
           Get.toNamed(AppRoutes.ITEMUPLOAD, arguments: category);
           //   res.copyWith(
           //     userId: _authService.currentUser!.userId!,
@@ -85,11 +110,8 @@ class MarketController extends GetxController {
           //   );
         }
       }
-      loading.value = false;
+      fetching.value = false;
     }
   }
 
-  Future<void> _uploadListing() async {
-
-  }
 }

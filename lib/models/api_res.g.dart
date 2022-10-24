@@ -17,6 +17,7 @@ ApiRes _$ApiResFromJson(Map<String, dynamic> json) => ApiRes(
       feedComments: json['FeedComments'],
       messages: json['Messages'],
       listing: json['Listing'],
+      listings: json['Listings'],
     );
 
 Map<String, dynamic> _$ApiResToJson(ApiRes instance) => <String, dynamic>{
@@ -30,4 +31,5 @@ Map<String, dynamic> _$ApiResToJson(ApiRes instance) => <String, dynamic>{
       'FeedComments': instance.feedComments,
       'Messages': instance.messages,
       'Listing': instance.listing,
+      'Listings': instance.listings,
     };

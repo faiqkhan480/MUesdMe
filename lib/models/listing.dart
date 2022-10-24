@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'listing.g.dart';
+
+List<Listing> listingFromJson(String str) => List<Listing>.from(json.decode(str).map((x) => Listing.fromJson(x)));
 
 @JsonSerializable()
 class Listing {
@@ -12,6 +16,7 @@ class Listing {
     required this.category,
     required this.title,
     required this.status,
+    required this.mainFile,
     required this.description,
     required this.files,
   });
@@ -37,6 +42,9 @@ class Listing {
   @JsonKey(name: 'Status')
   final String? status;
 
+  @JsonKey(name: 'MainFile')
+  final String? mainFile;
+
   @JsonKey(name: 'Description')
   final String? description;
   final List<FileElement>? files;
@@ -49,6 +57,7 @@ class Listing {
     String? category,
     String? title,
     String? status,
+    String? mainFile,
     String? description,
     List<FileElement>? files,
   }) {
@@ -60,6 +69,7 @@ class Listing {
       category: category ?? this.category,
       title: title ?? this.title,
       status: status ?? this.status,
+      mainFile: mainFile ?? this.mainFile,
       description: description ?? this.description,
       files: files ?? this.files,
     );
