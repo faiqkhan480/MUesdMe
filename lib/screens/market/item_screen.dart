@@ -25,6 +25,7 @@ class ItemScreen extends StatelessWidget {
   BoxFit get boxFit => controller.boxFit.value;
   Alignment get alignment => controller.alignment.value;
   BorderRadius get borderRadius => controller.borderRadius.value;
+  int get currIndex => controller.currIndex.value;
   double? get height => controller.height.value;
   double get width => controller.width.value;
   bool get buy => controller.buy.value;
@@ -91,6 +92,7 @@ class ItemScreen extends StatelessWidget {
         tag: heroKey,
         child: PageView.builder(
           itemCount: selectedItem?.files?.length ?? 1,
+          onPageChanged: (value) => controller.updatePaletteGenerator(selectedItem?.files?.elementAt(value).filePath, value),
           itemBuilder: (context, index) => Image.network(
             "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(index).filePath ?? _listing.elementAt(Get.arguments)?.mainFile}",
             loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
@@ -98,7 +100,6 @@ class ItemScreen extends StatelessWidget {
                 decoration: const BoxDecoration(
                   color: AppColors.secondaryColor,
                 ),
-                // alignment: Alignment.center,
                 child: const Icon(Feather.image, color: Colors.white, size: 100,)),
             fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
 
@@ -193,105 +194,135 @@ class ItemScreen extends StatelessWidget {
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    (palette?.dominantColor?.color ?? AppColors.secondaryColor).withOpacity(0.3),
-                    (palette?.dominantColor?.color ?? AppColors.secondaryColor).withOpacity(0.3),
-                  ],
-                  begin: AlignmentDirectional.topStart,
-                  end: AlignmentDirectional.bottomEnd,
+            child: Obx(() {
+              Color paletteColor = palette?.mutedColor?.color ?? AppColors.secondaryColor;
+              Color textColor = (paletteColor.computeLuminance() > 0.179)? AppColors.lightGrey : Colors.black;
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      paletteColor.withOpacity(0.3),
+                      paletteColor.withOpacity(0.3),
+                    ],
+                    begin: AlignmentDirectional.topStart,
+                    end: AlignmentDirectional.bottomEnd,
+                  ),
+                  // borderRadius: BorderRadius.all(Radius.circular(10)),
+                  // border: Border.all(
+                  //   width: 1.5,
+                  //   color: Colors.white.withOpacity(0.2),
+                  // ),
                 ),
-                // borderRadius: BorderRadius.all(Radius.circular(10)),
-                // border: Border.all(
-                //   width: 1.5,
-                //   color: Colors.white.withOpacity(0.2),
-                // ),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Column(
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
-                // mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)
-                    ),
-                    padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 15),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            UserAvatar(
-                              "https://i.pinimg.com/564x/cd/32/18/cd3218b69445f9f0bd5eca70f4c0126e.jpg",
-                              1.toString(),
-                              padding: const EdgeInsets.all(5.0),
-                              badgeContent: null,
-                              radius: 20,
-                            ),
-                            const SizedBox(width: 5),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                TextWidget("Adam Nash", size: 16, weight: FontWeight.w600),
-                                TextWidget("Licensed to you ", color: AppColors.lightGrey, weight: FontWeight.w400, size: 12),
-                              ],
-                            ),
-                            const Spacer(),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              // child: Image.network(nft, fit: BoxFit.cover, height: 50),
-                              child: Image.network(
-                                "${Constants.LISTING_URL}${_listing.elementAt(Get.arguments)?.mainFile}",
-                                loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
-                                errorBuilder: (context, error, stackTrace) => Container(
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.secondaryColor,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: const Icon(Feather.image, color: Colors.white)),
-                                fit: BoxFit.cover, height:50, width: 50,),
-                              // child: Image.network(nft, fit: boxFit, alignment: alignment),
-                            ),
-                          ],
-                        ),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  // mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 15),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              UserAvatar(
+                                selectedItem?.userDetails?.profilePic != null && selectedItem!.userDetails!.profilePic!.isNotEmpty ?
+                                "${Constants.IMAGE_URL}${selectedItem!.userDetails!.profilePic!}" :
+                                Constants.dummyImage,
+                                selectedItem!.userId.toString(),
+                                padding: const EdgeInsets.all(5.0),
+                                badgeContent: null,
+                                radius: 20,
+                              ),
+                              const SizedBox(width: 5),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextWidget(selectedItem?.userDetails?.fullName ?? "", size: 16, weight: FontWeight.w600),
+                                  TextWidget(
+                                      selectedItem?.type == "Selling" ? "Selling to you" : "Licensed to you ",
+                                      color: AppColors.lightGrey, weight: FontWeight.w400, size: 12),
+                                ],
+                              ),
+                              const Spacer(),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(currIndex).filePath ?? _listing.elementAt(Get.arguments)?.mainFile}",
+                                  loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
+                                  errorBuilder: (context, error, stackTrace) => Container(
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.secondaryColor,
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: const Icon(Feather.image, color: Colors.white)),
+                                  fit: BoxFit.cover, height:50, width: 50,),
+                                // child: Image.network(nft, fit: boxFit, alignment: alignment),
+                              ),
+                            ],
+                          ),
 
-                        const SizedBox(height: 30,),
+                          const Divider(height: 30),
 
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const TextWidget("Total Amount", color: AppColors.lightGrey, weight: FontWeight.w400, size: 12),
-                            // Spacer(),
-                            RichText(
-                                text: const TextSpan(
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: "Larsseit"
-                                    ),
-                                    children: [
-                                    TextSpan(
-                                      text: "18.6",
-                                      style: TextStyle(fontSize: 34, fontWeight: FontWeight.w600),
-                                    ),
-                                    TextSpan(
-                                        text: "  Dollar",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ]
-                                )
-                            ),
-                          ],
-                        ),
-                      ],
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const TextWidget("Total Amount", color: AppColors.lightGrey, weight: FontWeight.w400, size: 12),
+                              // Spacer(),
+                              RichText(
+                                  text: TextSpan(
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: "Larsseit"
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: "${selectedItem?.price}",
+                                          style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w600),
+                                        ),
+                                        const TextSpan(
+                                          text: "  Dollar",
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ]
+                                  )
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ),
+
+                    Container(
+                      decoration: BoxDecoration(
+                          color: paletteColor.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      padding: const EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 15),
+                      margin: const EdgeInsets.only(top: 30, bottom: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          TextWidget("Description",
+                              color: textColor,
+                              weight: FontWeight.w400, size: 14, align: TextAlign.center),
+                          const Divider(height: 30),
+
+                          TextWidget(
+                              selectedItem?.description ?? "",
+                              color: textColor,
+                              weight: FontWeight.w400, size: 16, align: TextAlign.start),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }),
           ),
         ),
     );

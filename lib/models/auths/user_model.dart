@@ -13,6 +13,7 @@ class User {
     this.password,
     this.firstName,
     this.lastName,
+    this.fullName,
     this.profilePic,
     this.token,
     this.fcmToken,
@@ -49,6 +50,9 @@ class User {
 
   @JsonKey(name: 'LastName')
   final String? lastName;
+
+  @JsonKey(name: 'LastName')
+  final String? fullName;
 
   @JsonKey(name: 'ProfilePic')
   String? profilePic;

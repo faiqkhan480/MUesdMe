@@ -16,6 +16,7 @@ class MarketController extends GetxController {
   RxBool buy = false.obs;
   RxBool loading = true.obs;
   RxBool fetching = false.obs;
+  RxInt currIndex = 0.obs;
   Rx<BoxFit> boxFit = BoxFit.cover.obs;
   Rx<Alignment> alignment = const Alignment(0.6, 0).obs;
   Rx<BorderRadius> borderRadius = BorderRadius.circular(30).obs;
@@ -88,13 +89,15 @@ class MarketController extends GetxController {
     borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
   }
 
-  Future updatePaletteGenerator() async {
+  Future updatePaletteGenerator([String? path, int? index]) async {
     PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(
       // Image.network(nft.value).image,
-      Image.network("${Constants.LISTING_URL}${selectedItem.value?.mainFile}").image,
+      Image.network("${Constants.LISTING_URL}${path ?? selectedItem.value?.mainFile}").image,
     );
 
     palette = paletteGenerator.obs;
+    currIndex.value = index ?? currIndex.value;
+    // palette.refresh();
     // return paletteGenerator;
   }
 
