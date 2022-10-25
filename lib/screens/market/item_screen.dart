@@ -43,10 +43,11 @@ class ItemScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // String heroKey = "pop${Get.arguments}";
+    bool isMy = selectedItem?.userId != _auth.currentUser?.userId;
     return WillPopScope(
       onWillPop: () async {
-        controller.resetValues();
-        return false;
+       controller.resetValues();
+        return !isMy;
       },
         child: Scaffold(
           backgroundColor: palette?.dominantColor?.color ?? AppColors.secondaryColor,
@@ -170,6 +171,7 @@ class ItemScreen extends StatelessWidget {
   }
 
   Widget _headerBar() {
+    bool isMy = selectedItem?.userId == _auth.currentUser?.userId;
     return Positioned(
         top: 40,
         left: 10,
@@ -179,7 +181,12 @@ class ItemScreen extends StatelessWidget {
           children: [
             // BACK BUTTON
             TextButton(
-                onPressed: controller.resetValues,
+                onPressed: () {
+                  controller.resetValues();
+                  if(isMy) {
+                    Get.back();
+                  }
+                },
                 style: TextButton.styleFrom(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -219,6 +226,7 @@ class ItemScreen extends StatelessWidget {
   }
 
   Widget _buyButton() {
+    bool isMy = selectedItem?.userId == _auth.currentUser?.userId;
     return Positioned(
         bottom: 10,
         left: 10,
@@ -229,7 +237,7 @@ class ItemScreen extends StatelessWidget {
           child: Loader(),
         ) :
         TextButton(
-          onPressed: controller.buyItem,
+          onPressed: () => isMy ? controller.editItem() : controller.buyItem(true),
           style: TextButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
           foregroundColor: Colors.white,
@@ -240,17 +248,17 @@ class ItemScreen extends StatelessWidget {
           textStyle: const TextStyle(fontSize: 18, fontFamily: Constants.fontFamily)
       ),
           child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text("Buy This"),
-          Container(
-            decoration: const BoxDecoration(
-              color: AppColors.secondaryColor,
-              shape: BoxShape.circle
-            ),
-            padding: const EdgeInsets.all(15),
-            child: const Icon(AntDesign.arrowright),
-          )
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(isMy ? "Edit This" : "Buy This"),
+              Container(
+                decoration: const BoxDecoration(
+                    color: AppColors.secondaryColor,
+                    shape: BoxShape.circle
+                ),
+                padding: const EdgeInsets.all(15),
+                child: Icon(isMy ? AntDesign.edit : AntDesign.arrowright),
+              )
         ],
       ),
     )

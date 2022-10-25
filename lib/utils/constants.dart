@@ -36,6 +36,7 @@ class Constants {
   static const String GO_LIVE = "$BASE_URL/api/Users/UpdateUserLiveStatus";
   static const String UPLOAD_LISTING_FILE = "$BASE_URL/api/Listing/UploadListingFiles";
   static const String UPLOAD_LISTING = "$BASE_URL/api/Listings/UploadListing";
+  static const String UPDATE_LISTING = "$BASE_URL/api/Listings/UpdateListing";
   static const String MARKET_LISTING = "$BASE_URL/api/Listings/GetAllListings";
   static const String MARKET_ITEM_DETAIL = "$BASE_URL/api/Listings/GetListingDetails";
   static const String ADD_ORDER = "$BASE_URL/api/Listings/AddOrder";

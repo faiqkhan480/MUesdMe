@@ -525,6 +525,31 @@ class ApiService extends GetxService {
     }
   }
 
+  // UPDATE LISTING
+  Future updateListing(Listing? listing) async {
+    try {
+      final json = await Network.post(url: Constants.UPDATE_LISTING, headers: _header, payload: listing?.toJson());
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        // if(res.message != null && res.message!.isNotEmpty) {
+        //   Get.snackbar("Failed!", res.message ?? "",
+        //       backgroundColor: AppColors.pinkColor,
+        //       colorText: Colors.white
+        //   );
+        // }
+        if(res.code == 200 && res.message != null) {
+          //   List<Comment> comments = commentFromJson(jsonEncode(res.feedComments));
+          //   return comments;
+          return res.message;
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
+
   // GET LISTING ITEMS
   Future<List<Listing?>> fetchListing() async {
     try {

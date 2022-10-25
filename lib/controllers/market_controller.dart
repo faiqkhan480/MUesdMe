@@ -75,12 +75,15 @@ class MarketController extends GetxController {
     Listing? res = await _service.fetchItemDetails(selectedItem.value!.itemId!.toString());
     if(res != null) {
       selectedItem = res.obs;
+      if(selectedItem.value?.userId == _authService.currentUser?.userId) {
+        buyItem();
+      }
     }
     loading.value = false;
   }
 
-  void buyItem() {
-    if(buy()) {
+  void buyItem([bool pressed = false]) {
+    if(buy() && pressed) {
       _sndBuyRequest();
     }
     else {
@@ -98,7 +101,7 @@ class MarketController extends GetxController {
     var res = await _service.buyItem(selectedItem.value!.itemId!.toString(), selectedItem.value!.price!.toString());
     if(res != null) {
       _authService.setUser(_authService.currentUser?.copyWith(wallet: (_authService.currentUser!.wallet! - selectedItem.value!.price!)));
-      // Get.back();
+      Get.back();
       Get.snackbar("Success!", res ?? "",
           backgroundColor: AppColors.successColor,
           colorText: Colors.white
@@ -108,7 +111,8 @@ class MarketController extends GetxController {
   }
 
   void resetValues() {
-    if(!buy()) {
+    debugPrint(":::::::::::::::RESET");
+    if(!buy() && selectedItem.value?.userId != _authService.currentUser?.userId) {
       Get.back();
     }
     buy.value = false;
@@ -145,15 +149,18 @@ class MarketController extends GetxController {
         Listing? res = await _service.uploadListingFile(files);
         if(res != null) {
           uploadItem = res.obs;
-          Get.toNamed(AppRoutes.ITEMUPLOAD, arguments: category);
-          //   res.copyWith(
-          //     userId: _authService.currentUser!.userId!,
-          //     type: ,
-          //   );
+          if(Get.currentRoute != AppRoutes.ITEMUPLOAD) {
+            Get.toNamed(AppRoutes.ITEMUPLOAD, arguments: category);
+          }
         }
       }
       fetching.value = false;
     }
+  }
+
+  // EDIT ITEM
+  void editItem() {
+    Get.toNamed(AppRoutes.ITEMUPLOAD, arguments: selectedItem.value!.category!);
   }
 
 }

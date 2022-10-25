@@ -11,6 +11,7 @@ import '../../controllers/comment_controller.dart';
 import '../../controllers/profile_controller.dart';
 import '../../models/auths/user_model.dart';
 import '../../models/feed.dart';
+import '../../routes/app_routes.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/style_config.dart';
@@ -87,7 +88,11 @@ class ProfileScreen extends GetView<ProfileController> {
                         ),
                         padding: const EdgeInsets.all(10),
                         width: 100,
-                        child: WalletButton(onTap: (){}, val: _user?.wallet,)
+                        child: WalletButton(
+                          onTap: () {
+                            // Get.toNamed(AppRoutes.MARKET, arguments: "Profile");
+                          },
+                          val: _user?.wallet,)
                     )
                   ),
                 ),
