@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:musedme/services/auth_service.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import '../../controllers/market_controller.dart';
@@ -20,6 +21,7 @@ class ItemScreen extends StatelessWidget {
   const ItemScreen({Key? key}) : super(key: key);
 
   MarketController get controller => Get.find<MarketController>();
+  AuthService get _auth => Get.find<AuthService>();
 
   Listing? get selectedItem => controller.selectedItem.value;
   BoxFit get boxFit => controller.boxFit.value;
@@ -37,10 +39,8 @@ class ItemScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("::::::::::::::::::::${selectedItem?.files?.length}");
-    String heroKey = "pop${Get.arguments}";
+    // String heroKey = "pop${Get.arguments}";
     return WillPopScope(
-      // onWillPop: controller.onWillPop,
       onWillPop: () async {
         controller.resetValues();
         return false;
@@ -132,13 +132,30 @@ class ItemScreen extends StatelessWidget {
             child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
         ),
 
-        // USER IMAGE
-        UserAvatar(
-          "https://i.pinimg.com/564x/cd/32/18/cd3218b69445f9f0bd5eca70f4c0126e.jpg",
-          1.toString(),
-          padding: const EdgeInsets.all(5.0),
-          badgeContent: null,
-          radius: 25,
+        AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+          decoration: BoxDecoration(
+            color: AppColors.primaryColor,
+            borderRadius: BorderRadius.circular(100),
+          ),
+          padding: buy ? const EdgeInsets.all(10) : null,
+          width: buy ? 80 : null,
+          child: buy ?
+          Row(
+            children: [
+              const Icon(Ionicons.ios_wallet_outline, color: Colors.white),
+              TextWidget("\t ${_auth.currentUser?.wallet}\$", size: 16, weight: FontWeight.w400, color: Colors.white),
+            ],
+          ) :
+          UserAvatar(
+            selectedItem?.userDetails?.profilePic != null && selectedItem!.userDetails!.profilePic!.isNotEmpty ?
+            "${Constants.IMAGE_URL}${selectedItem!.userDetails!.profilePic!}" :
+            Constants.dummyImage,
+            selectedItem!.userId.toString(),
+            padding: const EdgeInsets.all(5.0),
+            badgeContent: null,
+            radius: 25,
+          )
         ),
       ],
     ));
@@ -196,7 +213,7 @@ class ItemScreen extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Obx(() {
               Color paletteColor = palette?.mutedColor?.color ?? AppColors.secondaryColor;
-              Color textColor = (paletteColor.computeLuminance() > 0.179)? AppColors.lightGrey : Colors.black;
+              Color textColor = (paletteColor.computeLuminance() >= 0.5)? Colors.black :AppColors.lightGrey;
               return Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(

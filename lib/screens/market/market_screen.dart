@@ -72,10 +72,15 @@ class MarketScreen extends GetView<MarketController> {
                                   )
                               ),
 
-                              Positioned(
+                              Positioned.fill(
                                 bottom: 36,
                                 left: 10,
-                                child: TextWidget("${_listing.elementAt(index)?.title}", color: Colors.white, size: 22),),
+                                child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: TextWidget("${_listing.elementAt(index)?.title}",
+                                      color: Colors.white, size: 20),
+                                )
+                              ),
                               Positioned(
                                 bottom: 10,
                                 left: 10,
@@ -86,7 +91,7 @@ class MarketScreen extends GetView<MarketController> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       const TextWidget("Price ", color: AppColors.grayScale, weight: FontWeight.w400, size: 12),
-                                      TextWidget("${_listing.elementAt(index)?.price}\$", color: Colors.white, size: 16, weight: FontWeight.w600),
+                                      TextWidget("${_listing.elementAt(index)?.price}\$", color: Colors.white, size: 15, weight: FontWeight.w600),
                                     ],
                                   ),
                                 ),),
