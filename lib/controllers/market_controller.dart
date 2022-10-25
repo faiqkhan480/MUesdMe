@@ -97,7 +97,8 @@ class MarketController extends GetxController {
     buying.value = true;
     var res = await _service.buyItem(selectedItem.value!.itemId!.toString(), selectedItem.value!.price!.toString());
     if(res != null) {
-      Get.back();
+      _authService.setUser(_authService.currentUser?.copyWith(wallet: (_authService.currentUser!.wallet! - selectedItem.value!.price!)));
+      // Get.back();
       Get.snackbar("Success!", res ?? "",
           backgroundColor: AppColors.successColor,
           colorText: Colors.white

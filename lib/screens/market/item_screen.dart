@@ -17,6 +17,7 @@ import '../../utils/constants.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/text_widget.dart';
 import '../../widgets/user_avatar.dart';
+import '../../widgets/wallet_button.dart';
 
 class ItemScreen extends StatelessWidget {
   const ItemScreen({Key? key}) : super(key: key);
@@ -201,14 +202,7 @@ class ItemScreen extends StatelessWidget {
           padding: buy ? const EdgeInsets.all(10) : null,
           width: buy ? 100 : null,
           child: buy ?
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Ionicons.ios_wallet_outline, color: Colors.white),
-              TextWidget("\t\$ ${numFormat(_auth.currentUser?.wallet ?? 0)}", size: 16, weight: FontWeight.w400, color: Colors.white),
-            ],
-          ) :
+          WalletButton(onTap: (){}, val: _auth.currentUser?.wallet,) :
           UserAvatar(
             selectedItem?.userDetails?.profilePic != null && selectedItem!.userDetails!.profilePic!.isNotEmpty ?
             "${Constants.IMAGE_URL}${selectedItem!.userDetails!.profilePic!}" :
@@ -323,8 +317,11 @@ class ItemScreen extends StatelessWidget {
                                 children: [
                                   TextWidget(selectedItem?.userDetails?.fullName ?? "", size: 16, weight: FontWeight.w600),
                                   TextWidget(
-                                      selectedItem?.type == "Selling" ? "Selling to you" : "Licensed to you ",
+                                      selectedItem?.type ?? "",
                                       color: AppColors.lightGrey, weight: FontWeight.w400, size: 12),
+                                  // TextWidget(
+                                  //     "${_auth.currentUser?.wallet}",
+                                  //     color: AppColors.lightGrey, weight: FontWeight.w400, size: 12),
                                 ],
                               ),
                               const Spacer(),
@@ -414,19 +411,5 @@ class ItemScreen extends StatelessWidget {
           ),
         ),
     );
-  }
-
-  String numFormat(double val) {
-    if (val > 999 && val < 99999) {
-      return "${(val / 1000).toStringAsFixed(1)} K";
-    } else if (val > 99999 && val < 999999) {
-      return "${(val / 1000).toStringAsFixed(0)} K";
-    } else if (val > 999999 && val < 999999999) {
-      return "${(val / 1000000).toStringAsFixed(1)} M";
-    } else if (val > 999999999) {
-      return "${(val / 1000000000).toStringAsFixed(1)} B";
-    } else {
-      return val.toString();
-    }
   }
 }

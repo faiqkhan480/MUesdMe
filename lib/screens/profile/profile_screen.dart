@@ -14,6 +14,7 @@ import '../../models/feed.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/style_config.dart';
+import '../../widgets/wallet_button.dart';
 import 'profile_body.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
@@ -79,7 +80,15 @@ class ProfileScreen extends GetView<ProfileController> {
                     likeTap: handleLikeTap,
                     onShareTap: handleShare,
                     onCommentTap: handleComment,
-
+                    options: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        width: 100,
+                        child: WalletButton(onTap: (){}, val: _user?.wallet,)
+                    )
                   ),
                 ),
               ],
