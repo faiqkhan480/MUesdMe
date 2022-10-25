@@ -38,6 +38,7 @@ class Constants {
   static const String UPLOAD_LISTING = "$BASE_URL/api/Listings/UploadListing";
   static const String MARKET_LISTING = "$BASE_URL/api/Listings/GetAllListings";
   static const String MARKET_ITEM_DETAIL = "$BASE_URL/api/Listings/GetListingDetails";
+  static const String ADD_ORDER = "$BASE_URL/api/Listings/AddOrder";
 
   static const String fontFamily = "Larsseit";
   static const String dummyImage = "${IMAGE_URL}Users.png"; //"https://cdn.hswstatic.com/gif/play/0b7f4e9b-f59c-4024-9f06-b3dc12850ab7-1920-1080.jpg";

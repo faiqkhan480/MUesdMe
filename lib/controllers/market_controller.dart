@@ -9,6 +9,7 @@ import '../models/listing.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
 class MarketController extends GetxController {
@@ -17,6 +18,7 @@ class MarketController extends GetxController {
   RxBool buy = false.obs;
   RxBool loading = true.obs;
   RxBool fetching = false.obs;
+  RxBool buying = false.obs;
   RxInt currIndex = 0.obs;
   Rx<BoxFit> boxFit = BoxFit.cover.obs;
   Rx<Alignment> alignment = const Alignment(0.6, 0).obs;
@@ -60,7 +62,6 @@ class MarketController extends GetxController {
   }
 
   void setItem(Listing item, index) async {
-    debugPrint("::::::::::::::::");
     selectedItem = item.obs;
     if(selectedItem.value?.category == "Images" || selectedItem.value?.category == "Image") {
       await updatePaletteGenerator();
@@ -79,12 +80,30 @@ class MarketController extends GetxController {
   }
 
   void buyItem() {
-    buy.value = !buy();
-    // boxFit.value = buy() ? BoxFit.none : BoxFit.cover;
-    height.value = buy() ? 500 : Get.height;
-    width.value = buy() ? Get.width : Get.width;
-    // alignment.value = buy() ? Alignment.topCenter : const Alignment(0.6, 0);
-    borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
+    if(buy()) {
+      _sndBuyRequest();
+    }
+    else {
+      buy.value = !buy();
+      // boxFit.value = buy() ? BoxFit.none : BoxFit.cover;
+      height.value = buy() ? 500 : Get.height;
+      width.value = buy() ? Get.width : Get.width;
+      // alignment.value = buy() ? Alignment.topCenter : const Alignment(0.6, 0);
+      borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
+    }
+  }
+
+  Future<void> _sndBuyRequest() async {
+    buying.value = true;
+    var res = await _service.buyItem(selectedItem.value!.itemId!.toString(), selectedItem.value!.price!.toString());
+    if(res != null) {
+      Get.back();
+      Get.snackbar("Success!", res ?? "",
+          backgroundColor: AppColors.successColor,
+          colorText: Colors.white
+      );
+    }
+    buying.value = false;
   }
 
   void resetValues() {

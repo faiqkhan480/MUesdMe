@@ -33,6 +33,7 @@ class ItemScreen extends StatelessWidget {
   double get width => controller.width.value;
   bool get buy => controller.buy.value;
   bool get _loading => controller.loading();
+  bool get _buying => controller.buying();
 
   PaletteGenerator? get palette => controller.palette.value;
 
@@ -173,12 +174,12 @@ class ItemScreen extends StatelessWidget {
         left: 10,
         right: 10,
         child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // BACK BUTTON
-        TextButton(
-            onPressed: controller.resetValues,
-            style: TextButton.styleFrom(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // BACK BUTTON
+            TextButton(
+                onPressed: controller.resetValues,
+                style: TextButton.styleFrom(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -188,22 +189,24 @@ class ItemScreen extends StatelessWidget {
                 minimumSize: const Size(45, 0),
                 textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
             ),
-            child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
-        ),
+                child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
+            ),
 
-        AnimatedContainer(
+            AnimatedContainer(
             duration: const Duration(milliseconds: 500),
           decoration: BoxDecoration(
             color: AppColors.primaryColor,
             borderRadius: BorderRadius.circular(100),
           ),
           padding: buy ? const EdgeInsets.all(10) : null,
-          width: buy ? 80 : null,
+          width: buy ? 100 : null,
           child: buy ?
           Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Ionicons.ios_wallet_outline, color: Colors.white),
-              TextWidget("\t ${_auth.currentUser?.wallet}\$", size: 16, weight: FontWeight.w400, color: Colors.white),
+              TextWidget("\t\$ ${numFormat(_auth.currentUser?.wallet ?? 0)}", size: 16, weight: FontWeight.w400, color: Colors.white),
             ],
           ) :
           UserAvatar(
@@ -217,7 +220,8 @@ class ItemScreen extends StatelessWidget {
           )
         ),
       ],
-    ));
+    )
+    );
   }
 
   Widget _buyButton() {
@@ -225,7 +229,7 @@ class ItemScreen extends StatelessWidget {
         bottom: 10,
         left: 10,
         right: 10,
-        child: _loading ?
+        child: _loading || _buying ?
         const SizedBox(
           height: 90,
           child: Loader(),
@@ -410,5 +414,19 @@ class ItemScreen extends StatelessWidget {
           ),
         ),
     );
+  }
+
+  String numFormat(double val) {
+    if (val > 999 && val < 99999) {
+      return "${(val / 1000).toStringAsFixed(1)} K";
+    } else if (val > 99999 && val < 999999) {
+      return "${(val / 1000).toStringAsFixed(0)} K";
+    } else if (val > 999999 && val < 999999999) {
+      return "${(val / 1000000).toStringAsFixed(1)} M";
+    } else if (val > 999999999) {
+      return "${(val / 1000000000).toStringAsFixed(1)} B";
+    } else {
+      return val.toString();
+    }
   }
 }
