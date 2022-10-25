@@ -85,11 +85,11 @@ class _UploadScreenState extends State<UploadScreen> {
     Permission.photos.request();
 
     if (status == PermissionStatus.granted) {
-      print('Permission Granted');
+      debugPrint('Permission Granted');
     } else if (status == PermissionStatus.denied) {
-      print('Permission denied');
+      debugPrint('Permission denied');
     } else if (status == PermissionStatus.permanentlyDenied) {
-      print('Permission Permanently Denied');
+      debugPrint('Permission Permanently Denied');
       await openAppSettings();
     }
   }
@@ -103,7 +103,6 @@ class _UploadScreenState extends State<UploadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(":::::::::::::::: ${widget.post?.image}");
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

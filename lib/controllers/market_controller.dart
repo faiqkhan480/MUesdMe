@@ -1,3 +1,4 @@
+import 'package:better_player/better_player.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,8 @@ class MarketController extends GetxController {
   Rx<Alignment> alignment = const Alignment(0.6, 0).obs;
   Rx<BorderRadius> borderRadius = BorderRadius.circular(30).obs;
 
+  BetterPlayerListVideoPlayerController betterCtrl = BetterPlayerListVideoPlayerController();
+
   Rx<PaletteGenerator?> palette = Rxn<PaletteGenerator?>();
 
   Rx<Listing?> uploadItem = Rxn<Listing?>();
@@ -36,6 +39,8 @@ class MarketController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    betterCtrl = BetterPlayerListVideoPlayerController();
+    betterCtrl.setVolume(0);
     getAllListing();
   }
 
@@ -55,8 +60,11 @@ class MarketController extends GetxController {
   }
 
   void setItem(Listing item, index) async {
+    debugPrint("::::::::::::::::");
     selectedItem = item.obs;
-    await updatePaletteGenerator();
+    if(selectedItem.value?.category == "Images" || selectedItem.value?.category == "Image") {
+      await updatePaletteGenerator();
+    }
     Get.toNamed(AppRoutes.ITEM, arguments: index);
     getItemDetail();
   }

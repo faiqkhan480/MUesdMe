@@ -24,7 +24,7 @@ class InputField extends StatelessWidget {
         this.keyboardType,
         this.multiLine = false,
         this.enabled = true,
-        this.minLines,
+        this.minLines = 1,
         this.trailingIcon,
         this.onEditingComplete,
         this.readOnly = false,

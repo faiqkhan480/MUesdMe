@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
-import 'package:musedme/utils/constants.dart';
 
 import '../../components/header.dart';
 import '../../controllers/market_controller.dart';
 import '../../models/listing.dart';
 import '../../utils/app_colors.dart';
-import '../../utils/assets.dart';
+import '../../utils/constants.dart';
 import '../../widgets/glass_morphism.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/text_widget.dart';
+import '../../widgets/thumbnail_widget.dart';
 
 class MarketScreen extends GetView<MarketController> {
   const MarketScreen({Key? key}) : super(key: key);
@@ -56,21 +55,17 @@ class MarketScreen extends GetView<MarketController> {
                                   borderRadius: BorderRadius.circular(20),
                                   child: Hero(
                                     tag: "pop$index",
-                                    child: Image.network(
-                                      "${Constants.LISTING_URL}${_listing.elementAt(index)?.mainFile}",
-                                      loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
-                                      errorBuilder: (context, error, stackTrace) => Container(
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.secondaryColor,
-                                              // borderRadius: BorderRadius.circular(20),
-                                              // border: Border.all(color: AppColors.secondaryColor)
-                                          ),
-                                          alignment: Alignment.center,
-                                          // child: SvgPicture.asset(Assets.iconsNoFeeds, fit: BoxFit.cover,),),
-                                          child: const Icon(Feather.image, color: Colors.white, size: 100,)),
-                                      fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
+                                    child: _listing.elementAt(index)?.category == "Video" ?
+                                    ThumbnailWidget("${Constants.LISTING_URL}${_listing.elementAt(index)?.mainFile}") :
+                                    imageCard("${Constants.LISTING_URL}${_listing.elementAt(index)?.mainFile}"),
                                   )
                               ),
+
+                              if(_listing.elementAt(index)?.category == "Video")
+                                const Positioned(
+                                  top: 10,
+                                  right: 10,
+                                  child: Icon(Feather.film, color: Colors.white)),
 
                               Positioned.fill(
                                 bottom: 36,
@@ -158,6 +153,22 @@ class MarketScreen extends GetView<MarketController> {
         icon: Icons.add,
       ),
     );
+  }
+
+  Widget imageCard(String path) {
+    return Image.network(
+      path,
+      loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
+      errorBuilder: (context, error, stackTrace) => Container(
+          decoration: const BoxDecoration(
+            color: AppColors.secondaryColor,
+            // borderRadius: BorderRadius.circular(20),
+            // border: Border.all(color: AppColors.secondaryColor)
+          ),
+          alignment: Alignment.center,
+          // child: SvgPicture.asset(Assets.iconsNoFeeds, fit: BoxFit.cover,),),
+          child: const Icon(Feather.image, color: Colors.white, size: 100,)),
+      fit: BoxFit.cover, height: double.infinity, width: double.infinity,);
   }
 
   void onTap(int index ) {

@@ -30,7 +30,7 @@ class FeedController extends GetxController {
 
   final RootController _bottomNavigation = Get.find<RootController>();
 
-  BetterPlayerListVideoPlayerController betterCtrl= BetterPlayerListVideoPlayerController();
+  BetterPlayerListVideoPlayerController betterCtrl = BetterPlayerListVideoPlayerController();
   BetterPlayerConfiguration betterPlayerConfiguration = const BetterPlayerConfiguration(autoPlay: true);
   // RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
 
