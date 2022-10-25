@@ -53,11 +53,20 @@ class MarketController extends GetxController {
     loading.value = false;
   }
 
-
   void setItem(Listing item, index) async {
     selectedItem = item.obs;
     await updatePaletteGenerator();
     Get.toNamed(AppRoutes.ITEM, arguments: index);
+    getItemDetail();
+  }
+
+  Future<void> getItemDetail() async {
+    loading.value = true;
+    Listing? res = await _service.fetchItemDetails(selectedItem.value!.itemId!.toString());
+    if(res != null) {
+      selectedItem = res.obs;
+    }
+    loading.value = false;
   }
 
   void buyItem() {
@@ -69,7 +78,7 @@ class MarketController extends GetxController {
     borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
   }
 
-  resetValues() {
+  void resetValues() {
     if(!buy()) {
       Get.back();
     }

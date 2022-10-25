@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'auths/user_model.dart';
+
 part 'listing.g.dart';
 
 List<Listing> listingFromJson(String str) => List<Listing>.from(json.decode(str).map((x) => Listing.fromJson(x)));
@@ -10,6 +12,7 @@ List<Listing> listingFromJson(String str) => List<Listing>.from(json.decode(str)
 class Listing {
   Listing({
     required this.userId,
+    required this.itemId,
     required this.price,
     required this.quantity,
     required this.type,
@@ -18,11 +21,15 @@ class Listing {
     required this.status,
     required this.mainFile,
     required this.description,
+    required this.userDetails,
     required this.files,
   });
 
   @JsonKey(name: 'UserID')
   final int? userId;
+
+  @JsonKey(name: 'ItemID')
+  final int? itemId;
 
   @JsonKey(name: 'Price')
   final double? price;
@@ -45,12 +52,16 @@ class Listing {
   @JsonKey(name: 'MainFile')
   final String? mainFile;
 
+  @JsonKey(name: 'UserDetails')
+  final User? userDetails;
+
   @JsonKey(name: 'Description')
   final String? description;
   final List<FileElement>? files;
 
   Listing copyWith({
     int? userId,
+    int? itemId,
     double? price,
     int? quantity,
     String? type,
@@ -58,11 +69,13 @@ class Listing {
     String? title,
     String? status,
     String? mainFile,
+    User? userDetails,
     String? description,
     List<FileElement>? files,
   }) {
     return Listing(
       userId: userId ?? this.userId,
+      itemId: itemId ?? this.itemId,
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
       type: type ?? this.type,
@@ -70,6 +83,7 @@ class Listing {
       title: title ?? this.title,
       status: status ?? this.status,
       mainFile: mainFile ?? this.mainFile,
+      userDetails: userDetails ?? this.userDetails,
       description: description ?? this.description,
       files: files ?? this.files,
     );

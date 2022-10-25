@@ -28,6 +28,7 @@ class ItemScreen extends StatelessWidget {
   double? get height => controller.height.value;
   double get width => controller.width.value;
   bool get buy => controller.buy.value;
+  bool get _loading => controller.loading();
 
   PaletteGenerator? get palette => controller.palette.value;
 
@@ -35,6 +36,7 @@ class ItemScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("::::::::::::::::::::${selectedItem?.files?.length}");
     String heroKey = "pop${Get.arguments}";
     return WillPopScope(
       // onWillPop: controller.onWillPop,
@@ -50,33 +52,21 @@ class ItemScreen extends StatelessWidget {
               SizedBox(
                 height: Get.height,
                 width: Get.width,
+                // child: Hero(
+                //   tag: heroKey,
+                //   child: Image.network(
+                //     "${Constants.LISTING_URL}${_listing.elementAt(Get.arguments)?.mainFile}",
+                //     loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
+                //     errorBuilder: (context, error, stackTrace) => Container(
+                //         decoration: const BoxDecoration(
+                //           color: AppColors.secondaryColor,
+                //         ),
+                //         child: const Icon(Feather.image, color: Colors.white, size: 100,)),
+                //     fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
+                // ),
               ),
 
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 1000),
-                height: height,
-                width: 500,
-                left: buy ? 0 : -100,
-                // top: 0,
-                curve: Curves.linearToEaseOut,
-                child: Hero(
-                  tag: heroKey,
-                  child: Image.network(
-                    "${Constants.LISTING_URL}${_listing.elementAt(Get.arguments)?.mainFile}",
-                    loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      decoration: const BoxDecoration(
-                        color: AppColors.secondaryColor,
-                        // borderRadius: BorderRadius.circular(20),
-                        // border: Border.all(color: AppColors.secondaryColor)
-                      ),
-                        // alignment: Alignment.center,
-                        child: const Icon(Feather.image, color: Colors.white, size: 100,)),
-                    // child: Icon(Feather.image, color: AppColors.secondaryColor, size: 40,)),
-                    fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
-                  // child: Image.network(nft, fit: boxFit, alignment: alignment),
-                ),
-              ),
+              _files(),
 
               _sheet(),
 
@@ -86,6 +76,34 @@ class ItemScreen extends StatelessWidget {
             ],
           ),),
         ),
+    );
+  }
+
+  Widget _files() {
+    String heroKey = "pop${Get.arguments}";
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 1000),
+      height: height,
+      width: 500,
+      left: buy ? 0 : -100,
+      curve: Curves.linearToEaseOut,
+      child: Hero(
+        tag: heroKey,
+        child: PageView.builder(
+          itemCount: selectedItem?.files?.length ?? 1,
+          itemBuilder: (context, index) => Image.network(
+            "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(index).filePath ?? _listing.elementAt(Get.arguments)?.mainFile}",
+            loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
+            errorBuilder: (context, error, stackTrace) => Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.secondaryColor,
+                ),
+                // alignment: Alignment.center,
+                child: const Icon(Feather.image, color: Colors.white, size: 100,)),
+            fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
+
+        ),
+      ),
     );
   }
 
@@ -130,10 +148,14 @@ class ItemScreen extends StatelessWidget {
         bottom: 10,
         left: 10,
         right: 10,
-        child: TextButton(
-      // onPressed: controller.updatePaletteGenerator,
-      onPressed: controller.buyItem,
-      style: TextButton.styleFrom(
+        child: _loading ?
+        const SizedBox(
+          height: 90,
+          child: Loader(),
+        ) :
+        TextButton(
+          onPressed: controller.buyItem,
+          style: TextButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -142,7 +164,7 @@ class ItemScreen extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15, right: 5, top: 8, bottom: 8),
           textStyle: const TextStyle(fontSize: 18, fontFamily: Constants.fontFamily)
       ),
-      child: Row(
+          child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text("Buy This"),
@@ -156,7 +178,8 @@ class ItemScreen extends StatelessWidget {
           )
         ],
       ),
-    ));
+    )
+    );
   }
 
   Widget _sheet() {

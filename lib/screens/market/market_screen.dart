@@ -106,13 +106,12 @@ class MarketScreen extends GetView<MarketController> {
               ),
             ),
 
-          if(_fetching || _loading)
+          if(_fetching || (_loading && _listing.isEmpty))
             const Loader()
         ],
       )),
 
       floatingActionButton: SpeedDial(
-        // animatedIcon: AnimatedIcons.menu_close,
         animatedIconTheme: const IconThemeData(size: 22.0),
         visible: true,
         curve: Curves.bounceIn,
