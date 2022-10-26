@@ -3,16 +3,15 @@ import 'dart:ui';
 import 'package:better_player/better_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
-import 'package:musedme/services/auth_service.dart';
 import 'package:palette_generator/palette_generator.dart';
 
+import '../../components/audio_item.dart';
 import '../../controllers/market_controller.dart';
 import '../../models/listing.dart';
+import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
-import '../../utils/assets.dart';
 import '../../utils/constants.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/text_widget.dart';
@@ -101,6 +100,8 @@ class ItemScreen extends StatelessWidget {
           onPageChanged: (value) => controller.updatePaletteGenerator(selectedItem?.files?.elementAt(value).filePath, value),
           itemBuilder: (context, index) => selectedItem?.category == 'Video' ?
           _video(index) :
+          selectedItem?.category == 'Music' ?
+          _audioCard(index) :
           Image.network(
             "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(index).filePath ?? _listing.elementAt(Get.arguments)?.mainFile}",
             loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
@@ -110,7 +111,6 @@ class ItemScreen extends StatelessWidget {
                 ),
                 child: const Icon(Feather.image, color: Colors.white, size: 100,)),
             fit: BoxFit.cover, height: double.infinity, width: double.infinity,),
-
         ),
       ),
     );
@@ -292,11 +292,6 @@ class ItemScreen extends StatelessWidget {
                     begin: AlignmentDirectional.topStart,
                     end: AlignmentDirectional.bottomEnd,
                   ),
-                  // borderRadius: BorderRadius.all(Radius.circular(10)),
-                  // border: Border.all(
-                  //   width: 1.5,
-                  //   color: Colors.white.withOpacity(0.2),
-                  // ),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Column(
@@ -370,11 +365,11 @@ class ItemScreen extends StatelessWidget {
                                       children: [
                                         TextSpan(
                                           text: "${selectedItem?.price}",
-                                          style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w600),
+                                          style: TextStyle(fontSize: Get.textScaleFactor * 28, fontWeight: FontWeight.w600),
                                         ),
-                                        const TextSpan(
+                                        TextSpan(
                                           text: "  Dollar",
-                                          style: TextStyle(fontSize: 12),
+                                          style: TextStyle(fontSize: Get.textScaleFactor * 10),
                                         ),
                                       ]
                                   )
@@ -392,20 +387,20 @@ class ItemScreen extends StatelessWidget {
                       ),
                       height: Get.height * 0.16,
                       padding: const EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 10),
-                      margin: const EdgeInsets.only(top: 25, bottom: 15),
+                      margin: const EdgeInsets.only(top: 10, bottom: 15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           TextWidget("Description",
                               color: textColor,
-                              weight: FontWeight.w400, size: 14, align: TextAlign.center),
+                              weight: FontWeight.w400, size: Get.textScaleFactor * 12, align: TextAlign.center),
                           const Divider(height: 30),
 
                           Flexible(child: Text(
                             selectedItem?.description ?? "",
                             style: TextStyle(
                                 color: textColor,
-                                fontSize: 16
+                                fontSize: Get.textScaleFactor * 16
                             ),
                             // color: textColor,
                             // weight: FontWeight.w400,
@@ -428,7 +423,7 @@ class ItemScreen extends StatelessWidget {
     Color paletteColor = palette?.dominantColor?.color ?? AppColors.secondaryColor;
     Color textColor = (paletteColor.computeLuminance() >= 0.5)? Colors.black : Colors.white;
     return Positioned(
-      top: 150,
+      top: 100,
         right: 20,
         child: Text(
           (selectedItem?.title ?? "").replaceAll(" ", "\n"),
@@ -440,5 +435,72 @@ class ItemScreen extends StatelessWidget {
           ),
         )
     );
+  }
+
+  Widget _audioCard(int index) {
+    if(!_loading) {
+      return AudioItem(listing: selectedItem!);
+    }
+    return Container(
+        decoration: const BoxDecoration(
+          color: AppColors.secondaryColor,
+        ),
+        alignment: Alignment.center,
+        child: const Icon(Entypo.note, color: AppColors.primaryColor, size: 80,)
+    );
+
+    // return AspectRatio(
+    //   aspectRatio: 0.5,
+    //   child: BetterPlayerListVideoPlayer(
+    //     BetterPlayerDataSource(
+    //       BetterPlayerDataSourceType.network,
+    //       // "${Constants.FEEDS_URL}${_listing.elementAt(Get.arguments)?.mainFile}",
+    //       "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(index).filePath ?? _listing.elementAt(Get.arguments)?.mainFile}",
+    //       notificationConfiguration: BetterPlayerNotificationConfiguration(
+    //         showNotification: false,
+    //         title: _listing.elementAt(Get.arguments)?.title ?? "",
+    //         author: "Test",
+    //       ),
+    //       bufferingConfiguration: const BetterPlayerBufferingConfiguration(
+    //           minBufferMs: 2000,
+    //           maxBufferMs: 10000,
+    //           bufferForPlaybackMs: 1000,
+    //           bufferForPlaybackAfterRebufferMs: 2000),
+    //     ),
+    //     configuration: BetterPlayerConfiguration(
+    //         autoDispose: false,
+    //         looping: true,
+    //         fit: BoxFit.cover,
+    //         autoPlay: true,
+    //         aspectRatio: 0.5,
+    //         eventListener: (p0) {
+    //           if(p0.betterPlayerEventType == BetterPlayerEventType.setVolume) {
+    //             controller.betterCtrl;
+    //           }
+    //         },
+    //         // handleLifecycle: true,
+    //         controlsConfiguration: const BetterPlayerControlsConfiguration(
+    //             enableFullscreen: false,
+    //             showControlsOnInitialize: true,
+    //             enablePlaybackSpeed: false,
+    //             enableProgressBar: false,
+    //             enableOverflowMenu: false,
+    //             enableProgressText: false,
+    //             enablePip: false,
+    //             enableSkips: false,
+    //             // loadingWidget: Loader(),
+    //             controlBarColor: Colors.transparent,
+    //             playIcon: FontAwesome5Solid.play_circle,
+    //             pauseIcon: FontAwesome5Solid.pause_circle,
+    //             muteIcon: FontAwesome5Solid.volume_up,
+    //             unMuteIcon: FontAwesome5Solid.volume_mute,
+    //             enablePlayPause: false
+    //         )
+    //     ),
+    //     //key: Key(videoListData.hashCode.toString()),
+    //     playFraction: 0.8,
+    //     betterPlayerListVideoPlayerController: controller.betterCtrl,
+    //   ),
+    // );
   }
 }

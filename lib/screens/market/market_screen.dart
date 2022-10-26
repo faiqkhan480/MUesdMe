@@ -118,14 +118,14 @@ class MarketScreen extends GetView<MarketController>  {
             // labelStyle: TextTheme(fontSize: 18.0),
             onTap: () => controller.uploadFile("Video"),
           ),
-          SpeedDialChild(
-            child: const Icon(Feather.headphones),
-            backgroundColor: AppColors.secondaryColor,
-            foregroundColor: Colors.white,
-            label: 'Upload audio file',
-            // labelStyle: TextTheme(fontSize: 18.0),
-            onTap: () => controller.uploadFile("Music"),
-          ),
+          // SpeedDialChild(
+          //   child: const Icon(Feather.headphones),
+          //   backgroundColor: AppColors.secondaryColor,
+          //   foregroundColor: Colors.white,
+          //   label: 'Upload audio file',
+          //   // labelStyle: TextTheme(fontSize: 18.0),
+          //   onTap: () => controller.uploadFile("Music"),
+          // ),
         ],
         activeIcon: Icons.close,
         icon: Icons.add,
@@ -155,6 +155,8 @@ class MarketScreen extends GetView<MarketController>  {
                       tag: "pop$tab$index",
                       child: data.elementAt(index)?.category == "Video" ?
                       ThumbnailWidget("${Constants.LISTING_URL}${data.elementAt(index)?.mainFile}") :
+                      data.elementAt(index)?.category == "Music" ?
+                      audioCard() :
                       imageCard("${Constants.LISTING_URL}${data.elementAt(index)?.mainFile}"),
                     )
                 ),
@@ -164,6 +166,12 @@ class MarketScreen extends GetView<MarketController>  {
                       top: 10,
                       right: 10,
                       child: Icon(Feather.film, color: Colors.white)),
+
+                if(data.elementAt(index)?.category == "Music")
+                  const Positioned(
+                      top: 10,
+                      right: 10,
+                      child: Icon(Feather.music, color: Colors.white)),
 
                 Positioned.fill(
                     bottom: 36,
@@ -192,6 +200,14 @@ class MarketScreen extends GetView<MarketController>  {
             ),
           )
       ),
+    );
+  }
+
+  Widget audioCard() {
+    return Container(
+        color: AppColors.secondaryColor,
+        alignment: Alignment.center,
+        child: const Icon(Entypo.note, color: AppColors.primaryColor, size: 80,)
     );
   }
 

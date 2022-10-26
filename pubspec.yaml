@@ -61,6 +61,8 @@ dependencies:
   better_player: ^0.0.83
   cached_network_image: ^3.2.2
   palette_generator: ^0.3.3+2
+  flutter_stripe: ^6.0.0
+  audioplayers: ^1.1.1
 
 dev_dependencies:
   flutter_test:

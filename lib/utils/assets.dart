@@ -30,6 +30,7 @@ class Assets {
   static const String iconsWatchLater = 'assets/icons/watch_later.svg';
   static const String iconsNoComments = 'assets/icons/messages-pana.svg';
   static const String iconsNoFeeds = 'assets/icons/astronaut_suit.svg';
+  static const String iconsCoin = 'assets/icons/goldcoin.svg';
 
   static const String searchUsers = 'assets/icons/search-rafiki.svg';
   static const String emptySearch = 'assets/icons/people_search-cuate.svg';

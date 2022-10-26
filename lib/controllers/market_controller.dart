@@ -12,6 +12,7 @@ import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
 class MarketController extends GetxController with GetSingleTickerProviderStateMixin  {
+
   List<String> myTabs = [
     "Market Items",
     "My Listing"
@@ -48,6 +49,7 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
     // TODO: implement onInit
     super.onInit();
     tabController = TabController(vsync: this, length: myTabs.length);
+
     betterCtrl = BetterPlayerListVideoPlayerController();
     betterCtrl.setVolume(0);
     getAllListing();
@@ -126,6 +128,7 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
     height.value = Get.height;
     borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
     currIndex.value = 0;
+    selectedItem = Rxn<Listing?>();
   }
 
   Future updatePaletteGenerator([String? path, int? index]) async {

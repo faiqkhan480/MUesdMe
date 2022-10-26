@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import '../../components/comment_sheet.dart';
 import '../../components/header.dart';
 import '../../components/share_sheet.dart';
+import '../../components/wallet_sheet.dart';
 import '../../controllers/comment_controller.dart';
 import '../../controllers/profile_controller.dart';
 import '../../models/auths/user_model.dart';
@@ -89,9 +90,7 @@ class ProfileScreen extends GetView<ProfileController> {
                         padding: const EdgeInsets.all(10),
                         width: 100,
                         child: WalletButton(
-                          onTap: () {
-                            // Get.toNamed(AppRoutes.MARKET, arguments: "Profile");
-                          },
+                          onTap: handleWallet,
                           val: _user?.wallet,)
                     )
                   ),
@@ -130,6 +129,19 @@ class ProfileScreen extends GetView<ProfileController> {
     await Get.bottomSheet(
         ShareSheet(feed: feed),
         clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
+  }
+
+  // COMMENT SHEET
+  handleWallet() async {
+    await Get.bottomSheet(
+        const WalletSheet(),
+        clipBehavior: Clip.antiAlias,
+        isScrollControlled: true,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
         enableDrag: true,
         persistent: true,
