@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-import '../models/api_res.dart';
 import '../models/listing.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
@@ -12,7 +11,14 @@ import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
-class MarketController extends GetxController {
+class MarketController extends GetxController with GetSingleTickerProviderStateMixin  {
+  List<String> myTabs = [
+    "Market Items",
+    "My Listing"
+  ];
+
+  late TabController tabController;
+
   Rx<Listing?> selectedItem = Rxn<Listing?>();
 
   RxBool buy = false.obs;
@@ -41,6 +47,7 @@ class MarketController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    tabController = TabController(vsync: this, length: myTabs.length);
     betterCtrl = BetterPlayerListVideoPlayerController();
     betterCtrl.setVolume(0);
     getAllListing();
