@@ -123,9 +123,9 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
       Get.back();
     }
     buy.value = false;
-    // boxFit.value = buy() ? BoxFit.none : BoxFit.cover;
     height.value = Get.height;
     borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
+    currIndex.value = 0;
   }
 
   Future updatePaletteGenerator([String? path, int? index]) async {
@@ -167,7 +167,15 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
 
   // EDIT ITEM
   void editItem() {
+    uploadItem.value = uploadItem.value?.copyWith(
+      files: selectedItem.value?.files
+    );
     Get.toNamed(AppRoutes.ITEMUPLOAD, arguments: selectedItem.value!.category!);
   }
 
+  // UPDATE ITEM
+  updateItem(Listing item) {
+    uploadItem = Rxn<Listing?>();
+    selectedItem.value = item;
+  }
 }

@@ -35,6 +35,7 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
   ApiService get _apiService => Get.find<ApiService>();
   MarketController get _controller => Get.find<MarketController>();
   Listing? get _listing => _controller.uploadItem();
+  bool get _loading => _controller.fetching();
 
   @override
   void initState() {
@@ -193,42 +194,57 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
                         ),
                       ),
 
-                      if(_controller.selectedItem.value?.userId == _authService.currentUser?.userId)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextButton(
-                            onPressed: () => _controller.uploadFile(_controller.selectedItem.value!.category!),
-                            style: TextButton.styleFrom(
-                                backgroundColor: AppColors.secondaryColor,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
+                      Obx(() {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if(_controller.selectedItem.value?.userId == _authService.currentUser?.userId)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () => _controller.uploadFile(_controller.selectedItem.value!.category!),
+                                      style: TextButton.styleFrom(
+                                          backgroundColor: AppColors.secondaryColor,
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                                          textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+                                      ),
+                                      child: const Text("Upload Files"),
+                                    ),
+
+                                    if(_loading)
+                                      const SizedBox(
+                                        height: 50,
+                                        child: Loader(),
+                                      ),
+                                  ],
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                                textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
-                            ),
-                            child: const Text("Upload Files"),
-                          ),
-                        ),
-                      ),
+                              ),
 
-                      if(_listing != null && _listing!.files!.isNotEmpty)...[
-                        const Padding(padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: TextWidget("Items", color: AppColors.secondaryColor, size: 18, weight: FontWeight.w700),
-                        ),
-                        ...List.generate(_listing!.files!.length, (index) => Padding(padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: TextWidget("${_listing?.files?.elementAt(index).filePath}",
-                              color: AppColors.secondaryColor, size: 15, weight: FontWeight.w400),
-                        ), )
-                      ]
+                            if(_listing != null && _listing!.files!.isNotEmpty)...[
+                              const Padding(padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: TextWidget("Items", color: AppColors.secondaryColor, size: 18, weight: FontWeight.w700),
+                              ),
+                              ...List.generate(_listing!.files!.length, (index) => Padding(padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                child: TextWidget("${_listing?.files?.elementAt(index).filePath}",
+                                    color: AppColors.secondaryColor, size: 15, weight: FontWeight.w400),
+                              ), )
+                            ]
 
-                      else if(_controller.selectedItem.value?.files != null && _controller.selectedItem.value!.files!.isNotEmpty)
-                        ...List.generate(_controller.selectedItem.value!.files!.length, (index) => Padding(padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: TextWidget("${_controller.selectedItem.value!.files?.elementAt(index).filePath}",
-                              color: AppColors.secondaryColor, size: 15, weight: FontWeight.w400),
-                        ), )
+                            else if(_controller.selectedItem.value?.files != null && _controller.selectedItem.value!.files!.isNotEmpty)
+                              ...List.generate(_controller.selectedItem.value!.files!.length, (index) => Padding(padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                child: TextWidget("${_controller.selectedItem.value!.files?.elementAt(index).filePath}",
+                                    color: AppColors.secondaryColor, size: 15, weight: FontWeight.w400),
+                              ), )
+                          ],
+                        );
+                      }),
                     ],
                   )
               )
@@ -273,10 +289,8 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
         bool res = await _apiService.uploadListing(payload);
         setState(() => loader = false);
         if(res) {
+          _controller.uploadItem = Rxn<Listing?>();
           Get.back();
-          // Get.offAllNamed(AppRoutes.ROOT);
-          // if(!mounted) return;
-          // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
         }
       }
       catch(e) {
@@ -302,6 +316,7 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
         var res = await _apiService.updateListing(payload);
         setState(() => loader = false);
         if(res != null) {
+          _controller.updateItem(payload!);
           Get.back();
           Get.snackbar("Success!", res ?? "",
               backgroundColor: AppColors.successColor,

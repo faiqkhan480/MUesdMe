@@ -73,6 +73,8 @@ class ItemScreen extends StatelessWidget {
 
               _files(),
 
+              _title(),
+
               _sheet(),
 
               _buyButton(),
@@ -277,8 +279,9 @@ class ItemScreen extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Obx(() {
-              Color paletteColor = palette?.mutedColor?.color ?? AppColors.secondaryColor;
-              Color textColor = (paletteColor.computeLuminance() >= 0.5)? Colors.black :AppColors.lightGrey;
+              Color paletteColor = palette?.dominantColor?.color ?? AppColors.secondaryColor;
+              Color paletteSkin = palette?.mutedColor?.color ?? AppColors.secondaryColor;
+              Color textColor = (paletteColor.computeLuminance() >= 0.5)? Colors.black : Colors.white;
               return Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -384,7 +387,7 @@ class ItemScreen extends StatelessWidget {
 
                     Container(
                       decoration: BoxDecoration(
-                          color: paletteColor.withOpacity(0.5),
+                          color: paletteSkin.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(20)
                       ),
                       height: Get.height * 0.16,
@@ -418,6 +421,24 @@ class ItemScreen extends StatelessWidget {
             }),
           ),
         ),
+    );
+  }
+
+  Widget _title() {
+    Color paletteColor = palette?.dominantColor?.color ?? AppColors.secondaryColor;
+    Color textColor = (paletteColor.computeLuminance() >= 0.5)? Colors.black : Colors.white;
+    return Positioned(
+      top: 150,
+        right: 20,
+        child: Text(
+          (selectedItem?.title ?? "").replaceAll(" ", "\n"),
+          textAlign: TextAlign.end,
+          style: TextStyle(
+              color: textColor,
+              fontSize: Get.textScaleFactor * 50,
+            fontWeight: FontWeight.w600
+          ),
+        )
     );
   }
 }
