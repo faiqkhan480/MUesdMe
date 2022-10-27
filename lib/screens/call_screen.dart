@@ -340,9 +340,21 @@ class CallScreen extends GetView<CallController> {
     return list;
   }
 
+  /// Video view wrapper
+  Widget _videoView(view) {
+    return Expanded(child: Container(child: view));
+  }
+
   /// Video view row wrapper
   Widget _expandedVideoView(List<Widget> views, List ids) {
-    final List<Widget> wrappedViews = [];
+    final wrappedViews = views.map<Widget>(_videoView).toList();
+    return Expanded(
+      child: Row(
+        children: wrappedViews,
+      ),
+    );
+
+    // final List<Widget> wrappedViews = [];
     for(var i = 0; i < views.length; i++) {
       User? user = ids[i] == _authService.currentUser?.userId ? _authService.currentUser : _activeUsers.firstWhereOrNull((u) => u?.userId == ids[i]);
       if((isVideo && ids[i] == _authService.currentUser?.userId) || ids[i] != _authService.currentUser?.userId) {

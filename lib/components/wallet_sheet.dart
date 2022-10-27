@@ -2,16 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:musedme/services/auth_service.dart';
-import 'package:musedme/utils/app_colors.dart';
 
+import '../services/auth_service.dart';
+import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
 
-class WalletSheet extends StatelessWidget {
+class WalletSheet extends StatefulWidget {
   const WalletSheet({Key? key}) : super(key: key);
 
+  @override
+  State<WalletSheet> createState() => _WalletSheetState();
+}
+
+class _WalletSheetState extends State<WalletSheet> {
+
   AuthService get _auth => Get.find<AuthService>();
+
+  @override
+  initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

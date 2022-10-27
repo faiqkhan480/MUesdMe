@@ -139,6 +139,7 @@ class ProfileScreen extends GetView<ProfileController> {
   // COMMENT SHEET
   handleWallet() async {
     await Get.bottomSheet(
+      // WalletScreen(),
         const WalletSheet(),
         clipBehavior: Clip.antiAlias,
         isScrollControlled: true,

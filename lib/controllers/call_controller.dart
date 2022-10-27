@@ -51,6 +51,9 @@ class CallController extends GetxController {
       if(args!.callType == CallType.outgoing) {
         _sndCallInvite();
       }
+      else if(args!.callType == CallType.notification) {
+        acceptCallDirectly();
+      }
     }
   }
 
@@ -187,7 +190,7 @@ class CallController extends GetxController {
       AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation("${Constants.agoraBaseId}${user.value.userId}", content: args?.callMode == CallType.video ? "Video" : "Audio");
       await _agora.client?.refuseRemoteInvitation(invitation.toJson());
     } catch (errorCode) {
-      debugPrint("Error::::::::::::::::$errorCode");
+      debugPrint("Remote Error::::::::::::::::$errorCode");
     }
   }
 
@@ -197,7 +200,7 @@ class CallController extends GetxController {
       AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation("${Constants.agoraBaseId}${user.value.userId}", content: args?.callMode == CallType.video ? "Video" : "Audio");
       await _agora.client?.cancelLocalInvitation(invitation.toJson());
     } catch (errorCode) {
-      debugPrint("Error::::::::::::::::$errorCode");
+      debugPrint("LOCAL Error::::::::::::::::$errorCode");
     }
   }
 
@@ -211,6 +214,22 @@ class CallController extends GetxController {
     try {
       AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation(channelId.value, content: args?.callMode == CallType.video ? "Video" : "Audio");
       await _agora.client?.acceptRemoteInvitation(invitation.toJson());
+      await initializeAgora(channelId.value, callee!.rtcToken!, _authService.currentUser!.userId!);
+      startCall();
+    } catch (errorCode) {
+      debugPrint("::::::::::::::$errorCode");
+    }
+  }
+
+  Future<void> acceptCallDirectly() async {
+    debugPrint("AcceptCall::::::::");
+    channelId.value = "${Constants.agoraBaseId}${user.value.userId}";
+    User? callee = _feedController.users.firstWhereOrNull((u) => u?.userId == user.value.userId);
+    RingtonePlayer.stop();
+
+    try {
+      // AgoraRtmRemoteInvitation invitation = AgoraRtmRemoteInvitation(channelId.value, content: args?.callMode == CallType.video ? "Video" : "Audio");
+      // await _agora.client?.acceptRemoteInvitation(invitation.toJson());
       await initializeAgora(channelId.value, callee!.rtcToken!, _authService.currentUser!.userId!);
       startCall();
     } catch (errorCode) {
@@ -257,8 +276,8 @@ class CallController extends GetxController {
     }
     else {
       await engine?.enableLocalVideo(isVideo());
-      await engine?.disableVideo();
-      await engine?.stopPreview();
+      // await engine?.disableVideo();
+      // await engine?.stopPreview();
     }
   }
 

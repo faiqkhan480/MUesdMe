@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:musedme/utils/constants.dart';
 
+import '../models/args.dart';
+import '../models/auths/user_model.dart';
+import '../routes/app_routes.dart';
+import 'call_controller.dart';
 import 'chat_controller.dart';
 import 'feed_controller.dart';
 
@@ -15,13 +22,13 @@ class PushNotification extends GetxController {
 
   @override
   void onInit() {
-    // // Only after at least the action method is set, the notification events are delivered
-    // localNotification.setListeners(
-    //     onActionReceivedMethod:         NotificationController.onActionReceivedMethod,
-    //     onNotificationCreatedMethod:    NotificationController.onNotificationCreatedMethod,
-    //     onNotificationDisplayedMethod:  NotificationController.onNotificationDisplayedMethod,
-    //     onDismissActionReceivedMethod:  NotificationController.onDismissActionReceivedMethod
-    // );
+    // Only after at least the action method is set, the notification events are delivered
+    localNotification.setListeners(
+        onActionReceivedMethod:         NotificationController.onActionReceivedMethod,
+        onNotificationCreatedMethod:    NotificationController.onNotificationCreatedMethod,
+        onNotificationDisplayedMethod:  NotificationController.onNotificationDisplayedMethod,
+        onDismissActionReceivedMethod:  NotificationController.onDismissActionReceivedMethod
+    );
     // TODO: implement onInit
     super.onInit();
     initialize();
@@ -34,8 +41,8 @@ class PushNotification extends GetxController {
       announcement: false,
       badge: true,
       carPlay: false,
-      criticalAlert: false,
-      provisional: false,
+      criticalAlert: true,
+      provisional: true,
       sound: true,
     );
     // use the returned token to send messages to users from your custom server
@@ -68,17 +75,58 @@ class PushNotification extends GetxController {
       if(Get.isRegistered<FeedController>()) {
         Get.find<FeedController>().getActiveUsers();
       }
-      debugPrint('Message also contained a notification: ${message.notification}');
 
       AwesomeNotifications().createNotification(
-          content: NotificationContent(
-              id: message.notification?.hashCode ?? 0,
-              channelKey: 'musedme_channel',
-              title: message.notification?.title ?? "",
-              body: message.notification?.body ?? "",
-              actionType: ActionType.Default
-          )
+        content: NotificationContent(
+          id: message.notification?.hashCode ?? 0,
+          channelKey: 'musedme_channel',
+          title: "Calling...",
+          body: message.notification?.body ?? "",
+          actionType: ActionType.KeepOnTop,
+          category: NotificationCategory.Call,
+          displayOnBackground: true,
+          wakeUpScreen: true,
+            payload: {
+              "UserID": message.data['UserID'],
+              "FirstName": message.data['FirstName'],
+              "LastName": message.data['LastName'],
+              "ProfilePic": message.data['ProfilePic'],
+              "UserName": message.data['UserName'],
+              "RTCToken": message.data['RTCToken'],
+              "RTMToken": message.data['RTMToken']
+            }
+        ),
+        actionButtons: [
+          NotificationActionButton(
+            key: 'accept',
+            label: 'Accept',
+          ),
+          NotificationActionButton(
+            isDangerousOption: true,
+            key: 'reject',
+            label: 'Reject',
+          ),
+        ],
       );
+
+      // AwesomeNotifications().createNotification(
+      //     content: NotificationContent(
+      //         id: message.notification?.hashCode ?? 0,
+      //         channelKey: 'musedme_channel',
+      //         title: message.notification?.title ?? "",
+      //         body: message.notification?.body ?? "",
+      //         actionType: ActionType.Default,
+      //         payload: {
+      //           "UserID": message.data['UserID'],
+      //           "FirstName": message.data['FirstName'],
+      //           "LastName": message.data['LastName'],
+      //           "ProfilePic": message.data['ProfilePic'],
+      //           "UserName": message.data['UserName'],
+      //           "RTCToken": message.data['RTCToken'],
+      //           "RTMToken": message.data['RTMToken']
+      //         }
+      //     )
+      // );
     }
   }
 }
@@ -108,10 +156,20 @@ class NotificationController {
   static Future <void> onActionReceivedMethod(ReceivedAction receivedAction) async {
     // Your code goes here
 
-    // Navigate into pages, avoiding to open the notification details page over another details page already opened
-
-    // MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil('/notification-page',
-    //         (route) => (route.settings.name != '/notification-page') || route.isFirst,
-    //     arguments: receivedAction);
+    debugPrint("ActionReceivedMethod: ${receivedAction.payload}");
+    Get.toNamed(
+        AppRoutes.CALL,
+        arguments: Args(
+            broadcaster: User().copyWith(
+              userId: int.tryParse((receivedAction.payload?['UserID'] ?? "")),
+              firstName: receivedAction.payload?['FirstName'],
+              lastName: receivedAction.payload?['LastName'],
+              profilePic: receivedAction.payload?['ProfilePic'],
+              userName: receivedAction.payload?['UserName'],
+              rtcToken: receivedAction.payload?['RTCToken'],
+              rtmToken: receivedAction.payload?['RTMToken'],
+            ),
+            callType: CallType.notification,
+            callMode: receivedAction.payload?['Type'] == "Video" ? CallType.video : CallType.audio));
   }
 }

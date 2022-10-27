@@ -43,5 +43,5 @@ class Args {
 
 }
 
-enum CallType { incoming, outgoing, ongoing, video, audio }
+enum CallType { incoming, outgoing, ongoing, video, audio, notification }
 
