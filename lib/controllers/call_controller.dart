@@ -12,6 +12,7 @@ import '../services/auth_service.dart';
 import '../utils/constants.dart';
 import 'agora_controller.dart';
 import 'feed_controller.dart';
+import 'notification_controller.dart';
 
 class CallController extends GetxController {
   RxBool loading = true.obs;
@@ -27,6 +28,7 @@ class CallController extends GetxController {
 
   final AuthService _authService = Get.find<AuthService>();
   final FeedController _feedController = Get.find<FeedController>();
+  final PushNotification _notification = Get.find<PushNotification>();
 
   final AgoraController _agora = Get.find<AgoraController>();
 
@@ -170,17 +172,20 @@ class CallController extends GetxController {
   // <----------------RTM HANDLERS------------------> //
   // SND RTM INVITE TO CALLEE
   Future<void> _sndCallInvite() async {
+    debugPrint("SEND CALL INVITE::::::::::::::${user.value.fcmToken}");
     channelId.value = "${Constants.agoraBaseId}${_authService.currentUser?.userId}";
     String callee = "${Constants.agoraBaseId}${user.value.userId}";
+    bool res = await _agora.isUserOnline(user.value.userId.toString());
+    // if(!res) {
+    //   _notification.sndFCMNotification(user.value.fcmToken, user.value, args?.callMode == CallType.video ? "Video" : "Audio");
+    // }
+
     try {
-      // await initializeAgora(channelId.value, _authService.rtc!, _authService.currentUser!.userId!);
       AgoraRtmLocalInvitation invitation = AgoraRtmLocalInvitation(callee, content: args?.callMode == CallType.video ? "Video" : "Audio");
       await _agora.client?.sendLocalInvitation(invitation.toJson());
     }
     catch (errorCode) {
       debugPrint("ERROR::::::::::::::$errorCode");
-      // Get.snackbar("Failed!", "Cant connect call right now!", backgroundColor: Colors.red, colorText: Colors.white);
-      // Get.back(closeOverlays: false);
     }
   }
 

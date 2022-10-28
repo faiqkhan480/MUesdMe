@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_storage_path/flutter_storage_path.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:imgly_sdk/imgly_sdk.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
@@ -121,10 +123,11 @@ class _EditorScreenState extends State<EditorScreen> {
 
   // PICKED SELECTED IMAGE & MOVE TO EDITOR
   _handleImage() async {
-    PhotoEditorResult? result = await PESDK.openEditor(image: image, configuration: createConfiguration());
-    if(result != null) {
-      Get.to(UploadScreen(post: result,));
-    }
+    _getImagesPath();
+    // PhotoEditorResult? result = await PESDK.openEditor(image: image, configuration: createConfiguration());
+    // if(result != null) {
+    //   Get.to(UploadScreen(post: result,));
+    // }
   }
 
   _handleVideo() async {
@@ -137,7 +140,7 @@ class _EditorScreenState extends State<EditorScreen> {
     }
   }
 
-  Future<void> getImagesPath() async {
+  Future<void> _getImagesPath() async {
     String? imagePath = await StoragePath.imagesPath;
     if(imagePath != null) {
       var images = jsonDecode(imagePath) as List;
@@ -177,7 +180,7 @@ class _EditorScreenState extends State<EditorScreen> {
   }
 
   Future<void> getData() async {
-    await getImagesPath();
+    await _getImagesPath();
     await getVideosPath();
   }
 
@@ -208,15 +211,19 @@ class _EditorScreenState extends State<EditorScreen> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
+  getPermission() async {
+    final status = await Permission.storage.request();
     getData();
   }
 
   @override
+  void initState() {
+    super.initState();
+    getPermission();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    debugPrint("image::::::::::: $image");
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -348,7 +355,8 @@ class _EditorScreenState extends State<EditorScreen> {
   }
 
   Widget videoWidget() {
-    return (_dataSourceList.isNotEmpty) ? Center(
+    return (_dataSourceList.isNotEmpty) ?
+    Center(
         child: AspectRatio(
           aspectRatio: 1,
           child: BetterPlayerPlaylist(
@@ -358,6 +366,7 @@ class _EditorScreenState extends State<EditorScreen> {
             betterPlayerDataSourceList: _dataSourceList,
           ),
         ),
-    ) : const SizedBox.shrink();
+    ) :
+    const SizedBox.shrink();
   }
 }

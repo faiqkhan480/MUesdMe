@@ -6,7 +6,6 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '.env.dart';
 import 'bindings/firebase_binding.dart';
 import 'firebase_options.dart';
 import 'routes/app_pages.dart';
@@ -17,17 +16,20 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
-  AwesomeNotifications().createNotification(
-    content: NotificationContent(
+
+  if(message.data['UserName'] != null) {
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
           id: message.notification?.hashCode ?? 0,
           channelKey: 'musedme_channel',
           title: "Calling...",
           body: message.notification?.body ?? "",
           actionType: ActionType.KeepOnTop,
-      category: NotificationCategory.Call,
-      displayOnBackground: true,
-      wakeUpScreen: true,
-      payload: {
+          category: NotificationCategory.Call,
+          displayOnBackground: true,
+          wakeUpScreen: true,
+          fullScreenIntent: true,
+          payload: {
             "UserID": message.data['UserID'],
             "FirstName": message.data['FirstName'],
             "LastName": message.data['LastName'],
@@ -35,21 +37,22 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
             "UserName": message.data['UserName'],
             "RTCToken": message.data['RTCToken'],
             "RTMToken": message.data['RTMToken'],
-            "Type": "Video",
+            "Type":  message.data['Type'],
           }
-    ),
-    actionButtons: [
-      NotificationActionButton(
-        key: 'accept',
-        label: 'Accept',
       ),
-      NotificationActionButton(
-        isDangerousOption: true,
-        key: 'reject',
-        label: 'Reject',
-      ),
-    ],
-  );
+      actionButtons: [
+        NotificationActionButton(
+          key: 'accept',
+          label: 'Accept',
+        ),
+        NotificationActionButton(
+          isDangerousOption: true,
+          key: 'reject',
+          label: 'Reject',
+        ),
+      ],
+    );
+  }
 }
 
 

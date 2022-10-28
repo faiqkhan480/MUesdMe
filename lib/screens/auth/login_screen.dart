@@ -125,9 +125,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20,),
 
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: ElevatedButton(
+                      // Expanded(
+                      //   child:
+                        ElevatedButton(
                           onPressed: () => null,
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
@@ -137,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               elevation: 8,
                               shadowColor: AppColors.shadowColor.withOpacity(0.4),
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                               textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
                           ),
                           child: Row(
@@ -148,31 +150,31 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 20,),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => null,
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: AppColors.secondaryColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)
-                              ),
-                              elevation: 8,
-                              shadowColor: AppColors.shadowColor.withOpacity(0.4),
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                              textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(Assets.iconsFacebook, height: 38,),
-                              const Text("\tFacebook "),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // ),
+                      // const SizedBox(width: 20,),
+                      // Expanded(
+                      //   child: ElevatedButton(
+                      //     onPressed: () => null,
+                      //     style: ElevatedButton.styleFrom(
+                      //         backgroundColor: Colors.white,
+                      //         foregroundColor: AppColors.secondaryColor,
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(12)
+                      //         ),
+                      //         elevation: 8,
+                      //         shadowColor: AppColors.shadowColor.withOpacity(0.4),
+                      //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      //         textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         SvgPicture.asset(Assets.iconsFacebook, height: 38,),
+                      //         const Text("\tFacebook "),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
 

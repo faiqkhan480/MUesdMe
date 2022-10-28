@@ -10,6 +10,7 @@ import 'package:musedme/utils/constants.dart';
 import '../models/args.dart';
 import '../models/auths/user_model.dart';
 import '../routes/app_routes.dart';
+import '../utils/network.dart';
 import 'call_controller.dart';
 import 'chat_controller.dart';
 import 'feed_controller.dart';
@@ -129,6 +130,42 @@ class PushNotification extends GetxController {
       // );
     }
   }
+
+  // SAVE BUY REQUEST
+  Future sndFCMNotification(String? token, User u, String type) async {
+    try {
+      var payload = {
+        "to": token,
+        "notification": {
+          "title": u.userName ?? "",
+          "body": "Calling...",
+          "android": {
+            "ttl": "86400s",
+            "notification": {
+              "notification_priority": "high"
+            }
+          }
+        },
+        "data": {
+          "UserID": u.userId,
+          "FirstName": u.firstName,
+          "LastName": u.lastName,
+          "ProfilePic": u.profilePic,
+          "UserName": u.userName,
+          "RTCToken": u.rtcToken,
+          "RTMToken": u.rtmToken,
+          "Type": type
+        }
+      };
+      var header = {"Authorization": "key=AAAAsS0BE0Q:APA91bHXwg8lkauiV7GOntohpV0u2cjyDlzmq8Dv9VgQ3ZlNve1K035tsMtICHFxBpvpADyQ1HHwwyHnuBvD7KNh48PhGKP9w6rvvKLvhlw_R1ycZL70-6XFO5I2rJNiFzbKDG47JqI-"};
+      final json = await Network.post(url: "https://fcm.googleapis.com/fcm/send", headers: header, payload: payload);
+      debugPrint("FCM RES::::::$json");
+      return null;
+    } catch (e) {
+      debugPrint("FCM ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
 }
 
 class NotificationController {
@@ -156,20 +193,26 @@ class NotificationController {
   static Future <void> onActionReceivedMethod(ReceivedAction receivedAction) async {
     // Your code goes here
 
-    debugPrint("ActionReceivedMethod: ${receivedAction.payload}");
-    Get.toNamed(
-        AppRoutes.CALL,
-        arguments: Args(
-            broadcaster: User().copyWith(
-              userId: int.tryParse((receivedAction.payload?['UserID'] ?? "")),
-              firstName: receivedAction.payload?['FirstName'],
-              lastName: receivedAction.payload?['LastName'],
-              profilePic: receivedAction.payload?['ProfilePic'],
-              userName: receivedAction.payload?['UserName'],
-              rtcToken: receivedAction.payload?['RTCToken'],
-              rtmToken: receivedAction.payload?['RTMToken'],
-            ),
-            callType: CallType.notification,
-            callMode: receivedAction.payload?['Type'] == "Video" ? CallType.video : CallType.audio));
+    if(receivedAction.buttonKeyPressed == "accept") {
+      debugPrint("ActionReceivedMethod: ${receivedAction.payload}");
+      Get.toNamed(
+          AppRoutes.CALL,
+          arguments: Args(
+              broadcaster: User().copyWith(
+                userId: int.tryParse((receivedAction.payload?['UserID'] ?? "")),
+                firstName: receivedAction.payload?['FirstName'],
+                lastName: receivedAction.payload?['LastName'],
+                profilePic: receivedAction.payload?['ProfilePic'],
+                userName: receivedAction.payload?['UserName'],
+                rtcToken: receivedAction.payload?['RTCToken'],
+                rtmToken: receivedAction.payload?['RTMToken'],
+              ),
+              callType: CallType.notification,
+              callMode: receivedAction.payload?['Type'] == "Video" ? CallType.video : CallType.audio));
+      AwesomeNotifications().cancelAll();
+    }
+    else {
+      AwesomeNotifications().dismiss(receivedAction.id!);
+    }
   }
 }

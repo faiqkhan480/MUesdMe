@@ -78,7 +78,7 @@ class AuthService extends GetxService {
           return true;
         }
         else {
-          Get.snackbar("Failed!", res.message ?? "",
+          Get.snackbar("Login Failed!", res.message ?? "",
               backgroundColor: AppColors.pinkColor,
               colorText: Colors.white
           );
@@ -109,7 +109,7 @@ class AuthService extends GetxService {
           return res.token;
         }
         else {
-          Get.snackbar("Failed!", res.message ?? "",
+          Get.snackbar("GET RTM Failed!", res.message ?? "",
               backgroundColor: AppColors.pinkColor,
               colorText: Colors.white
           );
@@ -136,6 +136,7 @@ class AuthService extends GetxService {
         "UserId": currentUser?.userId,
       };
       final json = await Network.post(url: Constants.GET_RTC, payload: payload, headers: header);
+      debugPrint("RTC JSON :::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.token != null) {
@@ -143,7 +144,7 @@ class AuthService extends GetxService {
           return res.token;
         }
         else {
-          Get.snackbar("Failed!", res.message ?? "",
+          Get.snackbar("GET RTC Failed!", res.message ?? "",
               backgroundColor: AppColors.pinkColor,
               colorText: Colors.white
           );
@@ -320,7 +321,11 @@ class AuthService extends GetxService {
   }
 
   Future clearUser() async {
-    await _box.erase();
+    _box.remove("token");
+    _box.remove("user");
+    _box.remove("rtm");
+    _box.remove("rtc");
+    // await _box.erase();
     // _box.write("token", null);
     // _box.write("user", null);
     _currentUser = null;

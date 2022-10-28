@@ -446,7 +446,7 @@ packages:
       name: flutter_storage_path
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   flutter_stripe:
     dependency: "direct main"
     description:

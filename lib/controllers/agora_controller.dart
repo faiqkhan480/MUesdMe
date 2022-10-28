@@ -61,6 +61,7 @@ class AgoraController extends GetxController {
         }
       }
     };
+
     client?.onConnectionStateChanged = (int state, int reason) {
       debugPrint('Connection state changed::::::::::: $state, reason: $reason');
       if (state == 5) {
@@ -169,7 +170,7 @@ class AgoraController extends GetxController {
       String err = errorCode.toString().replaceAll(new RegExp(r'[^0-9]'),'');
       debugPrint('Login error:::: $errorCode');
       if(kDebugMode) {
-        Get.snackbar("Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+        Get.snackbar("RTM LOGIN Error", errorCode.toString(), backgroundColor: Colors.red, colorText: Colors.white);
       }
       if(int.parse(err) == 6) {
         backToLogin();
