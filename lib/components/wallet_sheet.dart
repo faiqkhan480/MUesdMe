@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
+import 'package:musedme/services/api_service.dart';
 
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
@@ -28,9 +29,14 @@ class _WalletSheetState extends State<WalletSheet> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  final ApiService _service = Get.find<ApiService>();
+
+  double amount = 0.0;
+
   @override
   initState() {
     super.initState();
+    amount = _auth.currentUser?.wallet ?? 0.0;
   }
 
   @override
@@ -80,7 +86,7 @@ class _WalletSheetState extends State<WalletSheet> {
                 fontWeight: FontWeight.w500,
               ),),
             const SizedBox(height: 5),
-            Text("\$${_auth.currentUser?.wallet}",
+            Text("\$${amount}",
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: AppColors.primaryColor,
@@ -123,7 +129,6 @@ class _WalletSheetState extends State<WalletSheet> {
   Widget _loadingButton({text, onPressed}) {
     return TextButton(
       onPressed: () => onPressed(),
-      // onPressed:  makePayment(),
       style: TextButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
           foregroundColor: Colors.white,
@@ -158,25 +163,47 @@ class _WalletSheetState extends State<WalletSheet> {
       } catch (e, s) {
         debugPrint('exception:$e$s');
       }
-      setState(() => loading = false);
+      // setState(() => loading = false);
     }
   }
 
   displayPaymentSheet() async {
     try {
-     await Stripe.instance.presentPaymentSheet().then((value) => Get.dialog(Column(
-       children: [
-         Row(
-           children: const [
-             Icon(Icons.check_circle, color: Colors.green,),
-             Text("Payment Successful")
-           ],
-         )
-       ],
-     )));
+     await Stripe.instance.presentPaymentSheet().then((value) async {
+       setState(() => loading = true);
+       var res = await _service.confirmPayment(
+         paymentIntent!['id'],
+         price.text,
+       );
+       if(res != null) {
+         _auth.setUser(_auth.currentUser?.copyWith(
+             wallet: amount + double.parse(price.text)
+         ));
+         setState(() {
+           amount = amount + (double.tryParse(price.text) ?? 0.0);
+         });
+         price.clear();
+         Get.snackbar("Success!", res ?? "Wallet is updated",
+             backgroundColor: AppColors.successColor,
+             colorText: Colors.white
+         );
+       }
+     }
+     // => Get.dialog(Column(
+     //   children: [
+     //     Row(
+     //       children: const [
+     //         Icon(Icons.check_circle, color: Colors.green,),
+     //         Text("Payment Successful")
+     //       ],
+     //     )
+     //   ],
+     // ))
+     );
     } catch (e, s) {
       debugPrint('exception:$e$s');
     }
+    setState(() => loading = false);
   }
 
   createPaymentIntent(String amount, String currency) async {

@@ -624,15 +624,17 @@ class ApiService extends GetxService {
   }
 
   // CONFIRM ORDER
-  Future confirmPayment(String itemId, String price) async {
+  Future confirmPayment(String transactionId, String price) async {
     try {
       var payload = {
         "UserID": _userId,
-        "ItemID": itemId,
-        "Price": price,
+        "TransactionID": transactionId,
+        "TransactionAmount": price,
+        "PaymentMethod": "Stripe",
+        "Status": "Success"
       };
-      final json = await Network.post(url: Constants.CONFIRM_ORDER, headers: _header, payload: payload);
-      debugPrint("Order RES::::::$json");
+      final json = await Network.post(url: Constants.UPDATE_TRANSACTION, headers: _header, payload: payload);
+      debugPrint("Confirm Payment RES::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.message != null) {
