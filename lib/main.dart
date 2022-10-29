@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:musedme/screens/auth/login_screen.dart';
+import 'package:musedme/utils/constants.dart';
 
 import 'bindings/firebase_binding.dart';
 import 'firebase_options.dart';
@@ -94,8 +96,8 @@ void main() async {
       debug: true
   );
 
-  // Stripe.publishableKey = stripePublishedKey;
-  // await Stripe.instance.applySettings();
+  Stripe.publishableKey = Constants.stripePublishedKey;
+  await Stripe.instance.applySettings();
   runApp(const MyApp());
 }
 
@@ -105,6 +107,35 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // return GestureDetector(
+    //   onTap: () {
+    //     var currentFocus = FocusScope.of(context);
+    //     if (!currentFocus.hasPrimaryFocus &&
+    //         currentFocus.focusedChild != null) {
+    //       FocusManager.instance.primaryFocus!.unfocus();
+    //     }
+    //   },
+    //   child: MaterialApp(
+    //     title: 'MUsedMe',
+    //     debugShowCheckedModeBanner: false,
+    //     theme: ThemeData(
+    //         primarySwatch: Colors.red,
+    //         scaffoldBackgroundColor: Colors.white,
+    //         appBarTheme: const AppBarTheme(
+    //             backgroundColor: Colors.white,
+    //             elevation: 0,
+    //             titleTextStyle: TextStyle(
+    //               color: Colors.black,
+    //               fontSize: 20,
+    //               fontFamily: 'Larsseit',
+    //               fontWeight: FontWeight.w500,
+    //             )
+    //         ),
+    //         fontFamily: 'Larsseit'
+    //     ),
+    //     home: const LoginScreen(),
+    //   ),
+    // );
     return GetMaterialApp(
       title: 'MUsedMe',
       debugShowCheckedModeBanner: false,

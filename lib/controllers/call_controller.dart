@@ -93,6 +93,7 @@ class CallController extends GetxController {
     _addListeners();
 
     if(args?.callMode == CallType.video) {
+      isVideo.value = true;
       await engine?.enableVideo();
       await engine?.startPreview();
     }
@@ -296,9 +297,6 @@ class CallController extends GetxController {
   void onToggleMic() {
     mic.value = !mic();
     engine?.muteLocalAudioStream(mic());
-    // for (var uid in users) {
-    //   engine?.muteRemoteAudioStream(uid, mic());
-    // }
   }
 
   // SWITCH CAMERA

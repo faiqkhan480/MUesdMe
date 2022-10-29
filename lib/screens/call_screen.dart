@@ -238,7 +238,7 @@ class CallScreen extends GetView<CallController> {
     return Positioned(
         left: Get.width * 0.30,
         right: Get.width * 0.30,
-        bottom: 30,
+        bottom: 20,
         child: TextButton(
           onPressed: controller.endCall,
           style: TextButton.styleFrom(
@@ -247,7 +247,7 @@ class CallScreen extends GetView<CallController> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
           ),
           child: Row(

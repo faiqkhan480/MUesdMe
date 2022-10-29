@@ -51,4 +51,8 @@ class Constants {
   // static const String testChanel = "demo";
   static const String agoraBaseId = "MusedByMe_";
   static const String appId = 'd7c60d2d306241c49386d0f998fffb4f';
+
+  // STRIPE KEYS
+  static const String stripePublishedKey = 'pk_test_51LpE07LLVy8ltYVbUL10ldtR0lsrgPadvybSvijNVknPmDh7Ct1OC8jY07AqnM4J6o3kLkBcNLTC0fwuH1ZA3MnQ00fLrt2k4k';
+  static const String stripeSecretKey = 'sk_test_51LpE07LLVy8ltYVbyqaJTrmN8sV14cCnFzkjh3JKzfIC7lhkDPwb2MXWYDyP9aHaDGbdDHBl4pliBcNwIqvnCOP400trvbKpGV';
 }
