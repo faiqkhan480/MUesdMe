@@ -216,19 +216,19 @@ class CallScreen extends GetView<CallController> {
             ),
           ),
           const SizedBox(height: 5,),
-          // SWITCH VIDEO
-          RawMaterialButton(
-            onPressed: controller.switchVideo,
-            shape: const CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
-            child: Icon(
-              isVideo ? Feather.video : Feather.video_off,
-              color: AppColors.lightGrey,
-              size: 20.0,
-            ),
-          ),
+          // // SWITCH VIDEO
+          // RawMaterialButton(
+          //   onPressed: controller.switchVideo,
+          //   shape: const CircleBorder(),
+          //   elevation: 2.0,
+          //   fillColor: Colors.white,
+          //   padding: const EdgeInsets.all(12.0),
+          //   child: Icon(
+          //     isVideo ? Feather.video : Feather.video_off,
+          //     color: AppColors.lightGrey,
+          //     size: 20.0,
+          //   ),
+          // ),
         ],
       ),
     );
@@ -277,7 +277,7 @@ class CallScreen extends GetView<CallController> {
 
   /// Video layout wrapper
   Widget _broadcastView() {
-    final views = _getRenderViews();
+    final views = !isVideo ? _getRenderAudioViews() : _getRenderViews();
     List ids = [_authService.currentUser!.userId!, ..._users];
     switch (views.length) {
       case 1:
@@ -340,6 +340,38 @@ class CallScreen extends GetView<CallController> {
     return list;
   }
 
+  List<Widget> _getRenderAudioViews() {
+    final List<Widget> list = [];
+    if (_localUserJoined) {
+      list.add(Center(child: CircleAvatar(
+        backgroundColor: Colors.white,
+        radius: 60,
+        backgroundImage: NetworkImage(
+            _authService.currentUser?.profilePic != null && _authService.currentUser!.profilePic!.isNotEmpty?
+            Constants.IMAGE_URL + _authService.currentUser!.profilePic! :
+            Constants.dummyImage
+        ),
+      ),));
+    }
+    for (var uid in _users) {
+      // broadcaster
+      User? u = _activeUsers.firstWhereOrNull((u) => u?.userId == uid);
+      if(uid == chatUser?.userId){
+        u = chatUser;
+      }
+      list.add(Center(child: CircleAvatar(
+        backgroundColor: Colors.white,
+        radius: 60,
+        backgroundImage: NetworkImage(
+            u?.profilePic != null && u!.profilePic!.isNotEmpty?
+            Constants.IMAGE_URL + u.profilePic! :
+            Constants.dummyImage
+        ),
+      ),));
+    }
+    return list;
+  }
+
   /// Video view wrapper
   Widget _videoView(view) {
     return Expanded(child: Container(child: view));
@@ -389,3 +421,54 @@ class CallScreen extends GetView<CallController> {
     );
   }
 }
+
+// List<Widget> _getRenderViews() {
+//   if(!isVideo) {
+//     final List<Widget> list = [];
+//     if (_localUserJoined) {
+//       if(!isVideo) {
+//         list.add(Center(child: CircleAvatar(
+//           backgroundColor: Colors.white,
+//           radius: 60,
+//           backgroundImage: NetworkImage(
+//               _authService.currentUser?.profilePic != null && _authService.currentUser!.profilePic!.isNotEmpty?
+//               Constants.IMAGE_URL + _authService.currentUser!.profilePic! :
+//               Constants.dummyImage
+//           ),
+//         ),));
+//       }
+//     }
+//
+//     // broadcaster
+//     for (var uid in _users) {
+//       User? u = _activeUsers.firstWhereOrNull((u) => u?.userId == uid);
+//       if(uid == chatUser?.userId){
+//         u = chatUser;
+//       }
+//       if(!isVideo) {
+//         list.add(Center(child: CircleAvatar(
+//           backgroundColor: Colors.white,
+//           radius: 60,
+//           backgroundImage: NetworkImage(
+//               u?.profilePic != null && u!.profilePic!.isNotEmpty?
+//               Constants.IMAGE_URL + u.profilePic! :
+//               Constants.dummyImage
+//           ),
+//         ),));
+//       }
+//     }
+//     return list;
+//   }
+//   else {
+//     final List<StatefulWidget> list = [];
+//     if (_localUserJoined) {
+//       list.add(RtcLocalView.SurfaceView(channelId: channelId));
+//     }
+//
+//     // broadcaster
+//     for (var uid in _users) {
+//       list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: channelId));
+//     }
+//     return list;
+//   }
+// }

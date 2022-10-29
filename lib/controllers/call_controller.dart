@@ -96,10 +96,12 @@ class CallController extends GetxController {
       isVideo.value = true;
       await engine?.enableVideo();
       await engine?.startPreview();
+      await engine?.enableLocalVideo(true);
     }
     else {
-      await engine?.disableVideo();
-      await engine?.enableLocalVideo(false);
+      isVideo.value = false;
+    //   await engine?.disableVideo();
+    //   await engine?.enableLocalVideo(false);
     }
 
     // bool? suported = await engine?.isCameraTorchSupported();
