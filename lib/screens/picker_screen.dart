@@ -4,9 +4,12 @@ import 'dart:io';
 
 // import 'package:cached_video_player/cached_video_player.dart';
 import 'package:better_player/better_player.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_storage_path/flutter_storage_path.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,6 +21,8 @@ import '../components/grids.dart';
 import '../models/file_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
+import '../utils/constants.dart';
+import '../utils/style_config.dart';
 import '../widgets/button_widget.dart';
 import 'upload_screen.dart';
 
@@ -123,20 +128,24 @@ class _EditorScreenState extends State<EditorScreen> {
 
   // PICKED SELECTED IMAGE & MOVE TO EDITOR
   _handleImage() async {
-    _getImagesPath();
-    // PhotoEditorResult? result = await PESDK.openEditor(image: image, configuration: createConfiguration());
-    // if(result != null) {
-    //   Get.to(UploadScreen(post: result,));
-    // }
+    // _getImagesPath();
+    FilePickerResult? img = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
+    if(img != null) {
+      PhotoEditorResult? result = await PESDK.openEditor(image: img.files.single.path, configuration: createConfiguration());
+      if(result != null) {
+        Get.to(UploadScreen(post: result,));
+      }
+    }
   }
 
   _handleVideo() async {
-    if(video != null && video!.isNotEmpty) {
-      var result = await VESDK.openEditor(Video(video!), configuration: createConfiguration());
+    // if(video != null && video!.isNotEmpty) {
+    FilePickerResult? vid = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.video);
+    if(vid != null) {
+      var result = await VESDK.openEditor(Video(vid.files.single.path!), configuration: createConfiguration());
       if(result != null) {
-        Get.to(UploadScreen(video: result,));
+        Get.to(UploadScreen(video: result));
       }
-      // debugPrint("${result?.toJson()}");
     }
   }
 
@@ -213,7 +222,7 @@ class _EditorScreenState extends State<EditorScreen> {
 
   getPermission() async {
     final status = await Permission.storage.request();
-    getData();
+    // getData();
   }
 
   @override
@@ -224,6 +233,81 @@ class _EditorScreenState extends State<EditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            color: AppColors.secondaryColor,
+            icon: const Icon(Icons.clear)
+        ),
+      ),
+      body: Container(
+        decoration: StyleConfig.gradientBackground,
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(Assets.logoSvg, fit: BoxFit.cover, height: 150),
+            const SizedBox(height: 10,),
+            Text("MusedByMe", style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: Constants.fontFamily,
+                fontSize: Get.textScaleFactor * 32,
+              color: AppColors.secondaryColor
+            ),),
+            const SizedBox(height: 50,),
+            TextButton(
+              onPressed: _handleImage,
+              style: TextButton.styleFrom(
+                  backgroundColor: AppColors.secondaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+                  textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Feather.image, color: Colors.white),
+                  // SvgPicture.asset(Assets.iconsDelete),
+                  SizedBox(width: 5,),
+                  Text("Upload"),
+                ],
+              ),
+            ),
+            const SizedBox(height: 50,),
+            TextButton(
+              onPressed: _handleVideo,
+              style: TextButton.styleFrom(
+                  backgroundColor: AppColors.secondaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+                  textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Feather.film, color: Colors.white),
+                  // SvgPicture.asset(Assets.iconsDelete),
+                  SizedBox(width: 5,),
+                  Text("Choose Video"),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(

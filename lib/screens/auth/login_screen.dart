@@ -124,59 +124,59 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 20,),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Expanded(
-                      //   child:
-                        ElevatedButton(
-                          onPressed: () => null,
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: AppColors.secondaryColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)
-                              ),
-                              elevation: 8,
-                              shadowColor: AppColors.shadowColor.withOpacity(0.4),
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                              textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(Assets.iconsGoogle, height: 38,),
-                              const Text("\tGoogle"),
-                            ],
-                          ),
-                        ),
-                      // ),
-                      // const SizedBox(width: 20,),
-                      // Expanded(
-                      //   child: ElevatedButton(
-                      //     onPressed: () => null,
-                      //     style: ElevatedButton.styleFrom(
-                      //         backgroundColor: Colors.white,
-                      //         foregroundColor: AppColors.secondaryColor,
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(12)
-                      //         ),
-                      //         elevation: 8,
-                      //         shadowColor: AppColors.shadowColor.withOpacity(0.4),
-                      //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      //         textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
-                      //     ),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: [
-                      //         SvgPicture.asset(Assets.iconsFacebook, height: 38,),
-                      //         const Text("\tFacebook "),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     // Expanded(
+                  //     //   child:
+                  //       ElevatedButton(
+                  //         onPressed: () => null,
+                  //         style: ElevatedButton.styleFrom(
+                  //             backgroundColor: Colors.white,
+                  //             foregroundColor: AppColors.secondaryColor,
+                  //             shape: RoundedRectangleBorder(
+                  //                 borderRadius: BorderRadius.circular(12)
+                  //             ),
+                  //             elevation: 8,
+                  //             shadowColor: AppColors.shadowColor.withOpacity(0.4),
+                  //             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  //             textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
+                  //         ),
+                  //         child: Row(
+                  //           mainAxisAlignment: MainAxisAlignment.center,
+                  //           children: [
+                  //             SvgPicture.asset(Assets.iconsGoogle, height: 38,),
+                  //             const Text("\tGoogle"),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     // ),
+                  //     // const SizedBox(width: 20,),
+                  //     // Expanded(
+                  //     //   child: ElevatedButton(
+                  //     //     onPressed: () => null,
+                  //     //     style: ElevatedButton.styleFrom(
+                  //     //         backgroundColor: Colors.white,
+                  //     //         foregroundColor: AppColors.secondaryColor,
+                  //     //         shape: RoundedRectangleBorder(
+                  //     //             borderRadius: BorderRadius.circular(12)
+                  //     //         ),
+                  //     //         elevation: 8,
+                  //     //         shadowColor: AppColors.shadowColor.withOpacity(0.4),
+                  //     //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  //     //         textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
+                  //     //     ),
+                  //     //     child: Row(
+                  //     //       mainAxisAlignment: MainAxisAlignment.center,
+                  //     //       children: [
+                  //     //         SvgPicture.asset(Assets.iconsFacebook, height: 38,),
+                  //     //         const Text("\tFacebook "),
+                  //     //       ],
+                  //     //     ),
+                  //     //   ),
+                  //     // ),
+                  //   ],
+                  // ),
 
                   SizedBox(height: MediaQuery.of(context).size.height * 0.10,),
 

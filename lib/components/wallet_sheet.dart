@@ -4,14 +4,11 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
-import '../utils/assets.dart';
 import '../utils/constants.dart';
-import '../utils/network.dart';
 import '../widgets/input_field.dart';
 
 class WalletSheet extends StatefulWidget {
@@ -183,6 +180,8 @@ class _WalletSheetState extends State<WalletSheet> {
   }
 
   createPaymentIntent(String amount, String currency) async {
+    debugPrint(":::::::::::::::$amount");
+    debugPrint("::::CALCULATED:::::::::::::${calculateAmount(amount)}");
     try {
       setState(() => loading = true);
       Map<String, dynamic> body = {
@@ -200,7 +199,7 @@ class _WalletSheetState extends State<WalletSheet> {
         body: body,
       );
 
-      print('Payment Intent Body->>> ${response.body.toString()}');
+      debugPrint('Payment Intent Body->>> ${response.body.toString()}');
       return jsonDecode(response.body);
       // debugPrint('Payment Intent RES $response');
       // return response;
