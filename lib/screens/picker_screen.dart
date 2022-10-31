@@ -7,11 +7,9 @@ import 'package:better_player/better_player.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_storage_path/flutter_storage_path.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
@@ -82,14 +80,14 @@ class _EditorScreenState extends State<EditorScreen> {
 
   // <__________________END_BETTER PLAYER CONFIGURATION___________________>
 
-  handleNext() {
-    if(imagePicker) {
-      _handleImage();
-    }
-    else {
-      _handleVideo();
-    }
-  }
+  // handleNext() {
+  //   if(imagePicker) {
+  //     _handleImage();
+  //   }
+  //   else {
+  //     _handleVideo();
+  //   }
+  // }
 
   // PICKED SELECTED IMAGE & MOVE TO EDITOR
   _handleImage() async {
@@ -114,87 +112,87 @@ class _EditorScreenState extends State<EditorScreen> {
     }
   }
 
-  Future<void> _getImagesPath() async {
-    String? imagePath = await StoragePath.imagesPath;
-    if(imagePath != null) {
-      var images = jsonDecode(imagePath) as List;
-      imageFiles = images.map<FileModel>((e) => FileModel.fromJson(e)).toList();
-      if (imageFiles.isNotEmpty) {
-        setState(() {
-          selectedImage = imageFiles[0];
-          image = imageFiles[0]?.files?.elementAt(0);
-        });
-      }
-    }
-  }
+  // Future<void> _getImagesPath() async {
+  //   // String? imagePath = await StoragePath.imagesPath;
+  //   if(imagePath != null) {
+  //     var images = jsonDecode(imagePath) as List;
+  //     imageFiles = images.map<FileModel>((e) => FileModel.fromJson(e)).toList();
+  //     if (imageFiles.isNotEmpty) {
+  //       setState(() {
+  //         selectedImage = imageFiles[0];
+  //         image = imageFiles[0]?.files?.elementAt(0);
+  //       });
+  //     }
+  //   }
+  // }
 
-  Future<void> getVideosPath() async {
-    String? videoPath = await StoragePath.videoPath;
-    if(videoPath != null) {
-      var videos = jsonDecode(videoPath) as List;
-      videoFiles = videos.map<VideoFile>((e) => VideoFile.fromJson(e)).toList();
-      if (videoFiles.isNotEmpty) {
-        // debugPrint(videoFiles.first!.files!.first.path!);
-        for (var f in videoFiles.first!.files!) {
-          _dataSourceList.add(
-            BetterPlayerDataSource(
-              BetterPlayerDataSourceType.file,
-              f.path!,
-            ),
-          );
-        }
-        _betterPlayerPlaylistController?.betterPlayerController?.setVolume(0);
-        setState(() {
-          selectedVideo = videoFiles.first;
-          video = videoFiles.first?.files?.first.path;
-          loader = false;
-        });
-      }
-    }
-  }
+  // Future<void> getVideosPath() async {
+  //   String? videoPath = await StoragePath.videoPath;
+  //   if(videoPath != null) {
+  //     var videos = jsonDecode(videoPath) as List;
+  //     videoFiles = videos.map<VideoFile>((e) => VideoFile.fromJson(e)).toList();
+  //     if (videoFiles.isNotEmpty) {
+  //       // debugPrint(videoFiles.first!.files!.first.path!);
+  //       for (var f in videoFiles.first!.files!) {
+  //         _dataSourceList.add(
+  //           BetterPlayerDataSource(
+  //             BetterPlayerDataSourceType.file,
+  //             f.path!,
+  //           ),
+  //         );
+  //       }
+  //       _betterPlayerPlaylistController?.betterPlayerController?.setVolume(0);
+  //       setState(() {
+  //         selectedVideo = videoFiles.first;
+  //         video = videoFiles.first?.files?.first.path;
+  //         loader = false;
+  //       });
+  //     }
+  //   }
+  // }
 
-  Future<void> getData() async {
-    await _getImagesPath();
-    await getVideosPath();
-  }
+  // Future<void> getData() async {
+  //   await _getImagesPath();
+  //   await getVideosPath();
+  // }
 
-  onChange(d) async {
-    assert((d?.files?.length ?? 0) > 0);
-    if(d is FileModel) {
-      image = d.files?.elementAt(0);
-      setState(() => selectedImage = d);
-    }
-    else{
-      video = d!.files!.elementAt(0).path;
-      List<BetterPlayerDataSource> list = [];
-      for (var f in d!.files!) {
-        list.add(
-          BetterPlayerDataSource(
-            BetterPlayerDataSourceType.file,
-            f.path!,
-          ),
-        );
-      }
-      _betterPlayerPlaylistController?.setupDataSourceList(list);
-      setState(() => selectedVideo = d);
-    }
-  }
+  // onChange(d) async {
+  //   assert((d?.files?.length ?? 0) > 0);
+  //   if(d is FileModel) {
+  //     image = d.files?.elementAt(0);
+  //     setState(() => selectedImage = d);
+  //   }
+  //   else{
+  //     video = d!.files!.elementAt(0).path;
+  //     List<BetterPlayerDataSource> list = [];
+  //     for (var f in d!.files!) {
+  //       list.add(
+  //         BetterPlayerDataSource(
+  //           BetterPlayerDataSourceType.file,
+  //           f.path!,
+  //         ),
+  //       );
+  //     }
+  //     _betterPlayerPlaylistController?.setupDataSourceList(list);
+  //     setState(() => selectedVideo = d);
+  //   }
+  // }
 
   @override
   void dispose() {
     super.dispose();
   }
 
-  getPermission() async {
-    final status = await Permission.storage.request();
-    // getData();
-  }
+  // getPermission() async {
+  //   final status = await Permission.storage.request();
+  //   // getData();
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    getPermission();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getPermission();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -273,149 +271,149 @@ class _EditorScreenState extends State<EditorScreen> {
       ),
     );
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              // HEADER
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      IconButton(
-                          onPressed: () => Get.back(),
-                          icon: const Icon(Icons.clear)
-                      ),
-                      const SizedBox(width: 10),
-                      DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            items: getItems(),
-                            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                            onChanged: onChange,
-                            // onChanged: (d) async {
-                            //
-                            // },
-                            value: imagePicker ? selectedImage : selectedVideo,
-                            // value: selectedVideo,
-                          ))
-                    ],
-                  ),
-                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SmallButton(
-                      onPressed: handleNext,
-                      title: "Next",
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-
-              // VIEW BOX
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.45,
-                  child: imagePicker && image != null ?
-                  Image.file(File(image!),
-                      height: MediaQuery.of(context).size.height * 0.45,
-                      width: MediaQuery.of(context).size.width
-                  ) :
-                  !imagePicker && video != null ?
-                  videoWidget() :
-                  const SizedBox.shrink()
-              ),
-              const Divider(),
-              if(loader)
-                const CircularProgressIndicator()
-              else
-                Flexible(
-                    child: TabBarView(
-                      physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      // IMAGES
-                      Grids(
-                        onTap: (int i, {String? path}) {
-                          setState(() {
-                            image = selectedImage?.files?.elementAt(i) as String;
-                          });
-                        },
-                        // controllers: _controllers,
-                        items: selectedImage?.files,
-                      ),
-                      // VIDEOS
-                      Grids(
-                        onTap: (int i, {String? path}) async {
-                          _betterPlayerPlaylistController!.setupDataSource(i);
-                          setState(() {
-                            video = selectedVideo?.files?.elementAt(i).path;
-
-                          });
-                        },
-                        items: selectedVideo?.files,
-                      ),
-                    ],
-                  )
-              )
-            ],
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          child: TabBar(
-              labelColor: AppColors.primaryColor,
-              unselectedLabelColor: Colors.black,
-              onTap: (value) {
-                setState(() => imagePicker = value == 0);
-              },
-              indicatorSize: TabBarIndicatorSize.label,
-              labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-              indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
-                  insets: EdgeInsets.symmetric(horizontal: 35.0)),
-              tabs: List.generate(2, (index) => Tab(
-                text: index == 0 ? "Images" : "Videos",
-              ))
-          ),
-        ),
-      ),
-    );
+    // return DefaultTabController(
+    //   length: 2,
+    //   child: Scaffold(
+    //     body: SafeArea(
+    //       child: Column(
+    //         children: <Widget>[
+    //           // HEADER
+    //           Row(
+    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //             children: <Widget>[
+    //               Row(
+    //                 children: <Widget>[
+    //                   IconButton(
+    //                       onPressed: () => Get.back(),
+    //                       icon: const Icon(Icons.clear)
+    //                   ),
+    //                   const SizedBox(width: 10),
+    //                   DropdownButtonHideUnderline(
+    //                       child: DropdownButton(
+    //                         items: getItems(),
+    //                         icon: const Icon(Icons.keyboard_arrow_down_rounded),
+    //                         onChanged: onChange,
+    //                         // onChanged: (d) async {
+    //                         //
+    //                         // },
+    //                         value: imagePicker ? selectedImage : selectedVideo,
+    //                         // value: selectedVideo,
+    //                       ))
+    //                 ],
+    //               ),
+    //                Padding(
+    //                 padding: const EdgeInsets.all(8.0),
+    //                 child: SmallButton(
+    //                   onPressed: handleNext,
+    //                   title: "Next",
+    //                 ),
+    //               )
+    //             ],
+    //           ),
+    //           const Divider(),
+    //
+    //           // VIEW BOX
+    //           SizedBox(
+    //               height: MediaQuery.of(context).size.height * 0.45,
+    //               child: imagePicker && image != null ?
+    //               Image.file(File(image!),
+    //                   height: MediaQuery.of(context).size.height * 0.45,
+    //                   width: MediaQuery.of(context).size.width
+    //               ) :
+    //               !imagePicker && video != null ?
+    //               videoWidget() :
+    //               const SizedBox.shrink()
+    //           ),
+    //           const Divider(),
+    //           if(loader)
+    //             const CircularProgressIndicator()
+    //           else
+    //             Flexible(
+    //                 child: TabBarView(
+    //                   physics: const NeverScrollableScrollPhysics(),
+    //                 children: [
+    //                   // IMAGES
+    //                   Grids(
+    //                     onTap: (int i, {String? path}) {
+    //                       setState(() {
+    //                         image = selectedImage?.files?.elementAt(i) as String;
+    //                       });
+    //                     },
+    //                     // controllers: _controllers,
+    //                     items: selectedImage?.files,
+    //                   ),
+    //                   // VIDEOS
+    //                   Grids(
+    //                     onTap: (int i, {String? path}) async {
+    //                       _betterPlayerPlaylistController!.setupDataSource(i);
+    //                       setState(() {
+    //                         video = selectedVideo?.files?.elementAt(i).path;
+    //
+    //                       });
+    //                     },
+    //                     items: selectedVideo?.files,
+    //                   ),
+    //                 ],
+    //               )
+    //           )
+    //         ],
+    //       ),
+    //     ),
+    //     bottomNavigationBar: BottomAppBar(
+    //       child: TabBar(
+    //           labelColor: AppColors.primaryColor,
+    //           unselectedLabelColor: Colors.black,
+    //           onTap: (value) {
+    //             setState(() => imagePicker = value == 0);
+    //           },
+    //           indicatorSize: TabBarIndicatorSize.label,
+    //           labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+    //           indicator: const UnderlineTabIndicator(
+    //               borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
+    //               insets: EdgeInsets.symmetric(horizontal: 35.0)),
+    //           tabs: List.generate(2, (index) => Tab(
+    //             text: index == 0 ? "Images" : "Videos",
+    //           ))
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
-  List<DropdownMenuItem>? getItems() {
-    if(imagePicker) {
-      return imageFiles.map((e) => DropdownMenuItem(
-        value: e,
-        child: Text(
-          e?.folder ?? "",
-          style: const TextStyle(color: Colors.black),
-        ),
-      )).toList() ?? [];
-    }
-    else {
-      return videoFiles.map((e) => DropdownMenuItem(
-        value: e,
-        child: Text(
-          e?.folder ?? "",
-          style: const TextStyle(color: Colors.black),
-        ),
-      )).toList() ?? [];
-    }
-  }
+  // List<DropdownMenuItem>? getItems() {
+  //   if(imagePicker) {
+  //     return imageFiles.map((e) => DropdownMenuItem(
+  //       value: e,
+  //       child: Text(
+  //         e?.folder ?? "",
+  //         style: const TextStyle(color: Colors.black),
+  //       ),
+  //     )).toList() ?? [];
+  //   }
+  //   else {
+  //     return videoFiles.map((e) => DropdownMenuItem(
+  //       value: e,
+  //       child: Text(
+  //         e?.folder ?? "",
+  //         style: const TextStyle(color: Colors.black),
+  //       ),
+  //     )).toList() ?? [];
+  //   }
+  // }
 
-  Widget videoWidget() {
-    return (_dataSourceList.isNotEmpty) ?
-    Center(
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: BetterPlayerPlaylist(
-            key: _betterPlayerPlaylistStateKey,
-            betterPlayerConfiguration: _betterPlayerConfiguration,
-            betterPlayerPlaylistConfiguration: _betterPlayerPlaylistConfiguration,
-            betterPlayerDataSourceList: _dataSourceList,
-          ),
-        ),
-    ) :
-    const SizedBox.shrink();
-  }
+  // Widget videoWidget() {
+  //   return (_dataSourceList.isNotEmpty) ?
+  //   Center(
+  //       child: AspectRatio(
+  //         aspectRatio: 1,
+  //         child: BetterPlayerPlaylist(
+  //           key: _betterPlayerPlaylistStateKey,
+  //           betterPlayerConfiguration: _betterPlayerConfiguration,
+  //           betterPlayerPlaylistConfiguration: _betterPlayerPlaylistConfiguration,
+  //           betterPlayerDataSourceList: _dataSourceList,
+  //         ),
+  //       ),
+  //   ) :
+  //   const SizedBox.shrink();
+  // }
 }
