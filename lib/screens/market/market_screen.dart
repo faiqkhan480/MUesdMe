@@ -13,6 +13,7 @@ import '../../widgets/glass_morphism.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/text_widget.dart';
 import '../../widgets/thumbnail_widget.dart';
+import 'orders_screen.dart';
 
 class MarketScreen extends GetView<MarketController>  {
   const MarketScreen({Key? key}) : super(key: key);
@@ -35,10 +36,13 @@ class MarketScreen extends GetView<MarketController>  {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Header(
+              Header(
                 title: "Market",
                 isProfile: true,
-                hideButton: true,
+                hideButton: false,
+                showButtonIcon: false,
+                buttonText: "My Orders",
+                action: () => Get.to(OrdersScreen()),
               ),
 
               // TAB BAR
