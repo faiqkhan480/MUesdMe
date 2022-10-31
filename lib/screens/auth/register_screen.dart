@@ -113,34 +113,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     validator: (String? value) => value!.isEmpty ? "Email is required!" : null,
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 10,),
                   // GENDER SELECTION
                   Row(
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Radio(
+                      Expanded(child: RadioListTile(
                         value: Gender.male,
                         groupValue: _gender,
-                        activeColor: AppColors.secondaryColor,
+                        activeColor: AppColors.primaryColor,
                         onChanged: (Gender? value) {
                           setState(() {
                             _gender = value;
                           });
                         },
-                      ),
-                      const Text("\t\tMale"),
+                        title: const Text("Male"),
+                      )),
 
-                      Radio(
+                      Expanded(child: RadioListTile(
                         value: Gender.female,
                         groupValue: _gender,
-                        activeColor: AppColors.secondaryColor,
+                        activeColor: AppColors.primaryColor,
                         onChanged: (Gender? value) {
                           setState(() {
                             _gender = value;
                           });
                         },
-                      ),
-                      const Text("\t\tFemale"),
+                        title: const Text("\t\tFemale"),
+                      )),
                       // Expanded(
                       //   child: TextButton(
                       //     onPressed: () => setState(() => isMale = true),
@@ -190,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // ),
                     ],
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 10,),
                   // Date Of Birth Fields
                   InputField(
                     controller: dobController,
@@ -213,7 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
                     trailingIcon: IconButton(
                         onPressed: () => setState(() => passSecure = !passSecure),
-                        icon: Icon(passSecure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.progressColor)),
+                        icon: Icon(passSecure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.primaryColor)),
                   ),
                   const SizedBox(height: 20,),
                   // CONFIRM PASSWORD FIELD
@@ -226,7 +226,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
                     trailingIcon: IconButton(
                         onPressed: () => setState(() => confirmPassSecure = !confirmPassSecure),
-                        icon: Icon(confirmPassSecure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.progressColor)),
+                        icon: Icon(confirmPassSecure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.primaryColor)),
                   ),
                   const SizedBox(height: 20,),
 
@@ -281,7 +281,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       TextButton(
                         onPressed: () => Navigator.pop(context),
                         style: TextButton.styleFrom(
-                            foregroundColor: AppColors.progressColor,
+                            foregroundColor: AppColors.primaryColor,
                             textStyle: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: Constants.fontFamily,

@@ -45,7 +45,7 @@ class ItemScreen extends StatelessWidget {
     bool isMy = selectedItem?.userId != _auth.currentUser?.userId;
     return WillPopScope(
       onWillPop: () async {
-       controller.resetValues();
+       controller.resetValues(!isMy);
         return !isMy;
       },
         child: Scaffold(
@@ -184,7 +184,7 @@ class ItemScreen extends StatelessWidget {
             // BACK BUTTON
             TextButton(
                 onPressed: () {
-                  controller.resetValues();
+                  controller.resetValues(isMy);
                   if(isMy) {
                     Get.back();
                   }
@@ -216,7 +216,7 @@ class ItemScreen extends StatelessWidget {
             selectedItem?.userDetails?.profilePic != null && selectedItem!.userDetails!.profilePic!.isNotEmpty ?
             "${Constants.IMAGE_URL}${selectedItem!.userDetails!.profilePic!}" :
             Constants.dummyImage,
-            selectedItem!.userId.toString(),
+            (selectedItem?.userId).toString(),
             padding: const EdgeInsets.all(5.0),
             badgeContent: null,
             radius: 25,
@@ -368,7 +368,7 @@ class ItemScreen extends StatelessWidget {
                                           style: TextStyle(fontSize: Get.textScaleFactor * 28, fontWeight: FontWeight.w600),
                                         ),
                                         TextSpan(
-                                          text: "  Dollar",
+                                          text: "  \$",
                                           style: TextStyle(fontSize: Get.textScaleFactor * 10),
                                         ),
                                       ]

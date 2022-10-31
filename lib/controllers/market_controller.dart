@@ -119,7 +119,7 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
     buying.value = false;
   }
 
-  void resetValues() {
+  void resetValues(bool deleteItem) {
     debugPrint(":::::::::::::::RESET");
     if(!buy() && selectedItem.value?.userId != _authService.currentUser?.userId) {
       Get.back();
@@ -128,7 +128,9 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
     height.value = Get.height;
     borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
     currIndex.value = 0;
-    selectedItem = Rxn<Listing?>();
+    if(deleteItem) {
+      selectedItem = Rxn<Listing?>();
+    }
   }
 
   Future updatePaletteGenerator([String? path, int? index]) async {

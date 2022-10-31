@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onSubmit: (_) => FocusScope.of(context).nextFocus(),
                     trailingIcon: IconButton(
                         onPressed: () => setState(() => secure = !secure),
-                        icon: Icon(secure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.progressColor)),
+                        icon: Icon(secure ? CupertinoIcons.eye : CupertinoIcons.eye_slash, color: AppColors.primaryColor)),
                   ),
                   const SizedBox(height: 10,),
                   Align(
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextButton(
                       onPressed: () => null,
                       style: TextButton.styleFrom(
-                        foregroundColor: AppColors.progressColor,
+                        foregroundColor: AppColors.primaryColor,
                         textStyle: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontFamily: Constants.fontFamily,
@@ -187,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextButton(
                         onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const RegisterScreen())),
                         style: TextButton.styleFrom(
-                            foregroundColor: AppColors.progressColor,
+                            foregroundColor: AppColors.primaryColor,
                             textStyle: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: Constants.fontFamily,
