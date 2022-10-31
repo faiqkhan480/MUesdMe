@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../components/comment_sheet.dart';
-import '../components/feed_actions.dart';
-import '../components/feed_card.dart';
-import '../components/header.dart';
-import '../components/share_sheet.dart';
-import '../controllers/comment_controller.dart';
-import '../controllers/feed_controller.dart';
-import '../models/auths/user_model.dart';
-import '../models/feed.dart';
-import '../utils/app_colors.dart';
-import '../utils/assets.dart';
-import '../widgets/loader.dart';
+import '../../components/comment_sheet.dart';
+import '../../components/feed_actions.dart';
+import '../../components/feed_card.dart';
+import '../../components/header.dart';
+import '../../components/share_sheet.dart';
+import '../../controllers/comment_controller.dart';
+import '../../controllers/feed_controller.dart';
+import '../../models/auths/user_model.dart';
+import '../../models/feed.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/assets.dart';
+import '../../widgets/loader.dart';
 
 class VideosScreen extends StatelessWidget {
   const VideosScreen({Key? key}) : super(key: key);

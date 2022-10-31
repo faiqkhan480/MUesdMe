@@ -14,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
-import 'package:imgly_sdk/imgly_sdk.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
 
 import '../components/grids.dart';
@@ -22,6 +21,7 @@ import '../models/file_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
+import '../utils/img_ly_config.dart';
 import '../utils/style_config.dart';
 import '../widgets/button_widget.dart';
 import 'upload_screen.dart';
@@ -82,41 +82,6 @@ class _EditorScreenState extends State<EditorScreen> {
 
   // <__________________END_BETTER PLAYER CONFIGURATION___________________>
 
-  // IMAGE EDITOR CONFIGURATION
-  Configuration createConfiguration() {
-    final flutterSticker = Sticker(
-        "example_sticker_logos_flutter", "Flutter", Assets.iconsLogo);
-    final imglySticker = Sticker(
-        "example_sticker_logos_imgly", "img.ly", Assets.iconsSmileyFace);
-
-    /// A completely custom category.
-    final logos = StickerCategory(
-        "example_sticker_category_logos", "Logos", Assets.iconsLogo,
-        items: [flutterSticker, imglySticker]);
-
-    /// A predefined category.
-    final emoticons =
-    StickerCategory.existing("imgly_sticker_category_emoticons");
-
-    /// A customized predefined category.
-    final shapes =
-    StickerCategory.existing("imgly_sticker_category_shapes", items: [
-      Sticker.existing("imgly_sticker_shapes_badge_01"),
-      Sticker.existing("imgly_sticker_shapes_arrow_02")
-    ]);
-    final categories = <StickerCategory>[logos, emoticons, shapes];
-    final configuration = Configuration(
-        sticker: StickerOptions(personalStickers: true, categories: categories),
-        audio: AudioOptions(categories:  [
-              AudioClipCategory("example_sounds", "SoundHelix", items: [
-                AudioClip("Song-1", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3")
-              ])
-            ]
-        ),
-    );
-    return configuration;
-  }
-
   handleNext() {
     if(imagePicker) {
       _handleImage();
@@ -131,7 +96,7 @@ class _EditorScreenState extends State<EditorScreen> {
     // _getImagesPath();
     FilePickerResult? img = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
     if(img != null) {
-      PhotoEditorResult? result = await PESDK.openEditor(image: img.files.single.path, configuration: createConfiguration());
+      PhotoEditorResult? result = await PESDK.openEditor(image: img.files.single.path, configuration: ImgLy.createConfiguration());
       if(result != null) {
         Get.to(UploadScreen(post: result,));
       }
@@ -142,7 +107,7 @@ class _EditorScreenState extends State<EditorScreen> {
     // if(video != null && video!.isNotEmpty) {
     FilePickerResult? vid = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.video);
     if(vid != null) {
-      var result = await VESDK.openEditor(Video(vid.files.single.path!), configuration: createConfiguration());
+      var result = await VESDK.openEditor(Video(vid.files.single.path!), configuration: ImgLy.createConfiguration());
       if(result != null) {
         Get.to(UploadScreen(video: result));
       }
@@ -276,7 +241,7 @@ class _EditorScreenState extends State<EditorScreen> {
                   Icon(Feather.image, color: Colors.white),
                   // SvgPicture.asset(Assets.iconsDelete),
                   SizedBox(width: 5,),
-                  Text("Upload"),
+                  Text("Choose Image"),
                 ],
               ),
             ),

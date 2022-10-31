@@ -141,53 +141,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         title: const Text("\t\tFemale"),
                       )),
-                      // Expanded(
-                      //   child: TextButton(
-                      //     onPressed: () => setState(() => isMale = true),
-                      //     style: TextButton.styleFrom(
-                      //         backgroundColor: isMale ? AppColors.secondaryColor : Colors.white,
-                      //         foregroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(12),
-                      //           side: const BorderSide(color: AppColors.lightGrey)
-                      //         ),
-                      //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                      //         textStyle: const TextStyle(fontSize: 20, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
-                      //     ),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: const [
-                      //         Icon(Icons.male_rounded, size: 20),
-                      //         Text("\t\tMale"),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      // const SizedBox(width: 10,),
-                      // Expanded(
-                      //   child: TextButton(
-                      //     onPressed: () => setState(() => isMale = false),
-                      //     style: TextButton.styleFrom(
-                      //         backgroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
-                      //         foregroundColor: isMale ? AppColors.secondaryColor : Colors.white,
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(12),
-                      //           side: const BorderSide(color: AppColors.lightGrey)
-                      //         ),
-                      //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                      //         textStyle: const TextStyle(
-                      //             fontSize: 20,
-                      //             fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
-                      //     ),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: const [
-                      //         Icon(Icons.female_rounded, size: 20),
-                      //         Text("\t\tFemale"),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                   const SizedBox(height: 10,),

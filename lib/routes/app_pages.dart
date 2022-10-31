@@ -19,7 +19,7 @@ import '../screens/market/item_screen.dart';
 import '../screens/market/market_screen.dart';
 import '../screens/market/upload_listing_screen.dart';
 import '../screens/profile/edit_profile_screen.dart';
-import '../screens/feed_screen.dart';
+import '../screens/feed/feed_screen.dart';
 import '../screens/live_screen.dart';
 import '../screens/picker_screen.dart';
 import '../screens/profile/profile_screen.dart';

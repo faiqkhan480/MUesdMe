@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
-import 'package:musedme/screens/feed_screen.dart';
+import 'package:musedme/screens/feed/feed_screen.dart';
 import 'package:musedme/utils/app_colors.dart';
 import 'package:musedme/widgets/text_widget.dart';
 
@@ -12,7 +12,7 @@ import '../screens/chat_screen.dart';
 import '../screens/market/market_screen.dart';
 import '../utils/assets.dart';
 import '../screens/profile/profile_screen.dart';
-import '../screens/videos_screen.dart';
+import '../screens/feed/videos_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
