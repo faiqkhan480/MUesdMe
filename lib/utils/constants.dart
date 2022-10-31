@@ -13,6 +13,9 @@ class Constants {
   static const String UPDATE_USER = "$BASE_URL/api/Users/UpdateUser";
   static const String GET_RTM = "$BASE_URL/api/Agora/GetRTMToken";
   static const String GET_RTC = "$BASE_URL/api/Agora/GetRTCToken";
+  static const String FORGOT_PASSWORD = "$BASE_URL/api/Users/ForgotPassword";
+  static const String VERIFY_PASSWORD = "$BASE_URL/api/Users/VerifyForgotPassword";
+  static const String UPDATE_PASSWORD = "$BASE_URL/api/Users/UpdatePassword";
 
 
   // POSTS

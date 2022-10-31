@@ -13,6 +13,7 @@ import '../../utils/assets.dart';
 import '../../utils/constants.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/text_widget.dart';
+import 'forgot_pass_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -81,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () => null,
+                      onPressed: () => Get.to(const ForgotPassScreen()),
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.primaryColor,
                         textStyle: const TextStyle(

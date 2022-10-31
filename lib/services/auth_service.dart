@@ -358,4 +358,99 @@ class AuthService extends GetxService {
       return null;
     }
   }
+
+  // FORGOT PASSWORD
+  Future<bool> forgotPass(String email) async {
+    try {
+      var payload = {
+        "Email": email,
+      };
+      final json = await Network.post(url: Constants.FORGOT_PASSWORD, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+          return true;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return false;
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return false;
+    }
+  }
+
+  // VERIFY PASSWORD
+  Future<bool> verifyPassCode(String email, String code) async {
+    try {
+      var payload = {
+        "Email": email,
+        "Code": code,
+      };
+      final json = await Network.post(url: Constants.VERIFY_PASSWORD, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+          return true;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return false;
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return false;
+    }
+  }
+
+  // UPDATE PASSWORD
+  Future<bool> updatePassword(String email, String password) async {
+    try {
+      var payload = {
+        "Email": email,
+        "Password": password,
+      };
+      final json = await Network.post(url: Constants.UPDATE_PASSWORD, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.back();
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return false;
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return false;
+    }
+  }
 }
