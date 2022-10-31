@@ -42,7 +42,7 @@ class MarketScreen extends GetView<MarketController>  {
                 hideButton: false,
                 showButtonIcon: false,
                 buttonText: "My Orders",
-                action: () => Get.to(OrdersScreen()),
+                action: () => Get.to(const OrdersScreen()),
               ),
 
               // TAB BAR

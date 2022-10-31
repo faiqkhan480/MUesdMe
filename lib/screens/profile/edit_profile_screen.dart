@@ -61,14 +61,14 @@ class EditProfileScreen extends GetView<EditProfileController> {
 
                     EmailPasswordCard(email: _authService.currentUser?.email),
 
-                    const SizedBox(height: 20,),
-
-                    SocialLinks(
-                      val1: controller.connectTwitter.value,
-                      val2: controller.connectFacebook.value,
-                      action1: (val) => null,
-                      action2: (val) => null,
-                    ),
+                    // const SizedBox(height: 20,),
+                    //
+                    // SocialLinks(
+                    //   val1: controller.connectTwitter.value,
+                    //   val2: controller.connectFacebook.value,
+                    //   action1: (val) => null,
+                    //   action2: (val) => null,
+                    // ),
 
                     const SizedBox(height: 20,),
 

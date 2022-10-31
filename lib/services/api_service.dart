@@ -665,4 +665,32 @@ class ApiService extends GetxService {
       return [];
     }
   }
+
+  Future resendLink([int? orderId]) async {
+    try {
+      var payload = {"UserID": _userId, "OrderID": orderId};
+      final json = await Network.post(url: Constants.RESEND_ORDER, headers: _header, payload: payload);
+      // debugPrint("LISTING:::::::::::: $json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+          return true;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
 }
