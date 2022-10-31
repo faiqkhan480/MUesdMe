@@ -17,6 +17,15 @@ buildscript {
 
 allprojects {
     repositories {
+        all { ArtifactRepository repo ->
+            println repo.url.toString()
+            if (repo.url.toString().startsWith("https://jcenter.bintray.com/")) {
+                project.logger.warn "Repository ${repo.url} removed."
+                remove repo
+                mavenCentral()
+            }
+        }
+        gradlePluginPortal()
         google()
         mavenCentral()
         maven { url 'https://www.jitpack.io' }
