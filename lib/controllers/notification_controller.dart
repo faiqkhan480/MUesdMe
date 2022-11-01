@@ -78,56 +78,23 @@ class PushNotification extends GetxController {
       }
 
       AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: message.notification?.hashCode ?? 0,
-          channelKey: 'musedme_channel',
-          title: "Calling...",
-          body: message.notification?.body ?? "",
-          actionType: ActionType.KeepOnTop,
-          category: NotificationCategory.Call,
-          displayOnBackground: true,
-          wakeUpScreen: true,
-            payload: {
-              "UserID": message.data['UserID'],
-              "FirstName": message.data['FirstName'],
-              "LastName": message.data['LastName'],
-              "ProfilePic": message.data['ProfilePic'],
-              "UserName": message.data['UserName'],
-              "RTCToken": message.data['RTCToken'],
-              "RTMToken": message.data['RTMToken']
-            }
-        ),
-        actionButtons: [
-          NotificationActionButton(
-            key: 'accept',
-            label: 'Accept',
-          ),
-          NotificationActionButton(
-            isDangerousOption: true,
-            key: 'reject',
-            label: 'Reject',
-          ),
-        ],
+          content: NotificationContent(
+              id: message.notification?.hashCode ?? 0,
+              channelKey: 'musedme_channel',
+              title: message.notification?.title ?? "",
+              body: message.notification?.body ?? "",
+              actionType: ActionType.Default,
+              payload: {
+                "UserID": message.data['UserID'],
+                "FirstName": message.data['FirstName'],
+                "LastName": message.data['LastName'],
+                "ProfilePic": message.data['ProfilePic'],
+                "UserName": message.data['UserName'],
+                "RTCToken": message.data['RTCToken'],
+                "RTMToken": message.data['RTMToken']
+              }
+          )
       );
-
-      // AwesomeNotifications().createNotification(
-      //     content: NotificationContent(
-      //         id: message.notification?.hashCode ?? 0,
-      //         channelKey: 'musedme_channel',
-      //         title: message.notification?.title ?? "",
-      //         body: message.notification?.body ?? "",
-      //         actionType: ActionType.Default,
-      //         payload: {
-      //           "UserID": message.data['UserID'],
-      //           "FirstName": message.data['FirstName'],
-      //           "LastName": message.data['LastName'],
-      //           "ProfilePic": message.data['ProfilePic'],
-      //           "UserName": message.data['UserName'],
-      //           "RTCToken": message.data['RTCToken'],
-      //           "RTMToken": message.data['RTMToken']
-      //         }
-      //     )
-      // );
     }
   }
 

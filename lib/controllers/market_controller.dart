@@ -106,17 +106,18 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
   }
 
   Future<void> _sndBuyRequest() async {
-    buying.value = true;
+    // buying.value = true;
     var res = await _service.buyItem(selectedItem.value!.itemId!.toString(), selectedItem.value!.price!.toString());
     if(res != null) {
       _authService.setUser(_authService.currentUser?.copyWith(wallet: (_authService.currentUser!.wallet! - selectedItem.value!.price!)));
-      Get.back();
+      // Get.back();
       Get.snackbar("Success!", res ?? "",
           backgroundColor: AppColors.successColor,
           colorText: Colors.white
       );
+      buying.value = true;
     }
-    buying.value = false;
+    // buying.value = false;
   }
 
   void resetValues(bool deleteItem) {

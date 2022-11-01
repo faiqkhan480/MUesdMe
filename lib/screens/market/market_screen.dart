@@ -73,8 +73,8 @@ class MarketScreen extends GetView<MarketController>  {
                 child: TabBarView(
                   controller: _tabX,
                   children: [
-                    _items(_listing.where((f) => f?.userId != _authService.currentUser?.userId).toList().obs, 0),
-                    _items(_listing.where((f) => f?.userId == _authService.currentUser?.userId).toList().obs, 1),
+                    _items(_listing.where((item) => item?.userId != _authService.currentUser?.userId).toList().obs, 0),
+                    _items(_listing.where((item) => item?.userId == _authService.currentUser?.userId).toList().obs, 1),
                   ],
                 ),
               ),
@@ -130,6 +130,7 @@ class MarketScreen extends GetView<MarketController>  {
   }
 
   Widget _items(RxList<Listing?> data, int tab) {
+    debugPrint("LENGHT::::::::::$data");
     return RefreshIndicator(
       onRefresh: controller.getAllListing,
       child: GridView.builder(

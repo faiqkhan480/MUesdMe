@@ -549,7 +549,7 @@ class ApiService extends GetxService {
         "UserID": _userId,
       };
       final json = await Network.post(url: Constants.MARKET_LISTING, headers: _header, payload: payload);
-      // debugPrint("LISTING:::::::::::: $json");
+      debugPrint("LISTING:::::::::::: $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.listings != null) {

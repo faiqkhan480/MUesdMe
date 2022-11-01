@@ -60,13 +60,13 @@ class ProfileScreen extends GetView<ProfileController> {
                 Center(child: Lottie.asset(Assets.loader)):
                 RefreshIndicator(
                   // displacement: 20,
-                  notificationPredicate: (notification) {
-                    // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
-                    if (notification is OverscrollNotification || Platform.isIOS) {
-                      return notification.depth == 2;
-                    }
-                    return notification.depth == 0;
-                 },
+                 //  notificationPredicate: (notification) {
+                 //    // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
+                 //    if (notification is OverscrollNotification || Platform.isIOS) {
+                 //      return notification.depth == 2;
+                 //    }
+                 //    return notification.depth == 0;
+                 // },
                   onRefresh: controller.getData,
                   child: ProfileBody(
                     onRefresh: controller.getData,

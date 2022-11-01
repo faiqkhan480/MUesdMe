@@ -83,79 +83,23 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
                       Row(
                         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Radio<String>(
+                          Expanded(child: RadioListTile<String>(
                             value: "Selling",
                             groupValue: _type,
-                            activeColor: AppColors.secondaryColor,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _type = value;
-                              });
-                            },
-                          ),
-                          const Text("\t\tSelling"),
+                            activeColor: AppColors.primaryColor,
+                            onChanged: (String? value) => setState(() => _type = value),
+                            title: const Text("Selling"),
+                          )),
 
-                          Radio<String>(
+                          Expanded(child: RadioListTile<String>(
                             value: "Licensing",
                             groupValue: _type,
-                            activeColor: AppColors.secondaryColor,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _type = value;
-                              });
-                            },
-                          ),
-                          const Text("\t\tLicensing"),
-                          // Expanded(
-                          //   child: TextButton(
-                          //     onPressed: () => setState(() => isMale = true),
-                          //     style: TextButton.styleFrom(
-                          //         backgroundColor: isMale ? AppColors.secondaryColor : Colors.white,
-                          //         foregroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
-                          //         shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(12),
-                          //           side: const BorderSide(color: AppColors.lightGrey)
-                          //         ),
-                          //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                          //         textStyle: const TextStyle(fontSize: 20, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
-                          //     ),
-                          //     child: Row(
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: const [
-                          //         Icon(Icons.male_rounded, size: 20),
-                          //         Text("\t\tMale"),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
-                          // const SizedBox(width: 10,),
-                          // Expanded(
-                          //   child: TextButton(
-                          //     onPressed: () => setState(() => isMale = false),
-                          //     style: TextButton.styleFrom(
-                          //         backgroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
-                          //         foregroundColor: isMale ? AppColors.secondaryColor : Colors.white,
-                          //         shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(12),
-                          //           side: const BorderSide(color: AppColors.lightGrey)
-                          //         ),
-                          //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                          //         textStyle: const TextStyle(
-                          //             fontSize: 20,
-                          //             fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
-                          //     ),
-                          //     child: Row(
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: const [
-                          //         Icon(Icons.female_rounded, size: 20),
-                          //         Text("\t\tFemale"),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
+                            activeColor: AppColors.primaryColor,
+                            onChanged: (String? value) => setState(() => _type = value),
+                            title: const Text("\t\Licensing"),
+                          )),
                         ],
                       ),
-
                       // PRICE FIELD
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
@@ -258,7 +202,10 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
           child: Loader(),
         ) :
         TextButton(
-          onPressed: _controller.selectedItem.value?.files != null && _controller.selectedItem.value!.files!.isNotEmpty ? handleUpdate : handleSubmit,
+          onPressed:
+          _controller.selectedItem.value?.userId == _authService.currentUser?.userId ?
+          handleUpdate :
+          handleSubmit,
           style: TextButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               foregroundColor: Colors.white,
@@ -268,7 +215,7 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
               textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
           ),
-          child: const Text("Submit"),
+          child: Text(_controller.selectedItem.value?.userId == _authService.currentUser?.userId ? "Update" : "Submit"),
         ),
       ),
     );

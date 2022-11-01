@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:swipeable_button_view/swipeable_button_view.dart';
 
 import '../../components/audio_item.dart';
 import '../../controllers/market_controller.dart';
@@ -76,7 +77,7 @@ class ItemScreen extends StatelessWidget {
 
               _sheet(),
 
-              _buyButton(),
+              Obx(_buyButton),
 
               _headerBar(),
             ],
@@ -233,13 +234,30 @@ class ItemScreen extends StatelessWidget {
         bottom: 10,
         left: 10,
         right: 10,
-        child: _loading || _buying ?
+        child: _loading ?
         const SizedBox(
           height: 90,
           child: Loader(),
         ) :
+        !isMy && buy ?
+        SwipeableButtonView(
+            buttonText: "Confirm Order",
+            buttonColor: AppColors.secondaryColor,
+            buttonWidget: const Icon(
+                AntDesign.arrowright,
+              color: Colors.white,
+            ),
+            activeColor: AppColors.primaryColor,
+            isFinished: _buying,
+            onWaitingProcess: () {
+              controller.buyItem(true);
+            },
+            onFinish: () async {
+              Get.close(1);
+              controller.buying.value = false;
+            }) :
         TextButton(
-          onPressed: () => isMy ? controller.editItem() : controller.buyItem(true),
+          onPressed: () => isMy ? controller.editItem() : controller.buyItem(false),
           style: TextButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
           foregroundColor: Colors.white,
@@ -252,7 +270,9 @@ class ItemScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(isMy ? "Edit This" : "Buy This"),
+              Text(isMy ?
+              "Edit This" :
+              "Buy This"),
               Container(
                 decoration: const BoxDecoration(
                     color: AppColors.secondaryColor,
