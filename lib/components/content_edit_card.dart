@@ -29,9 +29,11 @@ class ContentEditCard extends StatelessWidget {
           TextField(
             // textAlign: TextAlign.end,
             controller: aboutMe,
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black, fontSize: 14),
             decoration: const InputDecoration(
               isDense: true,
+              hintText: "Enter text here...",
+              hintStyle: TextStyle(color: AppColors.lightGrey, fontSize: 14),
               focusedBorder: InputBorder.none,
               enabledBorder: InputBorder.none,
             ),

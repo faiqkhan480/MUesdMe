@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:musedme/routes/app_routes.dart';
 
 import '../../components/feed_actions.dart';
 import '../../components/feed_card.dart';
@@ -53,7 +54,7 @@ class ProfileBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> tabs = [
-      "My Feed",
+      Get.currentRoute == AppRoutes.USER_PROFILE ? "All Feeds" :  "My Feeds",
       "Images",
       "Videos"
     ];

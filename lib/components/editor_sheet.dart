@@ -36,7 +36,7 @@ class _EditorSheetState extends State<EditorSheet> {
             children: <Widget>[
               IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.clear)),
               const Spacer(flex: 2,),
-              const Text("Media Editor",
+              const Text("Collaboration Tools",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.secondaryColor,
