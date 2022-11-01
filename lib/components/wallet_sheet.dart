@@ -7,6 +7,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:musedme/services/api_service.dart';
 
+import '../controllers/profile_controller.dart';
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -32,6 +33,8 @@ class _WalletSheetState extends State<WalletSheet> {
   final ApiService _service = Get.find<ApiService>();
 
   double amount = 0.0;
+
+  ProfileController get profileController => Get.find<ProfileController>();
 
   @override
   initState() {
@@ -181,25 +184,16 @@ class _WalletSheetState extends State<WalletSheet> {
          ));
          setState(() {
            amount = amount + (double.tryParse(price.text) ?? 0.0);
+           profileController.user.value = _auth.currentUser!;
          });
          price.clear();
+         Get.back();
          Get.snackbar("Success!", res ?? "Wallet is updated",
              backgroundColor: AppColors.successColor,
              colorText: Colors.white
          );
        }
-     }
-     // => Get.dialog(Column(
-     //   children: [
-     //     Row(
-     //       children: const [
-     //         Icon(Icons.check_circle, color: Colors.green,),
-     //         Text("Payment Successful")
-     //       ],
-     //     )
-     //   ],
-     // ))
-     );
+     });
     } catch (e, s) {
       debugPrint('exception:$e$s');
     }

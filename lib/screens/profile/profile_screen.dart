@@ -12,7 +12,6 @@ import '../../controllers/comment_controller.dart';
 import '../../controllers/profile_controller.dart';
 import '../../models/auths/user_model.dart';
 import '../../models/feed.dart';
-import '../../routes/app_routes.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/style_config.dart';
@@ -139,7 +138,6 @@ class ProfileScreen extends GetView<ProfileController> {
   // COMMENT SHEET
   handleWallet() async {
     await Get.bottomSheet(
-      // WalletScreen(),
         const WalletSheet(),
         clipBehavior: Clip.antiAlias,
         isScrollControlled: true,
