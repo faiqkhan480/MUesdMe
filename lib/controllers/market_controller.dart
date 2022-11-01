@@ -26,6 +26,7 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
   RxBool loading = true.obs;
   RxBool fetching = false.obs;
   RxBool buying = false.obs;
+  RxBool orderResponse = false.obs;
   RxInt currIndex = 0.obs;
   Rx<BoxFit> boxFit = BoxFit.cover.obs;
   Rx<Alignment> alignment = const Alignment(0.6, 0).obs;
@@ -106,7 +107,7 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
   }
 
   Future<void> _sndBuyRequest() async {
-    // buying.value = true;
+    orderResponse.value = false;
     var res = await _service.buyItem(selectedItem.value!.itemId!.toString(), selectedItem.value!.price!.toString());
     if(res != null) {
       _authService.setUser(_authService.currentUser?.copyWith(wallet: (_authService.currentUser!.wallet! - selectedItem.value!.price!)));
@@ -115,9 +116,9 @@ class MarketController extends GetxController with GetSingleTickerProviderStateM
           backgroundColor: AppColors.successColor,
           colorText: Colors.white
       );
-      buying.value = true;
+      orderResponse.value = true;
     }
-    // buying.value = false;
+    buying.value = true;
   }
 
   void resetValues(bool deleteItem) {

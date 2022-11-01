@@ -59,19 +59,20 @@ class AuthService extends GetxService {
   }
 
   // USER LOGIN
-  Future<bool> loginUser(String email, String pass) async {
+  Future<bool> loginUser(String email, String pass, int isSocial) async {
     try {
       var payload = {
         "Email": email,
         "Password": pass,
+        "isSocial": isSocial,
         "FCMToken": _box.read("fcm")
       };
       final json = await Network.post(url: Constants.LOGIN, payload: payload);
+      // debugPrint("LOGIN RES::::::::: $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.user != null) {
           _currentUser = User.fromJson(res.user);
-          // debugPrint("::::::::: ${_currentUser?.userName}");
           _box.write("user", res.user);
           _box.write("token", _currentUser?.token);
           await getTokens();
@@ -167,10 +168,11 @@ class AuthService extends GetxService {
       String lastName,
       String userName,
       String email,
-      String gender,
+      String? gender,
       String country,
-      String dob,
+      String? dob,
       String password,
+      int isSocial,
       ) async {
     try {
       var payload = {
@@ -182,6 +184,7 @@ class AuthService extends GetxService {
         "Country": country,
         "DOB": dob,
         "Gender": gender,
+        "isSocial": isSocial,
         "FCMToken": _box.read("fcm")
       };
       final json = await Network.post(url: Constants.REGISTER, payload: payload);

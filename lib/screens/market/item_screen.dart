@@ -241,19 +241,25 @@ class ItemScreen extends StatelessWidget {
         ) :
         !isMy && buy ?
         SwipeableButtonView(
-            buttonText: "Confirm Order",
+            buttonText: selectedItem!.price! <= _auth.currentUser!.wallet! ? "Confirm Order" : "Not enough money in wallet",
             buttonColor: AppColors.secondaryColor,
             buttonWidget: const Icon(
                 AntDesign.arrowright,
               color: Colors.white,
             ),
+            isActive: selectedItem!.price! <= _auth.currentUser!.wallet!,
             activeColor: AppColors.primaryColor,
             isFinished: _buying,
             onWaitingProcess: () {
               controller.buyItem(true);
             },
             onFinish: () async {
-              Get.close(1);
+              if(controller.orderResponse()) {
+                Get.close(1);
+              }
+              else {
+                Get.back();
+              }
               controller.buying.value = false;
             }) :
         TextButton(

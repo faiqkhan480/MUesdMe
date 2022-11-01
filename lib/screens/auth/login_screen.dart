@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 import 'package:musedme/routes/app_routes.dart';
 import 'package:musedme/screens/auth/register_screen.dart';
@@ -125,59 +127,59 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 20,),
 
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     // Expanded(
-                  //     //   child:
-                  //       ElevatedButton(
-                  //         onPressed: () => null,
-                  //         style: ElevatedButton.styleFrom(
-                  //             backgroundColor: Colors.white,
-                  //             foregroundColor: AppColors.secondaryColor,
-                  //             shape: RoundedRectangleBorder(
-                  //                 borderRadius: BorderRadius.circular(12)
-                  //             ),
-                  //             elevation: 8,
-                  //             shadowColor: AppColors.shadowColor.withOpacity(0.4),
-                  //             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  //             textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
-                  //         ),
-                  //         child: Row(
-                  //           mainAxisAlignment: MainAxisAlignment.center,
-                  //           children: [
-                  //             SvgPicture.asset(Assets.iconsGoogle, height: 38,),
-                  //             const Text("\tGoogle"),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     // ),
-                  //     // const SizedBox(width: 20,),
-                  //     // Expanded(
-                  //     //   child: ElevatedButton(
-                  //     //     onPressed: () => null,
-                  //     //     style: ElevatedButton.styleFrom(
-                  //     //         backgroundColor: Colors.white,
-                  //     //         foregroundColor: AppColors.secondaryColor,
-                  //     //         shape: RoundedRectangleBorder(
-                  //     //             borderRadius: BorderRadius.circular(12)
-                  //     //         ),
-                  //     //         elevation: 8,
-                  //     //         shadowColor: AppColors.shadowColor.withOpacity(0.4),
-                  //     //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  //     //         textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
-                  //     //     ),
-                  //     //     child: Row(
-                  //     //       mainAxisAlignment: MainAxisAlignment.center,
-                  //     //       children: [
-                  //     //         SvgPicture.asset(Assets.iconsFacebook, height: 38,),
-                  //     //         const Text("\tFacebook "),
-                  //     //       ],
-                  //     //     ),
-                  //     //   ),
-                  //     // ),
-                  //   ],
-                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Expanded(
+                      //   child:
+                        ElevatedButton(
+                          onPressed: googleSignIn,
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: AppColors.secondaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)
+                              ),
+                              elevation: 8,
+                              shadowColor: AppColors.shadowColor.withOpacity(0.4),
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                              textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(Assets.iconsGoogle, height: 38,),
+                              const Text("\tGoogle"),
+                            ],
+                          ),
+                        ),
+                      // ),
+                      // const SizedBox(width: 20,),
+                      // Expanded(
+                      //   child: ElevatedButton(
+                      //     onPressed: () => null,
+                      //     style: ElevatedButton.styleFrom(
+                      //         backgroundColor: Colors.white,
+                      //         foregroundColor: AppColors.secondaryColor,
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(12)
+                      //         ),
+                      //         elevation: 8,
+                      //         shadowColor: AppColors.shadowColor.withOpacity(0.4),
+                      //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      //         textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w800)
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         SvgPicture.asset(Assets.iconsFacebook, height: 38,),
+                      //         const Text("\tFacebook "),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
 
                   SizedBox(height: MediaQuery.of(context).size.height * 0.10,),
 
@@ -210,18 +212,47 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> handleSubmit() async {
     if(!loader && _formKey.currentState!.validate()) {
-      try {
-        setState(() => loader = true);
-        bool res = await _authService.loginUser(emailController.text, passwordController.text);
-        setState(() => loader = false);
-        if(res) {
-          Get.offAndToNamed(AppRoutes.ROOT);
-        }
+      _sndSubmitReq(emailController.text, passwordController.text, 0);
+    }
+  }
+
+  Future<void> googleSignIn() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    var res = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    if(res.user != null) {
+      await _sndSubmitReq(
+        res.user!.email!,
+        "",
+        1,
+      );
+    }
+  }
+
+  _sndSubmitReq(String e, String p, int isSocial) async {
+    try {
+      setState(() => loader = true);
+      bool res = await _authService.loginUser(e, p, isSocial);
+      setState(() => loader = false);
+      if(res) {
+        Get.offAndToNamed(AppRoutes.ROOT);
       }
-      catch(e) {
-        debugPrint("$e");
-        setState(() => loader = false);
-      }
+    }
+    catch(e) {
+      debugPrint("$e");
+      setState(() => loader = false);
     }
   }
 }
