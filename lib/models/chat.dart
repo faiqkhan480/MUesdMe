@@ -39,6 +39,24 @@ class Chat {
   @JsonKey(name: 'MessageDate')
   final DateTime? messageDate;
 
+  Chat copyWith({
+    int? userId,
+    int? chatId,
+    String? fullName,
+    String? profilePic,
+    String? message,
+    DateTime? messageDate
+  }) {
+    return Chat(
+        userId: userId ?? this.userId,
+        chatId: chatId ?? this.chatId,
+        fullName: fullName ?? this.fullName,
+        profilePic: profilePic ?? this.profilePic,
+        message: message ?? this.message,
+        messageDate: messageDate ?? this.messageDate
+    );
+  }
+
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChatToJson(this);

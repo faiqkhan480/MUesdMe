@@ -395,8 +395,9 @@ class ApiService extends GetxService {
       debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        if(res.code == 200 && res.message != null) {
-          return true;
+        if(res.code == 200 && res.messages != null) {
+          List<Message> message = messageFromJson(jsonEncode(res.messages));
+          return message;
         }
         else {
           Get.snackbar("Failed!", res.message ?? "",

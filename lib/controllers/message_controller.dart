@@ -1,8 +1,6 @@
 import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:musedme/controllers/feed_controller.dart';
-import 'package:musedme/utils/constants.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../models/auths/user_model.dart';
@@ -11,8 +9,10 @@ import '../models/message.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../utils/constants.dart';
 import 'agora_controller.dart';
 import 'chat_controller.dart';
+import 'feed_controller.dart';
 
 class MessageController extends GetxController {
   RxBool loading = true.obs;
@@ -31,6 +31,8 @@ class MessageController extends GetxController {
   final List<User?> _users = Get.find<FeedController>().users;
 
   final AgoraController _agora = Get.find<AgoraController>();
+
+  final ChatController _chat = Get.find<ChatController>();
 
   var args = Get.arguments;
 
@@ -102,9 +104,20 @@ class MessageController extends GetxController {
     //   type: "Message"
     // ));
     messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: chat.value.chatId, message: message.text, messageDate: DateTime.now(), type: "Message"));
-    debugPrint("MSG::::::::::$message.text");
-    _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString(), 1);
+    _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString(), 1).then((value) {
+      if(chat.value.chatId == 0) {
+        _chat.chats.add(chat.value.copyWith(
+            chatId: value.last?.chatId,
+            userId: chat.value.userId,
+            messageDate: value.last?.messageDate,
+            message: value.last?.message
+        ));
+        _chat.chats.refresh();
+        chat.value = chat.value.copyWith(chatId: value.last?.chatId);
+      }
+    });
     message.clear();
+
   }
 
   void sendMessage() async {
@@ -129,9 +142,20 @@ class MessageController extends GetxController {
     // FOR OFFLINE USER
     else {
       var res = await _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString(), 0);
-      if(res == true) {
-        messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: chat.value.chatId, message: message.text, messageDate: DateTime.now(), type: 'Message'));
+      if(res != null) {
+        List<Message?> resMessages = res;
+        messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: resMessages.last?.chatId, message: message.text, messageDate: DateTime.now(), type: 'Message'));
         message.clear();
+        if(chat.value.chatId == 0) {
+          _chat.chats.add(chat.value.copyWith(
+              chatId: resMessages.last?.chatId,
+              userId: chat.value.userId,
+              messageDate: resMessages.last?.messageDate,
+              message: resMessages.last?.message
+          ));
+          _chat.chats.refresh();
+          chat.value = chat.value.copyWith(chatId: resMessages.last?.chatId);
+        }
       }
       fetching.value = false;
     }

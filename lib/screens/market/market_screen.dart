@@ -130,7 +130,6 @@ class MarketScreen extends GetView<MarketController>  {
   }
 
   Widget _items(RxList<Listing?> data, int tab) {
-    debugPrint("LENGHT::::::::::$data");
     return RefreshIndicator(
       onRefresh: controller.getAllListing,
       child: GridView.builder(
