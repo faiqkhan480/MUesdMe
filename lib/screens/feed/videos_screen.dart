@@ -32,7 +32,7 @@ class VideosScreen extends StatelessWidget {
   int get _currTab => _controller.currTab.value;
   List<Feed?> get _feeds => _controller.feeds;
   RxList<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList().obs;
-  RxList<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video" && v!.postLikes! > 0).toList().obs;
+  RxList<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video").toList().obs;
   RxList<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(v!.feedDate!)).toList().obs;
 
   @override
@@ -79,7 +79,7 @@ class VideosScreen extends StatelessWidget {
         child: TabBarView(
           children: [
             _view(_videos, 0), // ALL VIDEOS
-            _view(_trending, 1), // TRENDING VIDEOS
+            _view(getTrendingList(), 1), // TRENDING VIDEOS
             _view(_today, 1), // TODAY'S VIDEOS
             // SvgPicture.asset(Assets.searchUsers), // TODAY'S VIDEOS
           ],
@@ -191,5 +191,11 @@ class VideosScreen extends StatelessWidget {
     // } else(aDate == tomorrow) {
     // ...
     // }
+  }
+
+  RxList<Feed?> getTrendingList() {
+    List<Feed?> trendingItems = _trending;
+    trendingItems.sort((a, b) => b!.postLikes!.compareTo(a!.postLikes!));
+    return trendingItems.obs;
   }
 }
