@@ -102,6 +102,7 @@ class MessageController extends GetxController {
     //   type: "Message"
     // ));
     messages.insert(0, Message(userId: _authService.currentUser!.userId!, chatId: chat.value.chatId, message: message.text, messageDate: DateTime.now(), type: "Message"));
+    debugPrint("MSG::::::::::$message.text");
     _service.sendMessage(chat.value.chatId.toString(), message.text, chat.value.userId.toString(), 1);
     message.clear();
   }

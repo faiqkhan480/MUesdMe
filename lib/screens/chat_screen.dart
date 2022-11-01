@@ -1,15 +1,12 @@
 import 'package:badges/badges.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:musedme/controllers/agora_controller.dart';
-import 'package:musedme/controllers/chat_controller.dart';
-import 'package:popover/popover.dart';
 
 import '../components/search_field.dart';
+import '../controllers/agora_controller.dart';
+import '../controllers/chat_controller.dart';
 import '../models/chat.dart';
-import '../screens/message_screen.dart';
 import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
 import '../utils/app_colors.dart';

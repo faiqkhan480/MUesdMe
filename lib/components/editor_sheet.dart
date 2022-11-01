@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
 
 import '../controllers/feed_controller.dart';
+import '../screens/audio_mixing_screen.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 import '../utils/img_ly_config.dart';
@@ -98,6 +100,31 @@ class _EditorSheetState extends State<EditorSheet> {
                       ],
                     ),
                   ),
+                  if(kDebugMode) ...[
+                    const SizedBox(height: 50,),
+                    TextButton(
+                      onPressed: _handleAudio,
+                      style: TextButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+                          textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Feather.music, color: Colors.white),
+                          // SvgPicture.asset(Assets.iconsDelete),
+                          const SizedBox(width: 5,),
+                          Text("Choose Audio".toUpperCase()),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -126,6 +153,13 @@ class _EditorSheetState extends State<EditorSheet> {
       if(result != null) {
         controller.handleLocalDownload(result.video, true);
       }
+    }
+  }
+
+  _handleAudio() async {
+    FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
+    if(audio != null) {
+      Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
     }
   }
 }

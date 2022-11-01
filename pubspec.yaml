@@ -19,7 +19,6 @@ dependencies:
   badges: ^2.0.3
 
 #  cached_video_player: ^2.0.3
-  callkeep: ^0.3.2
   country_picker: ^2.0.16
   cupertino_icons: ^1.0.2
   emoji_picker_flutter: ^1.4.0
@@ -47,7 +46,6 @@ dependencies:
   lottie: ^1.4.3
   path_provider: ^2.0.11
   permission_handler: ^10.0.0
-  popover: ^0.2.6+3
   ringtone_player: ^0.1.1
 
 #  IMGLY Photo & Video editor
@@ -58,10 +56,9 @@ dependencies:
   video_thumbnail: ^0.5.3
   video_compress: ^3.1.1
   better_player: ^0.0.83
-  cached_network_image: ^3.2.2
+#  cached_network_image: ^3.2.2
   palette_generator: ^0.3.3+2
   flutter_stripe: ^6.0.0
-  audioplayers: ^1.1.1
   just_audio: ^0.9.30
 
 dev_dependencies:

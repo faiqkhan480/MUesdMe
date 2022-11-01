@@ -388,11 +388,11 @@ class ApiService extends GetxService {
         "UserID": _userId,
         "Message": message,
         "ChatWithUser": chatWithUser,
-        "IsActive": 0,
+        "IsActive": isActive,
         "Type": type ?? "Message"
       };
       final json = await Network.post(url: Constants.SEND_MESSAGE, headers: _header, payload: payload);
-      // debugPrint("json::::::$json");
+      debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.message != null) {
