@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +9,7 @@ import '../../controllers/market_controller.dart';
 import '../../models/listing.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/assets.dart';
 import '../../utils/constants.dart';
 import '../../widgets/glass_morphism.dart';
 import '../../widgets/loader.dart';
@@ -133,15 +135,17 @@ class MarketScreen extends GetView<MarketController>  {
     return RefreshIndicator(
       onRefresh: controller.getAllListing,
       child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: (data.isEmpty) ? 1 : 2,
             crossAxisSpacing: 15,
             mainAxisSpacing: 10,
             childAspectRatio: 0.8,
           ),
-          itemCount: data.length,
+          itemCount: (data.isEmpty) ? 1 : data.length,
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          itemBuilder: (context, index) => InkWell(
+          itemBuilder: (context, index) => (data.isEmpty) ?
+          SvgPicture.asset(Assets.searchUsers) :
+          InkWell(
             onTap: () => onTap(data.elementAt(index)!, _listing.indexOf(data.elementAt(index))),
             child: Stack(
               children: [
@@ -195,8 +199,7 @@ class MarketScreen extends GetView<MarketController>  {
               ],
             ),
           )
-      ),
-    );
+      ));
   }
 
   Widget audioCard() {

@@ -59,7 +59,6 @@ class ProfileBody extends StatelessWidget {
       "Videos"
     ];
     return NestedScrollView(
-
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
           SliverAppBar(
