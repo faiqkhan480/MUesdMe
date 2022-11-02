@@ -349,7 +349,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> googleSignIn() async {
     // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount? googleUser = await GoogleSignIn(clientId: "760964256580-6pk2o061js4tmkc870ev2oab275v1aj4.apps.googleusercontent.com",).signIn();
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
@@ -362,9 +362,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // Once signed in, return the UserCredential
     var res = await FirebaseAuth.instance.signInWithCredential(credential);
-
-    debugPrint("::::::::::::::::::::${res.user}");
-    debugPrint("::::::::::::::::::::${res.user?.metadata}");
 
     if(res.user != null) {
       await _sndSubmitReq(

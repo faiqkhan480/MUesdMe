@@ -68,6 +68,7 @@ class AuthService extends GetxService {
         "FCMToken": _box.read("fcm")
       };
       final json = await Network.post(url: Constants.LOGIN, payload: payload);
+      print("LOGIN RES::::::::: $json");
       // debugPrint("LOGIN RES::::::::: $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));

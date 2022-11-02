@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 import '../components/custom_header.dart';
 import '../utils/app_colors.dart';
-import '../utils/common.dart';
 
 class AudioMixingScreen extends StatefulWidget {
   final String audio;

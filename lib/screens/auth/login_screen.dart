@@ -6,11 +6,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
-import 'package:musedme/routes/app_routes.dart';
-import 'package:musedme/screens/auth/register_screen.dart';
-import 'package:musedme/utils/app_colors.dart';
 
+import '../../routes/app_routes.dart';
 import '../../services/auth_service.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/constants.dart';
 import '../../widgets/input_field.dart';
@@ -23,6 +22,12 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
+
+final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email'
+    ]
+);
 
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
@@ -37,6 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    _googleSignIn.onCurrentUserChanged.listen((account) {
+      socialLogin(account);
+    });
+    _googleSignIn.signInSilently();
     // TODO: implement initState
     super.initState();
     if(kDebugMode) {
@@ -133,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Expanded(
                       //   child:
                         ElevatedButton(
-                          onPressed: googleSignIn,
+                          onPressed: signIn,
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: AppColors.secondaryColor,
@@ -188,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       const TextWidget("Don't have an account?", size: 18, weight: FontWeight.normal),
                       TextButton(
-                        onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const RegisterScreen())),
+                        onPressed: () => Get.toNamed(AppRoutes.REGISTER),
                         style: TextButton.styleFrom(
                             foregroundColor: AppColors.primaryColor,
                             textStyle: const TextStyle(
@@ -217,27 +226,69 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> googleSignIn() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    try{
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+        clientId: "760964256580-6pk2o061js4tmkc870ev2oab275v1aj4.apps.googleusercontent.com",
+      ).signIn();
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+      print("::::$googleUser::::::");
 
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
-    // Once signed in, return the UserCredential
-    var res = await FirebaseAuth.instance.signInWithCredential(credential);
-
-    if(res.user != null) {
-      await _sndSubmitReq(
-        res.user!.email!,
-        "",
-        1,
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
       );
+
+      // Once signed in, return the UserCredential
+      var res = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if(res.user != null) {
+        await _sndSubmitReq(
+          res.user!.email!,
+          "",
+          1,
+        );
+      }
+    }
+    catch(e) {
+      print("Error::::::::::::$e");
+    }
+
+  }
+
+  Future<void> socialLogin([GoogleSignInAccount? account]) async {
+    try{
+
+      print("::::$account::::::");
+
+      _googleSignIn.signInSilently();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth = await account?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      var res = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if(res.user != null) {
+        await _sndSubmitReq(
+          res.user!.email!,
+          "",
+          1,
+        );
+      }
+    }
+    catch(e) {
+      print("Error::::::::::::$e");
     }
   }
 
@@ -253,6 +304,18 @@ class _LoginScreenState extends State<LoginScreen> {
     catch(e) {
       debugPrint("$e");
       setState(() => loader = false);
+    }
+  }
+
+  void signOut(){
+    _googleSignIn.disconnect();
+  }
+
+  Future<void> signIn() async {
+    try{
+      await _googleSignIn.signIn();
+    }catch (e){
+      print('Error signing in $e');
     }
   }
 }

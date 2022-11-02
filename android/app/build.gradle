@@ -30,6 +30,7 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'ly.img.android.sdk'
@@ -92,8 +93,8 @@ android {
         applicationId "com.gesolucions.musedme"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 23
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -112,6 +113,10 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
+            minifyEnabled true
+//            useProguard true
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            applicationVariants.all { variant ->
 //                variant.outputs.each { output ->
 //                    def date = new Date();
@@ -133,6 +138,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 //    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation platform('com.google.firebase:firebase-bom:31.0.2')
+    implementation 'com.google.firebase:firebase-analytics'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     constraints { implementation('com.stripe:stripe-android') { version { strictly '20.11.0' } } }
     constraints { implementation('com.stripe:financial-connections') { version { strictly '20.11.0' } } }
