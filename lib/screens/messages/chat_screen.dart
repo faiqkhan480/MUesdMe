@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../components/search_field.dart';
-import '../controllers/agora_controller.dart';
-import '../controllers/chat_controller.dart';
-import '../models/chat.dart';
-import '../widgets/loader.dart';
-import '../widgets/text_widget.dart';
-import '../utils/app_colors.dart';
-import '../utils/assets.dart';
-import '../utils/constants.dart';
+import '../../components/search_field.dart';
+import '../../controllers/agora_controller.dart';
+import '../../controllers/chat_controller.dart';
+import '../../models/chat.dart';
+import '../../widgets/loader.dart';
+import '../../widgets/text_widget.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/assets.dart';
+import '../../utils/constants.dart';
 
 class ChatsScreen extends GetView<ChatController> {
   const ChatsScreen({Key? key}) : super(key: key);

@@ -8,7 +8,7 @@ import 'package:musedme/widgets/text_widget.dart';
 
 import '../controllers/root_controller.dart';
 import '../screens/library_screen.dart';
-import '../screens/chat_screen.dart';
+import '../screens/messages/chat_screen.dart';
 import '../screens/market/market_screen.dart';
 import '../utils/assets.dart';
 import '../screens/profile/profile_screen.dart';

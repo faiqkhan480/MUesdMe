@@ -157,9 +157,10 @@ class _EditorSheetState extends State<EditorSheet> {
   }
 
   _handleAudio() async {
-    FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
-    if(audio != null) {
-      Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
-    }
+    // FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
+    // if(audio != null) {
+    //   Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
+      Get.to(const AudioMixingScreen());
+    // }
   }
 }
