@@ -467,7 +467,7 @@ class ApiService extends GetxService {
   Future<Listing?> uploadListingFile(List<String> filePath) async {
     try {
       final json = await Network.multipart(url: Constants.UPLOAD_LISTING_FILE, headers: _header, filePath: filePath);
-      // debugPrint("json::::::$json");
+      debugPrint("UPLOAD FILE::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.listing != null) {
@@ -492,7 +492,7 @@ class ApiService extends GetxService {
   Future uploadListing(Listing? listing) async {
     try {
       final json = await Network.post(url: Constants.UPLOAD_LISTING, headers: _header, payload: listing?.toJson());
-      debugPrint("json::::::$json");
+      debugPrint("UPLOAD LISTING::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         // if(res.message != null && res.message!.isNotEmpty) {

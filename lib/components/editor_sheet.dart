@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
 
@@ -157,10 +160,12 @@ class _EditorSheetState extends State<EditorSheet> {
   }
 
   _handleAudio() async {
-    // FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
-    // if(audio != null) {
-    //   Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
-      Get.to(const AudioMixingScreen());
-    // }
+    FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
+
+    if(audio != null) {
+      Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
+    }
+
+    // Get.to(const AudioMixingScreen());
   }
 }
