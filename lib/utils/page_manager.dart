@@ -24,8 +24,22 @@ class PageManager {
   void _init(String path) async {
     _audioPlayer = AudioPlayer();
     File file = File(path);
-    await _audioPlayer.setFilePath(file.path);
+
+    // await _audioPlayer.setFilePath(file.path);
     // await _audioPlayer.setUrl(url);
+    // Define the playlist
+    final playlist = ConcatenatingAudioSource(
+      // Start loading next item just before reaching it
+      useLazyPreparation: true,
+      // Customise the shuffle algorithm
+      shuffleOrder: DefaultShuffleOrder(),
+      // Specify the playlist items
+      children: [
+        AudioSource.uri(Uri.parse("")),
+        // AudioSource.uri(Uri.parse('https://example.com/track2.mp3')),
+        // AudioSource.uri(Uri.parse('https://example.com/track3.mp3')),
+      ],
+    );
 
     _audioPlayer.playerStateStream.listen((playerState) {
       final isPlaying = playerState.playing;

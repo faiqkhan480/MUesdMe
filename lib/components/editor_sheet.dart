@@ -10,6 +10,7 @@ import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
 
 import '../controllers/feed_controller.dart';
+import '../screens/audio_editor.dart';
 import '../screens/audio_mixing_screen.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -160,12 +161,12 @@ class _EditorSheetState extends State<EditorSheet> {
   }
 
   _handleAudio() async {
-    FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
+    // FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
+    //
+    // if(audio != null) {
+    //   Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
+    // }
 
-    if(audio != null) {
-      Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
-    }
-
-    // Get.to(const AudioMixingScreen());
+    Get.to(const AudioEditor());
   }
 }
