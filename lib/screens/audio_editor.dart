@@ -15,9 +15,11 @@ import '../components/custom_header.dart';
 import '../utils/app_colors.dart';
 import '../utils/style_config.dart';
 import '../widgets/button_widget.dart';
+import '../widgets/loader.dart';
 
 class AudioEditor extends StatefulWidget {
-  const AudioEditor({Key? key}) : super(key: key);
+  final String audio;
+  const AudioEditor({Key? key, required this.audio}) : super(key: key);
 
   @override
   State<AudioEditor> createState() => _AudioEditorState();
@@ -35,6 +37,14 @@ class _AudioEditorState extends State<AudioEditor> {
   bool outputPlay = false;
   bool isCutting = false;
   bool isCut = false;
+  bool loading = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _onPickFile();
+  }
 
   @override
   void dispose() {
@@ -67,7 +77,9 @@ class _AudioEditorState extends State<AudioEditor> {
 
           Flexible(
             child: Center(
-              child: RangeSlider(
+              child: loading ?
+              const Loader() :
+              RangeSlider(
                   values: cutValues,
                   max: timeFile.toDouble(),
                   divisions: timeFile,
@@ -186,19 +198,20 @@ class _AudioEditorState extends State<AudioEditor> {
   }
 
   Future<void> _onPickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['mp3'],
-    );
-    if (result != null) {
-      inputFile = File(result.files.single.path!);
+    // FilePickerResult? result = await FilePicker.platform.pickFiles(
+    //   type: FileType.custom,
+    //   allowedExtensions: ['mp3'],
+    // );
+    // if (result != null) {
+      inputFile = File(widget.audio);
       await player.setFilePath(inputFile.path);
       setState(() {
         timeFile = player.duration!.inSeconds;
         cutValues = RangeValues(0, timeFile.toDouble());
         inputFileView = inputFile.path;
+        loading = false;
       });
-    }
+    // }
   }
 
   _getViewTimeFromCut(int index) {

@@ -54,88 +54,155 @@ class _EditorSheetState extends State<EditorSheet> {
             ],
           ),
           Flexible(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: _handleImage,
-                    style: TextButton.styleFrom(
-                        backgroundColor: AppColors.secondaryColor,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                        textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+            child: GridView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                childAspectRatio: .9
+              ),
+              itemCount: 4,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) => TextButton(
+                onPressed: () => _handleClick(index),
+                style: TextButton.styleFrom(
+                    backgroundColor: AppColors.secondaryColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Feather.image, color: Colors.white),
-                        // SvgPicture.asset(Assets.iconsDelete),
-                        const SizedBox(width: 5,),
-                        Text("Choose Image".toUpperCase()),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 50,),
-                  TextButton(
-                    onPressed: _handleVideo,
-                    style: TextButton.styleFrom(
-                        backgroundColor: AppColors.secondaryColor,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                        textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Feather.film, color: Colors.white),
-                        // SvgPicture.asset(Assets.iconsDelete),
-                        const SizedBox(width: 5,),
-                        Text("Choose Video".toUpperCase()),
-                      ],
-                    ),
-                  ),
-                  if(kDebugMode) ...[
-                    const SizedBox(height: 50,),
-                    TextButton(
-                      onPressed: _handleAudio,
-                      style: TextButton.styleFrom(
-                          backgroundColor: AppColors.secondaryColor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                          textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Feather.music, color: Colors.white),
-                          // SvgPicture.asset(Assets.iconsDelete),
-                          const SizedBox(width: 5,),
-                          Text("Choose Audio".toUpperCase()),
-                        ],
-                      ),
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+                    textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                        index == 1 ?
+                        Feather.film :
+                        index == 2 ?
+                        Feather.scissors :
+                        index == 3 ?
+                        Feather.music :
+                        Feather.image,
+                        size: 80,
+                        color: Colors.white),
+                    // SvgPicture.asset(Assets.iconsDelete),
+                    // const SizedBox(height: 5,),
+                    Text(
+                        (index == 1 ?
+                        "Video Editor" :
+                        index == 2 ?
+                        "Audio cutter" :
+                        index == 3 ?
+                        "Audio merger" :
+                        "Image editor").toUpperCase()
                     ),
                   ],
-                ],
+                ),
               ),
             ),
+            // child: Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 30),
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       TextButton(
+            //         onPressed: _handleImage,
+            //         style: TextButton.styleFrom(
+            //             backgroundColor: AppColors.secondaryColor,
+            //             foregroundColor: Colors.white,
+            //             shape: RoundedRectangleBorder(
+            //                 borderRadius: BorderRadius.circular(10)
+            //             ),
+            //             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+            //             textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+            //         ),
+            //         child: Row(
+            //           crossAxisAlignment: CrossAxisAlignment.end,
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             const Icon(Feather.image, color: Colors.white),
+            //             // SvgPicture.asset(Assets.iconsDelete),
+            //             const SizedBox(width: 5,),
+            //             Text("Choose Image".toUpperCase()),
+            //           ],
+            //         ),
+            //       ),
+            //       const SizedBox(height: 50,),
+            //       TextButton(
+            //         onPressed: _handleVideo,
+            //         style: TextButton.styleFrom(
+            //             backgroundColor: AppColors.secondaryColor,
+            //             foregroundColor: Colors.white,
+            //             shape: RoundedRectangleBorder(
+            //                 borderRadius: BorderRadius.circular(10)
+            //             ),
+            //             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+            //             textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+            //         ),
+            //         child: Row(
+            //           crossAxisAlignment: CrossAxisAlignment.end,
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             const Icon(Feather.film, color: Colors.white),
+            //             // SvgPicture.asset(Assets.iconsDelete),
+            //             const SizedBox(width: 5,),
+            //             Text("Choose Video".toUpperCase()),
+            //           ],
+            //         ),
+            //       ),
+            //       if(kDebugMode) ...[
+            //         const SizedBox(height: 50,),
+            //         TextButton(
+            //           onPressed: _handleAudio,
+            //           style: TextButton.styleFrom(
+            //               backgroundColor: AppColors.secondaryColor,
+            //               foregroundColor: Colors.white,
+            //               shape: RoundedRectangleBorder(
+            //                   borderRadius: BorderRadius.circular(10)
+            //               ),
+            //               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+            //               textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+            //           ),
+            //           child: Row(
+            //             crossAxisAlignment: CrossAxisAlignment.end,
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: [
+            //               const Icon(Feather.music, color: Colors.white),
+            //               // SvgPicture.asset(Assets.iconsDelete),
+            //               const SizedBox(width: 5,),
+            //               Text("Choose Audio".toUpperCase()),
+            //             ],
+            //           ),
+            //         ),
+            //       ],
+            //     ],
+            //   ),
+            // ),
           ),
         ],
       ),
     );
+  }
+
+  _handleClick(int index) {
+    switch (index) {
+      case 0:
+        _handleImage();
+        break;
+      case 1:
+        _handleVideo();
+        break;
+      case 2:
+        _handleAudioCutter();
+        break;
+      case 3:
+      // do something else
+        break;
+    }
   }
 
 
@@ -160,13 +227,14 @@ class _EditorSheetState extends State<EditorSheet> {
     }
   }
 
-  _handleAudio() async {
-    // FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
+  _handleAudioCutter() async {
+    FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
     //
-    // if(audio != null) {
-    //   Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
-    // }
+    if(audio != null) {
+      Get.to(AudioEditor(audio: audio.files.single.path!));
+      //   Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
+    }
 
-    Get.to(const AudioEditor());
+
   }
 }
