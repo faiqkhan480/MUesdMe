@@ -221,6 +221,13 @@ class _EditorScreenState extends State<EditorScreen> {
               color: AppColors.secondaryColor
             ),),
             const SizedBox(height: 50,),
+            Text("Upload Feed", style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: Constants.fontFamily,
+                fontSize: Get.textScaleFactor * 32,
+                color: AppColors.secondaryColor
+            ),),
+            const SizedBox(height: 50,),
             TextButton(
               onPressed: _handleImage,
               style: TextButton.styleFrom(

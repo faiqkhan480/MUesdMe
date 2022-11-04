@@ -133,7 +133,7 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
                           labelText: "Description",
                           minLines: 5,
                           keyboardType: TextInputType.text,
-                          validator: (String? value) => value!.isEmpty ? "User name is required!" : null,
+                          validator: (String? value) => value!.isEmpty ? "Description is required!" : null,
                           onSubmit: (_) => FocusScope.of(context).nextFocus(),
                         ),
                       ),
@@ -251,15 +251,31 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
     if(!loader && _formKey.currentState!.validate()) {
       try {
         setState(() => loader = true);
-        Listing? payload = _listing?.copyWith(
+        Listing? payload = Listing(
           type: _type,
           userId: _authService.currentUser?.userId,
           category: Get.arguments,
           description: description.text,
           title: title.text,
           price: double.tryParse(price.text),
-          itemId: _controller.selectedItem.value!.itemId!
+          itemId: _controller.selectedItem.value!.itemId!,
+          status: _controller.selectedItem.value?.status,
+          mainFile: _controller.selectedItem.value?.mainFile,
+          orderId: _controller.selectedItem.value?.orderId,
+          quantity: _controller.selectedItem.value?.quantity,
+          files: _listing?.files ?? _controller.selectedItem.value?.files,
+          userDetails: _controller.selectedItem.value?.userDetails
         );
+        // Listing? payload = _listing?.copyWith(
+        //   type: _type,
+        //   userId: _authService.currentUser?.userId,
+        //   category: Get.arguments,
+        //   description: description.text,
+        //   title: title.text,
+        //   price: double.tryParse(price.text),
+        //   itemId: _controller.selectedItem.value!.itemId!,
+        // );
+        debugPrint("::::::::::::::${payload.toJson()}");
         var res = await _apiService.updateListing(payload);
         setState(() => loader = false);
         if(res != null) {

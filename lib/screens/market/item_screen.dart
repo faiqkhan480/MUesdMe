@@ -125,9 +125,9 @@ class ItemScreen extends StatelessWidget {
           BetterPlayerDataSourceType.network,
           // "${Constants.FEEDS_URL}${_listing.elementAt(Get.arguments)?.mainFile}",
           "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(index).filePath ?? _listing.elementAt(Get.arguments)?.mainFile}",
-          notificationConfiguration: BetterPlayerNotificationConfiguration(
+          notificationConfiguration: const BetterPlayerNotificationConfiguration(
             showNotification: false,
-            title: _listing.elementAt(Get.arguments)?.title ?? "",
+            // title: _listing.elementAt(Get.arguments ?? 0)?.title ?? "",
             author: "Test",
           ),
           bufferingConfiguration: const BetterPlayerBufferingConfiguration(
@@ -357,7 +357,10 @@ class ItemScreen extends StatelessWidget {
                                 ],
                               ),
                               const Spacer(),
-                              ClipRRect(
+                              if(selectedItem?.category == "Video")
+                                const Icon(Feather.film)
+                              else
+                                ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
                                   "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(currIndex).filePath ?? _listing.elementAt(Get.arguments)?.mainFile}",

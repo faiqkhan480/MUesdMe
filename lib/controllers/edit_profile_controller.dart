@@ -102,6 +102,7 @@ class EditProfileController extends GetxController {
 
   // DELETE ACCOUNT
   deleteAccount() async {
+    Get.close;
     fetching.value = true;
     var res = await _authService.deleteUser();
     if(res == true) {

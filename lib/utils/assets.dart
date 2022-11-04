@@ -32,6 +32,11 @@ class Assets {
   static const String iconsNoFeeds = 'assets/icons/astronaut_suit.svg';
   static const String iconsCoin = 'assets/icons/goldcoin.svg';
 
+  static const String iconsAudioMerge = 'assets/icons/audio_merge.svg';
+  static const String iconsAudioCutter = 'assets/icons/audio_cutter.svg';
+  static const String iconsVideoEdit = 'assets/icons/video_edit.svg';
+  static const String iconsImageEdit = 'assets/icons/image_edit.svg';
+
   static const String searchUsers = 'assets/icons/search-rafiki.svg';
   static const String emptySearch = 'assets/icons/people_search-cuate.svg';
 

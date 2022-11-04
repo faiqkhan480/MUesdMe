@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,6 +14,7 @@ import '../controllers/feed_controller.dart';
 import '../screens/audio_editor.dart';
 import '../screens/audio_mixing_screen.dart';
 import '../utils/app_colors.dart';
+import '../utils/assets.dart';
 import '../utils/constants.dart';
 import '../utils/img_ly_config.dart';
 import '../utils/style_config.dart';
@@ -63,15 +65,13 @@ class _EditorSheetState extends State<EditorSheet> {
                 childAspectRatio: .9
               ),
               itemCount: 4,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => TextButton(
                 onPressed: () => _handleClick(index),
                 style: TextButton.styleFrom(
                     backgroundColor: AppColors.secondaryColor,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
                     textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
                 ),
@@ -79,20 +79,29 @@ class _EditorSheetState extends State<EditorSheet> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
+                    // Icon(
+                    //     index == 1 ?
+                    //     Feather.film :
+                    //     index == 2 ?
+                    //     Feather.scissors :
+                    //     index == 3 ?
+                    //     Feather.music :
+                    //     Feather.image,
+                    //     size: 80,
+                    //     color: Colors.white),
+                    SvgPicture.asset(
                         index == 1 ?
-                        Feather.film :
+                        Assets.iconsVideoEdit :
                         index == 2 ?
-                        Feather.scissors :
+                        Assets.iconsAudioCutter :
                         index == 3 ?
-                        Feather.music :
-                        Feather.image,
-                        size: 80,
-                        color: Colors.white),
-                    // SvgPicture.asset(Assets.iconsDelete),
+                        Assets.iconsAudioMerge :
+                        Assets.iconsImageEdit,
+                      height: 80,
+                      color: Colors.white,
+                    ),
                     // const SizedBox(height: 5,),
-                    Text(
-                        (index == 1 ?
+                    Text((index == 1 ?
                         "Video Editor" :
                         index == 2 ?
                         "Audio cutter" :
