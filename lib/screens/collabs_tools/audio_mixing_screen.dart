@@ -7,12 +7,12 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 
-import '../components/custom_header.dart';
-import '../utils/app_colors.dart';
-import '../utils/page_manager.dart';
-import '../utils/style_config.dart';
-import '../widgets/button_widget.dart';
-import '../widgets/wave_slider.dart';
+import '../../components/custom_header.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/page_manager.dart';
+import '../../utils/style_config.dart';
+import '../../widgets/button_widget.dart';
+import '../../widgets/wave_slider.dart';
 
 class AudioMixingScreen extends StatefulWidget {
   final String? audio;

@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "760964256580",
-    "project_id": "musedbyme-220ef",
-    "storage_bucket": "musedbyme-220ef.appspot.com"
+    "project_number": "1040693230295",
+    "project_id": "mused-app",
+    "storage_bucket": "mused-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:760964256580:android:75c7b8a702de0267c1bd11",
+        "mobilesdk_app_id": "1:1040693230295:android:74ba6bf7904084a1188e92",
         "android_client_info": {
-          "package_name": "com.geSolucions.agora_interactive_broadcasting"
+          "package_name": "com.example.musedme"
         }
       },
       "oauth_client": [
         {
-          "client_id": "760964256580-jegtu6q0d3u451cc42rfnjq8bi4om0g3.apps.googleusercontent.com",
+          "client_id": "1040693230295-r9ap2dg1ddtugfpdfvd6rql5l0pc5i7u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.musedme",
+            "certificate_hash": "cb175749757e1826adf87b8bd2577c400859d8aa"
+          }
+        },
+        {
+          "client_id": "1040693230295-1nemmlibvoakov8gje9ql8mjbtomeh34.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAL-T9lTekwFXsDoVkOaUXbaJcmv9_oJ70"
+          "current_key": "AIzaSyA69hDLCWY2ppZHSluYowQ76HfYiDmxIR0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "760964256580-jegtu6q0d3u451cc42rfnjq8bi4om0g3.apps.googleusercontent.com",
+              "client_id": "1040693230295-1nemmlibvoakov8gje9ql8mjbtomeh34.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -36,27 +44,35 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:760964256580:android:8f0757078787a0a4c1bd11",
+        "mobilesdk_app_id": "1:1040693230295:android:99158400218e4a04188e92",
         "android_client_info": {
           "package_name": "com.gesolucions.musedme"
         }
       },
       "oauth_client": [
         {
-          "client_id": "760964256580-jegtu6q0d3u451cc42rfnjq8bi4om0g3.apps.googleusercontent.com",
+          "client_id": "1040693230295-61v2rnkauljq77ngbk90nnkace2qu4tj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gesolucions.musedme",
+            "certificate_hash": "cb175749757e1826adf87b8bd2577c400859d8aa"
+          }
+        },
+        {
+          "client_id": "1040693230295-1nemmlibvoakov8gje9ql8mjbtomeh34.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAL-T9lTekwFXsDoVkOaUXbaJcmv9_oJ70"
+          "current_key": "AIzaSyA69hDLCWY2ppZHSluYowQ76HfYiDmxIR0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "760964256580-jegtu6q0d3u451cc42rfnjq8bi4om0g3.apps.googleusercontent.com",
+              "client_id": "1040693230295-1nemmlibvoakov8gje9ql8mjbtomeh34.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -11,8 +11,9 @@ import 'package:photo_editor_sdk/photo_editor_sdk.dart';
 import 'package:video_editor_sdk/video_editor_sdk.dart';
 
 import '../controllers/feed_controller.dart';
-import '../screens/audio_editor.dart';
-import '../screens/audio_mixing_screen.dart';
+import '../screens/collabs_tools/audio_editor.dart';
+import '../screens/collabs_tools/audio_merger.dart';
+import '../screens/collabs_tools/audio_mixing_screen.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
@@ -209,7 +210,7 @@ class _EditorSheetState extends State<EditorSheet> {
         _handleAudioCutter();
         break;
       case 3:
-      // do something else
+        Get.to(() => const AudioMerger());
         break;
     }
   }
@@ -240,7 +241,7 @@ class _EditorSheetState extends State<EditorSheet> {
     FilePickerResult? audio = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.audio);
     //
     if(audio != null) {
-      Get.to(AudioEditor(audio: audio.files.single.path!));
+      Get.to(() => AudioEditor(audio: audio.files.single.path!));
       //   Get.to(AudioMixingScreen(audio: audio.files.single.path ?? "",));
     }
 

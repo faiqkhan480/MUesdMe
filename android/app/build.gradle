@@ -93,7 +93,7 @@ android {
         applicationId "com.gesolucions.musedme"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 24
 
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
@@ -138,6 +138,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 //    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    testImplementation 'junit:junit:4.12'
     implementation platform('com.google.firebase:firebase-bom:31.0.2')
     implementation 'com.google.firebase:firebase-analytics'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"

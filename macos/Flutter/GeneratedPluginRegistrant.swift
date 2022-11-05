@@ -9,7 +9,7 @@ import agora_rtc_engine
 import audio_session
 import awesome_notifications
 import emoji_picker_flutter
-import ffmpeg_kit_flutter
+import ffmpeg_kit_flutter_audio
 import firebase_auth
 import firebase_core
 import firebase_messaging

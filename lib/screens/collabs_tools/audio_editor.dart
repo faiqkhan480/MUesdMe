@@ -1,21 +1,21 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_file_saver/flutter_file_saver.dart';
-import 'package:flutter_audio_cutter/audio_cutter.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
-import '../components/custom_header.dart';
-import '../utils/app_colors.dart';
-import '../utils/style_config.dart';
-import '../widgets/button_widget.dart';
-import '../widgets/loader.dart';
+import '../../components/custom_header.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/style_config.dart';
+import '../../widgets/button_widget.dart';
+import '../../widgets/loader.dart';
 
 class AudioEditor extends StatefulWidget {
   final String audio;
@@ -235,7 +235,8 @@ class _AudioEditorState extends State<AudioEditor> {
   Future<void> _onCut() async {
     if (inputFile.path != '') {
       setState(() => isCutting = true);
-      var result = await AudioCutter.cutAudio(inputFile.path, cutValues.start, cutValues.end);
+      // var result = await AudioCutter.cutAudio(inputFile.path, cutValues.start, cutValues.end);
+      var result = await cutAudio(inputFile.path, cutValues.start, cutValues.end);
       outputFile = File(result);
       await outputPlayer.setFilePath(result);
       setState(() {
@@ -274,6 +275,26 @@ class _AudioEditorState extends State<AudioEditor> {
     } else{
       debugPrint("No permission to read and write.");
     }
+  }
+
+  Future<String> cutAudio(String path, double start, double end) async {
+    if (start < 0 || end < 0) {
+      throw ArgumentError('The starting and ending points cannot be negative');
+    }
+    if (start > end) {
+      throw ArgumentError(
+          'The starting point cannot be greater than the ending point');
+    }
+
+    final Directory dir = await getTemporaryDirectory();
+    final outPath = "${dir.path}/audio_cutter/output.mp3";
+    await File(outPath).create();
+
+    var cmd =
+        "-y -i \"$path\" -vn -ss $start -to $end -ar 16k -ac 2 -b:a 96k -acodec copy $outPath";
+    await FFmpegKit.execute(cmd);
+
+    return outPath;
   }
 
   void _onOutputPlayPreview() {
