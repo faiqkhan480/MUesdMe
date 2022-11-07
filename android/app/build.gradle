@@ -6,13 +6,13 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-//Key.properties
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-//end Key.properties
+////Key.properties
+//def keystoreProperties = new Properties()
+//def keystorePropertiesFile = rootProject.file('key.properties')
+//if (keystorePropertiesFile.exists()) {
+//    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+//}
+////end Key.properties
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
@@ -100,14 +100,14 @@ android {
         versionName flutterVersionName
     }
 
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-        }
-    }
+//    signingConfigs {
+//        release {
+//            keyAlias keystoreProperties['keyAlias']
+//            keyPassword keystoreProperties['keyPassword']
+//            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+//            storePassword keystoreProperties['storePassword']
+//        }
+//    }
 
     buildTypes {
         release {
@@ -138,7 +138,6 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 //    implementation "androidx.appcompat:appcompat:$appcompat_version"
-    testImplementation 'junit:junit:4.12'
     implementation platform('com.google.firebase:firebase-bom:31.0.2')
     implementation 'com.google.firebase:firebase-analytics'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"

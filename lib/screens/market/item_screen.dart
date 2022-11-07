@@ -104,7 +104,7 @@ class ItemScreen extends StatelessWidget {
           selectedItem?.category == 'Music' ?
           _audioCard(index) :
           Image.network(
-            "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(index).filePath ?? _listing.elementAt(Get.arguments)?.mainFile}",
+            "${Constants.LISTING_URL}${ selectedItem?.files?.elementAt(index).filePath ?? _listing.elementAt(Get.arguments is int ? Get.arguments : 0)?.mainFile}",
             loadingBuilder: (context, child, loadingProgress) => (loadingProgress == null) ? child : const Center(child: Loader()),
             errorBuilder: (context, error, stackTrace) => Container(
                 decoration: const BoxDecoration(

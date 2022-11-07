@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:musedme/screens/auth/login_screen.dart';
 import 'package:musedme/utils/constants.dart';
 
 import 'bindings/firebase_binding.dart';
@@ -61,7 +60,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    // options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform,
   );
   await di.initServices(); /// AWAIT SERVICES INITIALIZATION.();
 
