@@ -9,12 +9,16 @@ class GeneralInfo extends StatelessWidget {
   final TextEditingController lastname;
   final TextEditingController userName;
   final TextEditingController phone;
+  final TextEditingController location;
+  final TextEditingController postal;
 
   const GeneralInfo({Key? key,
     required this.firstname,
     required this.lastname,
     required this.userName,
-    required this.phone
+    required this.phone,
+    required this.location,
+    required this.postal
   }) : super(key: key);
 
   @override
@@ -35,7 +39,11 @@ class GeneralInfo extends StatelessWidget {
           const Divider(color: AppColors.grayScale, thickness: 1),
           dataRow("User name", userName,),
           const Divider(color: AppColors.grayScale, thickness: 1),
-          dataRow("Phone number", phone,)
+          dataRow("Phone number", phone,),
+          const Divider(color: AppColors.grayScale, thickness: 1),
+          dataRow("Location", location,),
+          const Divider(color: AppColors.grayScale, thickness: 1),
+          dataRow("Postal", postal,)
         ],
       ),
     );
@@ -47,7 +55,12 @@ class GeneralInfo extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: TextWidget(label, color: AppColors.lightGrey, size: 12, weight: FontWeight.normal,)),
+          Expanded(child: Row(
+            children: [
+              TextWidget("$label ", color: AppColors.lightGrey, size: 12, weight: FontWeight.normal,),
+              const Icon(Icons.edit, color: AppColors.lightGrey, size: 12),
+            ],
+          )),
           Expanded(
             child: TextField(
               textAlign: TextAlign.end,

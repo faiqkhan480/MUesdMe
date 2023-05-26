@@ -1,22 +1,34 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
+import '../controllers/agora_controller.dart';
+import '../controllers/feed_controller.dart';
+import '../controllers/live_controller.dart';
+import '../models/auths/user_model.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
+import '../widgets/loader.dart';
 import '../widgets/text_widget.dart';
+import '../widgets/user_avatar.dart';
 import 'search_field.dart';
 
-class CustomScrollViewContent extends StatefulWidget {
-  const CustomScrollViewContent({Key? key}) : super(key: key);
+class UsersSheet extends StatefulWidget {
+  const UsersSheet({Key? key}) : super(key: key);
 
   @override
-  State<CustomScrollViewContent> createState() => _CustomScrollViewContentState();
+  State<UsersSheet> createState() => _UsersSheetState();
 }
 
-class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
-  List<int> _selections = [];
+class _UsersSheetState extends State<UsersSheet> {
+  final List<User> _selections = [];
+  bool loading = false;
+
+  FeedController get controller => Get.find<FeedController>();
+  LiveController get _live => Get.find<LiveController>();
+  AgoraController get _agora => Get.find<AgoraController>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +45,7 @@ class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
           children: [
             // CLOSE BUTTON
             InkWell(
-              onTap: () => Navigator.pop(context),
+              onTap: () => Get.back(),
               borderRadius: BorderRadius.circular(20),
               child: Ink(
                 decoration: BoxDecoration(
@@ -101,8 +113,8 @@ class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
                             const TextWidget("Invite People to Join live", size: 16, color: AppColors.primaryColor, weight: FontWeight.normal),
                           ],
                         ),
-                        const SizedBox(height: 20,),
-                        const SearchField(placeHolder: "Write name of people you want to invite...")
+                        // const SizedBox(height: 20,),
+                        // const SearchField(placeHolder: "Write name of people you want to invite...")
                       ],
                     ),
                   ),
@@ -116,36 +128,42 @@ class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
                       childAspectRatio: 1,
                         // mainAxisSpacing:5
                     ),
-                    itemCount: 12,
+                    itemCount: controller.users.length,
                     shrinkWrap: true,
                     // physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 50),
-                    itemBuilder: (context, index) => Material(
-                      color: Colors.white,
-                      child: InkWell(
-                        onTap: () => setState(() => (_selections.contains(index) ? _selections.remove(index) : _selections.add(index))),
-                        borderRadius: BorderRadius.circular(20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:[
-                            Badge(
-                              badgeColor: AppColors.lightGrey,
-                              position: BadgePosition.topEnd(top: -1, end: 4),
-                              elevation: 0,
-                              padding: _selections.contains(index) ? EdgeInsets.zero : const EdgeInsets.all(5.0),
-                              badgeContent: _selections.contains(index) ? SvgPicture.asset(Assets.iconsSelection) : null,
-                              borderSide: const BorderSide(color: Colors.transparent, width: 0),
-                              child: const CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 25,
-                                  backgroundImage: NetworkImage(Constants.albumArt)),
-                            ),
-                            const SizedBox(height: 5,),
-                            const TextWidget("Alexander")
-                          ],
+                    itemBuilder: (context, index) {
+
+                      return Material(
+                        color: Colors.white,
+                        child: InkWell(
+                          onTap: () => setState(() {
+                            if(_selections.contains(controller.users.elementAt(index))) {
+                              _selections.remove(controller.users.elementAt(index));
+                            } else {
+                              _selections.add(controller.users.elementAt(index)!);
+                            }
+                          }),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:[
+                              UserAvatar(
+                                  controller.users.elementAt(index)?.profilePic != null && controller.users.elementAt(index)!.profilePic!.isNotEmpty ?
+                                  "${Constants.IMAGE_URL}${controller.users.elementAt(index)?.profilePic}" :
+                                  Constants.dummyImage,
+                                  controller.users.elementAt(index)!.userId.toString(),
+                                padding: _selections.contains(controller.users.elementAt(index)) ? EdgeInsets.zero : const EdgeInsets.all(5.0),
+                                badgeContent: _selections.contains(controller.users.elementAt(index)) ? SvgPicture.asset(Assets.iconsSelection) : null,
+                                radius: 25,
+                              ),
+                              const SizedBox(height: 5,),
+                              TextWidget(controller.users.elementAt(index)?.userName ?? "")
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   )),
                 ],
               ),
@@ -153,6 +171,7 @@ class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
           ],
         ),
 
+        // if(loading)
         InkWell(
           onTap: _handleSubmit,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
@@ -171,7 +190,10 @@ class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
             child: SizedBox(
               height: 54,
               width: double.infinity,
-              child: Row(
+              child: loading ? const Center(
+                child: Loader(),
+              ) :
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(Assets.iconsLive, color: Colors.white),
@@ -186,5 +208,16 @@ class _CustomScrollViewContentState extends State<CustomScrollViewContent> {
     );
   }
 
-  _handleSubmit() {}
+  _handleSubmit() async {
+    if(_selections.isNotEmpty && !loading) {
+      setState(() {
+        loading = true;
+      });
+      await _agora.sndInviteToUsers(_selections, broadcaster: _live.broadcaster);
+      setState(() {
+        loading = false;
+      });
+      Get.back();
+    }
+  }
 }

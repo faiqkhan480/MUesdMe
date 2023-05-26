@@ -17,7 +17,12 @@ class LibraryScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const CustomHeader(title: "Library", buttonColor: AppColors.primaryColor, showBottom: false, showSearch: true, showRecentWatches: true),
+            const CustomHeader(
+                title: "Library",
+                buttonColor: AppColors.primaryColor,
+                showBack: false,
+                showSave: false,
+                showBottom: false, showSearch: true, showRecentWatches: true),
 
             Flexible(child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 20),

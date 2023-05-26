@@ -34,7 +34,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0, top: 5),
           child: TextButton(
-              onPressed: () => (Navigator.canPop(context)) ? Navigator.pop(context) : null,
+              onPressed: () => (Navigator.canPop(context)) ? Get.back() : null,
               style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -75,13 +75,14 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                       childAspectRatio: 0.9,
+                      // childAspectRatio: 0.9,
                     ),
                   itemCount: _users.length,
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   itemBuilder: (context, index) => ShadowedBox(
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: InkWell(
-                      onTap: () => _controller.handleNavigation(_users.elementAt(index)!),
+                      onTap: () => _controller.gotoProfile(_users.elementAt(index)!),
                       child: Column(
                         children: [
                           CircleAvatar(
@@ -90,17 +91,21 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
                             backgroundColor: Colors.white,
                           ),
                           const SizedBox(height: 10),
-                          TextWidget(
-                            "${_users.elementAt(index)?.firstName} ${_users.elementAt(index)?.lastName}",
-                            size: 22,
-                            weight: FontWeight.w500,
+                          Flexible(
+                            child: TextWidget(
+                              "${_users.elementAt(index)?.firstName} ${_users.elementAt(index)?.lastName}",
+                              size: Get.textScaleFactor * 20.0,
+                              weight: FontWeight.w500,
+                            ),
                           ),
                           const SizedBox(height: 10),
-                          TextWidget(
-                            "@${_users.elementAt(index)?.userName}",
-                            size: 18,
-                            color: AppColors.lightGrey,
-                            weight: FontWeight.w500,
+                          Flexible(
+                            child: TextWidget(
+                              "@${_users.elementAt(index)?.userName}",
+                              size: Get.textScaleFactor * 16.0,
+                              color: AppColors.lightGrey,
+                              weight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),

@@ -22,6 +22,7 @@ class TextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(text,
       textAlign: align,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
       color: color ?? Colors.black,
       fontSize: size,
@@ -31,3 +32,9 @@ class TextWidget extends StatelessWidget {
     );
   }
 }
+
+// extension StringExtension on String {
+//   String capitalize() {
+//     return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+//   }
+// }

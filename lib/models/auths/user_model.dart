@@ -13,6 +13,7 @@ class User {
     this.password,
     this.firstName,
     this.lastName,
+    this.fullName,
     this.profilePic,
     this.token,
     this.fcmToken,
@@ -28,6 +29,11 @@ class User {
     this.followedBy,
     this.followers,
     this.followings,
+    this.posts,
+    this.isLive,
+    this.rtcToken,
+    this.rtmToken,
+    this.wallet,
   });
 
   @JsonKey(name: 'UserID')
@@ -45,8 +51,11 @@ class User {
   @JsonKey(name: 'LastName')
   final String? lastName;
 
+  @JsonKey(name: 'LastName')
+  final String? fullName;
+
   @JsonKey(name: 'ProfilePic')
-  final String? profilePic;
+  String? profilePic;
 
   @JsonKey(name: 'Token')
   final String? token;
@@ -88,9 +97,84 @@ class User {
   int? followers;
 
   @JsonKey(name: 'Followings')
-  final int? followings;
+  int? followings;
+
+  @JsonKey(name: 'Posts')
+  final int? posts;
+
+  @JsonKey(name: 'IsLive')
+  final int? isLive;
+
+  @JsonKey(name: 'RTCToken')
+  final String? rtcToken;
+
+  @JsonKey(name: 'RTMToken')
+  final String? rtmToken;
+
+  @JsonKey(name: 'Wallet')
+  final double? wallet;
+
+  User copyWith({
+    int? userId,
+    String? email,
+    String? password,
+    String? firstName,
+    String? lastName,
+    String? fullName,
+    String? profilePic,
+    String? token,
+    String? fcmToken,
+    String? country,
+    String? dob,
+    String? gender,
+    String? userName,
+    String? phone,
+    String? location,
+    String? postalCode,
+    String? aboutMe,
+    int? follow,
+    int? followedBy,
+    int? followers,
+    int? followings,
+    int? posts,
+    int? isLive,
+    String? rtcToken,
+    String? rtmToken,
+    double? wallet
+  }) {
+    return User(
+      userId: userId ?? this.userId,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      fullName: fullName ?? this.fullName,
+      profilePic: profilePic ?? this.profilePic,
+      token: token ?? this.token,
+      fcmToken: fcmToken ?? this.fcmToken,
+      country: country ?? this.country,
+      dob: dob ?? this.dob,
+      gender: gender ?? this.gender,
+      userName: userName ?? this.userName,
+      phone: phone ?? this.phone,
+      location: location ?? this.location,
+      postalCode: postalCode ?? this.postalCode,
+      aboutMe: aboutMe ?? this.aboutMe,
+      follow: follow ?? this.follow,
+      followedBy: followedBy ?? this.followedBy,
+      followers: followers ?? this.followers,
+      followings: followings ?? this.followings,
+      posts: posts ?? this.posts,
+      isLive: isLive ?? this.isLive,
+      rtcToken: rtcToken ?? this.rtcToken,
+      rtmToken: rtmToken ?? this.rtmToken,
+      wallet: wallet ?? this.wallet,
+    );
+  }
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
 }
 

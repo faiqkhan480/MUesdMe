@@ -1,251 +1,52 @@
-import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:musedme/widgets/glass_morphism.dart';
 
 import '../components/comment_tile.dart';
-import '../components/custom_scroll_view_content.dart';
-import '../components/invitation_card.dart';
+import '../components/users_sheet.dart';
+import '../controllers/feed_controller.dart';
+import '../controllers/live_controller.dart';
+import '../models/auths/user_model.dart';
 import '../models/chat.dart';
+import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/assets.dart';
 import '../utils/constants.dart';
-import '../widgets/button_widget.dart';
+import '../widgets/glass_morphism.dart';
 import '../widgets/text_widget.dart';
 
-class LiveScreen extends StatefulWidget {
-  final String? channelName;
-  final bool isBroadcaster;
-  const LiveScreen({Key? key, this.channelName, this.isBroadcaster = true}) : super(key: key);
+class LiveScreen extends StatelessWidget {
+  const LiveScreen({Key? key}) : super(key: key);
 
-  @override
-  State<LiveScreen> createState() => _LiveScreenState();
-}
-
-class _LiveScreenState extends State<LiveScreen> {
-  TextEditingController chatController = TextEditingController();
-
-  final _users = <int>[];
-  bool muted = false;
-  bool flash = false;
-  bool loader = true;
-  int? streamId;
-  String userId = "abc";
-
-  RtcEngine? _engine;
-  AgoraRtmClient? _client;
-  AgoraRtmChannel? _channel;
-  final List<Chat> _comments = [];
-  // The key of the list
-  final GlobalKey<AnimatedListState> _key = GlobalKey();
-
-  @override
-  void dispose() {
-    // clear users
-    _users.clear();
-    // destroy sdk and leave channel
-    _engine?.destroy();
-    _channel?.leave();
-    _client?.destroy();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // initialize agora sdk
-    initializeAgora();
-  }
-
-  Future<void> initializeAgora() async {
-    await _initAgoraRtcEngine();
-
-    if (widget.isBroadcaster) streamId = await _engine!.createDataStream(false, false);
-
-    _engine!.setEventHandler(RtcEngineEventHandler(
-      joinChannelSuccess: (channel, uid, elapsed) {
-        setState(() {
-          debugPrint('onJoinChannel: $channel, uid: $uid');
-        });
-      },
-      leaveChannel: (stats) {
-        setState(() {
-          debugPrint('onLeaveChannel');
-          _users.clear();
-        });
-      },
-      userJoined: (uid, elapsed) {
-        setState(() {
-          debugPrint('userJoined: $uid');
-
-          _users.add(uid);
-        });
-      },
-      userOffline: (uid, elapsed) {
-        setState(() {
-          debugPrint('userOffline: $uid');
-          _users.remove(uid);
-        });
-      },
-      streamMessage: (_, __, message) {
-        final String info = "here is the message $message";
-        debugPrint(info);
-      },
-      streamMessageError: (_, __, error, ___, ____) {
-        final String info = "here is the error $error";
-        debugPrint(info);
-      },
-    ));
-
-    await _engine?.joinChannel(Constants.rtcToken, Constants.testChanel, null, 0);
-  }
-
-  // <----------------START RTC------------------> //
-  Future<void> _initAgoraRtcEngine() async {
-    _engine = await RtcEngine.createWithContext(RtcEngineContext(Constants.appId));
-    _addListeners();
-    await _engine!.enableVideo();
-
-    await _engine!.startPreview();
-
-    await _engine!.setChannelProfile(ChannelProfile.LiveBroadcasting);
-    if (widget.isBroadcaster) {
-      await _engine!.setClientRole(ClientRole.Broadcaster);
-    } else {
-      await _engine!.setClientRole(ClientRole.Audience);
-    }
-
-    _createClient();
-  }
-
-  void _addListeners() {
-    _engine!.setEventHandler(RtcEngineEventHandler(
-      warning: (warningCode) {
-        debugPrint('warning::::: $warningCode');
-      },
-      error: (errorCode) {
-        debugPrint('error $errorCode');
-      },
-      joinChannelSuccess: (channel, uid, elapsed) {
-        debugPrint('joinChannelSuccess $channel $uid $elapsed');
-        // setState(() {
-        //   isJoined = true;
-        // });
-      },
-      userJoined: (uid, elapsed) {
-        debugPrint('userJoined  $uid $elapsed');
-        // setState(() {
-        //   remoteUid.add(uid);
-        // });
-      },
-      userOffline: (uid, reason) {
-        debugPrint('userOffline  $uid $reason');
-        // setState(() {
-        //   remoteUid.removeWhere((element) => element == uid);
-        // });
-      },
-      leaveChannel: (stats) {
-        debugPrint('leaveChannel ${stats.toJson()}');
-        // setState(() {
-        //   isJoined = false;
-        //   remoteUid.clear();
-        // });
-      },
-    ));
-  }
-
-  // <----------------END RTC------------------> //
-
-  // <----------------START RTM------------------> //
-  Future _createClient() async {
-    _client = await AgoraRtmClient.createInstance(Constants.appId);
-    debugPrint("RTM Initialize::::::::");
-
-    _client?.onMessageReceived = (AgoraRtmMessage message, String peerId) {
-      // logController.addLog("Private Message from " + peerId + ": " + message.text);
-      _comments.add(Chat(uid: peerId, message: message.text));
-    };
-    _client?.onConnectionStateChanged = (int state, int reason) {
-      debugPrint('Connection state changed::::::::::: $state, reason: $reason');
-      if (state == 5) {
-        _client?.logout();
-        // logController.addLog('Logout.');
-      }
-    };
-    _login();
-  }
-
-  Future _login() async {
-    debugPrint('Login :::::::::::::');
-    try {
-      await _client?.login(Constants.rtmToken, userId);
-      setState(() => loader = false);
-      _joinChannel();
-    } catch (errorCode) {
-      debugPrint('Login error:::: $errorCode');
-    }
-  }
-
-  Future _joinChannel() async {
-    try {
-      _channel = await _createChannel(Constants.testChanel);
-      debugPrint('Join channel success.');
-      await _channel?.join();
-      // logController.addLog('Join channel success.');
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => MessageScreen(
-      //           client: _client,
-      //           channel: _channel,
-      //           logController: logController,
-      //         )));
-    } catch (errorCode) {
-      debugPrint('Join channel error: $errorCode');
-    }
-  }
-
-  Future<AgoraRtmChannel?> _createChannel(String name) async {
-    AgoraRtmChannel? channel = await _client?.createChannel(name);
-    if(channel != null) {
-      channel.onMemberJoined = (AgoraRtmMember member) {
-        _comments.insert(0, Chat(uid: member.userId, message: "Member joined: ${member.userId}"));
-        _key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
-      };
-      channel.onMemberLeft = (AgoraRtmMember member) {
-        _comments.insert(0, Chat(uid: member.userId, message: "Member left: ${member.userId}"));
-        _key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
-      };
-      channel.onMessageReceived = (AgoraRtmMessage message, AgoraRtmMember member) {
-        debugPrint(":::::::::::: RECIEVED MESSAGE");
-        _comments.insert(0, Chat(uid: member.userId, message: message.text));
-        _key.currentState!.insertItem(0, duration: const Duration(milliseconds: 300));
-      };
-    }
-    return channel;
-  }
-
-  // <----------------END RTM------------------> //
+  User get _currUser => Get.find<AuthService>().currentUser!;
+  LiveController get _controller => Get.find<LiveController>();
+  List<User?> get users => Get.find<FeedController>().users;
+  int get views => _controller.views();
+  List<ChatMessage?> get comments => _controller.comments;
+  bool get isBroadcaster => _controller.isBroadcaster();
+  bool get loading => _controller.loading();
+  bool get flashSupported => _controller.flashSupported();
+  bool get flash => _controller.flash();
+  bool get muted => _controller.muted();
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(":::::::::$_comments");
     return Scaffold(
       extendBodyBehindAppBar: true,
+      backgroundColor: AppColors.secondaryColor,
+      // extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: _controller.onCallEnd,
               style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -258,18 +59,18 @@ class _LiveScreenState extends State<LiveScreen> {
               child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
           ),
         ),
-        title: Row(
+        title: (_controller.isBroadcaster()) ? Row(
           children: [
             badge("Live", true),
             const SizedBox(width: 10,),
-            badge("3m views", false),
+            Obx(() => badge("$views views", false)),
           ],
-        ),
+        ) : null,
         actions: [
           FractionallySizedBox(
             heightFactor: .7,
             child: TextButton(
-              onPressed: _onCallEnd,
+              onPressed: _controller.onCallEnd,
               style: TextButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   foregroundColor: Colors.white,
@@ -298,29 +99,24 @@ class _LiveScreenState extends State<LiveScreen> {
         ],
       ),
 
-      body: Stack(
+      body: Obx(() => Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: <Widget>[
-          // Container(
-          //   color: Colors.amberAccent,
-          //   height: MediaQuery.of(context).size.height,
-          //   width: MediaQuery.of(context).size.width,
-          // ),
           _broadcastView(),
 
-          if(loader)
+          if(_controller.loading())
             Lottie.asset(Assets.loader)
           else ...[
             _toolbar(),
             _commentsView(),
           ],
         ],
-      ),
+      )),
 
-      bottomNavigationBar: InkWell(
+      bottomNavigationBar: (_controller.isBroadcaster()) ? InkWell(
         onTap: _handleBottomSheet,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-        child: Ink(
+        child: Container(
           decoration: const BoxDecoration(
               color: AppColors.primaryColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
@@ -345,7 +141,7 @@ class _LiveScreenState extends State<LiveScreen> {
             ),
           ),
         ),
-      ),
+      ) : null,
     );
   }
 
@@ -374,21 +170,23 @@ class _LiveScreenState extends State<LiveScreen> {
       right: -10,
       child: Column(
         children: [
+          Obx(() => (flashSupported) ?
           RawMaterialButton(
-            onPressed: _onToggleFlash,
-            shape: const CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
-            child: Icon(
-              flash ? Ionicons.ios_flash_sharp : Ionicons.ios_flash_outline,
-              color: AppColors.lightGrey,
-              size: 20.0,
-            ),
-          ),
+      onPressed: _controller.onToggleFlash,
+      shape: const CircleBorder(),
+      elevation: 2.0,
+      fillColor: Colors.white,
+      padding: const EdgeInsets.all(12.0),
+      child: Icon(
+        flash ? Ionicons.ios_flash_sharp : Ionicons.ios_flash_outline,
+        color: AppColors.lightGrey,
+        size: 20.0,
+      ),
+    ) :
+          const SizedBox.shrink()),
           const SizedBox(height: 5,),
           RawMaterialButton(
-            onPressed: _onSwitchCamera,
+            onPressed: _controller.onSwitchCamera,
             shape: const CircleBorder(),
             elevation: 2.0,
             fillColor: Colors.white,
@@ -401,7 +199,7 @@ class _LiveScreenState extends State<LiveScreen> {
           ),
           const SizedBox(height: 5,),
           RawMaterialButton(
-            onPressed: _onToggleMute,
+            onPressed: _controller.onToggleMute,
             shape: const CircleBorder(),
             elevation: 2.0,
             fillColor: Colors.white,
@@ -421,23 +219,28 @@ class _LiveScreenState extends State<LiveScreen> {
     return Positioned(
       bottom: 0,
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * .5,
-        width: MediaQuery.of(context).size.width,
+        height: Get.height * .5,
+        width: Get.width,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Flexible(
-                flex: 2,
-                child: InvitationCard()),
+            // const Flexible(
+            //     flex: 2,
+            //     child: InvitationCard()),
 
             Flexible(
               flex: 4,
               child: AnimatedList(
-                key: _key,
+                key: _controller.key,
                   padding: const EdgeInsets.only(left: 20, right: 50),
                   reverse: true,
-                  itemBuilder: (context, index, animation) => CommentTile(_comments.elementAt(index), animation: animation),
-                  initialItemCount: _comments.length,
+                  itemBuilder: (context, index, animation) => CommentTile(
+                      user: users.firstWhere((u) => u?.userId.toString() == comments.elementAt(index)?.uid.replaceAll(Constants.agoraBaseId, ""),
+                        orElse: () => _currUser,),
+                      comments.elementAt(index)!,
+                      animation: animation
+                  ),
+                  initialItemCount: comments.length,
               ),
             ),
 
@@ -451,16 +254,16 @@ class _LiveScreenState extends State<LiveScreen> {
                       shape: BoxShape.rectangle,
                       child: TextField(
                         autofocus: false,
-                        controller: chatController,
-                        onSubmitted: (val) => _handleSubmit,
+                        controller: _controller.chatController,
+                        onSubmitted: _controller.handleSubmit,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
-                              onPressed: _handleSubmit,
+                              onPressed: _controller.handleSubmit,
                               color: Colors.white,
                               iconSize: 30,
                               icon: const Icon(Icons.send,)
                           ),
-                          hintText: 'Write your comment here...',
+                          hintText: 'Write your message here...',
                           hintStyle: const TextStyle(color: Colors.white),
                           // isDense: true,
                           // fillColor: AppColors.textFieldColor,
@@ -475,13 +278,13 @@ class _LiveScreenState extends State<LiveScreen> {
                     ),
                   ),
 
-                  ButtonWidget(
-                    onPressed: () => null,
-                    text: "7.1k",
-                    vertical: true,
-                    textColor: Colors.white,
-                    icon: Assets.iconsHeart,
-                  ),
+                  // ButtonWidget(
+                  //   onPressed: () => null,
+                  //   text: "0",
+                  //   vertical: true,
+                  //   textColor: Colors.white,
+                  //   icon: Assets.iconsHeart,
+                  // ),
                 ],
               ),
             )
@@ -489,63 +292,17 @@ class _LiveScreenState extends State<LiveScreen> {
         ),
       ),
     );
-    return widget.isBroadcaster
-        ? Container(
-      alignment: Alignment.bottomCenter,
-      padding: const EdgeInsets.symmetric(vertical: 48),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RawMaterialButton(
-            onPressed: _onToggleMute,
-            shape: const CircleBorder(),
-            elevation: 2.0,
-            fillColor: muted ? Colors.blueAccent : Colors.white,
-            padding: const EdgeInsets.all(12.0),
-            child: Icon(
-              muted ? Icons.mic_off : Icons.mic,
-              color: muted ? Colors.white : Colors.blueAccent,
-              size: 20.0,
-            ),
-          ),
-          RawMaterialButton(
-            onPressed: _onCallEnd,
-            shape: const CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.redAccent,
-            padding: const EdgeInsets.all(15.0),
-            child: const Icon(
-              Icons.call_end,
-              color: Colors.white,
-              size: 35.0,
-            ),
-          ),
-          RawMaterialButton(
-            onPressed: _onSwitchCamera,
-            shape: const CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
-            child: const Icon(
-              Icons.switch_camera,
-              color: Colors.blueAccent,
-              size: 20.0,
-            ),
-          ),
-        ],
-      ),
-    )
-        : Container();
   }
 
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    if (widget.isBroadcaster) {
-      list.add(const RtcLocalView.SurfaceView(channelId: "firstChannel",));
+    if (isBroadcaster) {
+      list.add(RtcLocalView.SurfaceView(channelId: "${Constants.agoraBaseId}${_currUser.userId!}"));
     }
-    for (var uid in _users) {
-      list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "firstChannel"));
+    for (var uid in _controller.users) {
+      // broadcaster
+        list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: "${Constants.agoraBaseId}${_controller.broadcaster?.userId ?? _currUser.userId!}"));
     }
     return list;
   }
@@ -565,79 +322,35 @@ class _LiveScreenState extends State<LiveScreen> {
     final views = _getRenderViews();
     switch (views.length) {
       case 1:
-        return Container(
-            child: Column(
-              children: <Widget>[
-                _expandedVideoView([views[0]])
-              ],
-            ));
+        return Column(
+          children: <Widget>[
+            _expandedVideoView([views[0]])
+          ],
+        );
       case 2:
-        return Container(
-            child: Column(
-              children: <Widget>[
-                _expandedVideoView([views[0]]),
-                _expandedVideoView([views[1]])
-              ],
-            ));
+        return Column(
+          children: <Widget>[
+            _expandedVideoView([views[0]]),
+            _expandedVideoView([views[1]])
+          ],
+        );
       case 3:
-        return Container(
-            child: Column(
-              children: <Widget>[_expandedVideoView(views.sublist(0, 2)), _expandedVideoView(views.sublist(2, 3))],
-            ));
+        return Column(
+          children: <Widget>[_expandedVideoView(views.sublist(0, 2)), _expandedVideoView(views.sublist(2, 3))],
+        );
       case 4:
-        return Container(
-            child: Column(
-              children: <Widget>[_expandedVideoView(views.sublist(0, 2)), _expandedVideoView(views.sublist(2, 4))],
-            ));
+        return Column(
+          children: <Widget>[_expandedVideoView(views.sublist(0, 2)), _expandedVideoView(views.sublist(2, 4))],
+        );
       default:
     }
-    return Container();
-  }
-
-  void _onCallEnd() {
-    Navigator.pop(context);
-  }
-
-  void _onToggleMute() {
-    setState(() {
-      muted = !muted;
-    });
-    _engine!.muteLocalAudioStream(muted);
-  }
-
-  void _onToggleFlash() {
-    setState(() {
-      flash = !flash;
-    });
-    _engine!.setCameraTorchOn(flash);
-  }
-
-  void _onSwitchCamera() {
-    List<int> list = "mute user blet".codeUnits;
-    Uint8List bytes = Uint8List.fromList(list);
-    if (streamId != null) _engine?.sendStreamMessage(streamId!, bytes);
-    _engine!.switchCamera();
-  }
-
-  void _handleSubmit() async {
-    String text = chatController.text;
-    if (text.isNotEmpty) {
-      try {
-        await _channel?.sendMessage(AgoraRtmMessage.fromText(text));
-      } catch (errorCode) {
-        debugPrint("Send channel message error: $errorCode");
-        // widget.logController.addLog('Send channel message error: ' + errorCode.toString());
-      }
-    }
+    return const SizedBox.shrink();
   }
 
   void _handleBottomSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return const CustomScrollViewContent();
-      },
+    Get.bottomSheet(
+        const UsersSheet(),
+        backgroundColor: Colors.transparent,
     );
   }
 }

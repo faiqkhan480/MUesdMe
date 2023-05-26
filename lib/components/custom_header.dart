@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 
@@ -18,11 +19,13 @@ class CustomHeader extends StatelessWidget {
     this.showRecentWatches = false,
     this.loader = false,
     this.showSearch = false,
+    this.showBack = true,
     this.showSave = true,
     this.buttonColor,
     this.img,
     this.onClick,
-    this.onSave
+    this.onSave,
+    this.actions,
   }) : super(key: key);
 
   final String title;
@@ -30,11 +33,13 @@ class CustomHeader extends StatelessWidget {
   final bool showBottom;
   final bool loader;
   final bool showSave;
+  final bool showBack;
   final bool showRecentWatches;
   final Color? buttonColor;
   final bool showSearch;
   final VoidCallback? onSave;
   final VoidCallback? onClick;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -57,21 +62,23 @@ class CustomHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
-                          ),
-                          // padding: const EdgeInsets.symmetric(vertical: 18),
-                          minimumSize: const Size(45, 0),
-                          textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
-                      ),
-                      child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
-                  ),
-                  const SizedBox(width: 15,),
+                  if(showBack)...[
+                    TextButton(
+                        onPressed: () => Get.back(),
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: BorderSide(color: AppColors.lightGrey.withOpacity(0.2))
+                            ),
+                            // padding: const EdgeInsets.symmetric(vertical: 18),
+                            minimumSize: const Size(45, 0),
+                            textStyle: const TextStyle(fontSize: 12, fontFamily: Constants.fontFamily)
+                        ),
+                        child: const Icon(CupertinoIcons.back, color: AppColors.secondaryColor,)
+                    ),
+                    const SizedBox(width: 15,),
+                  ],
                   Text(
                     title,
                     style: const TextStyle(
@@ -120,6 +127,18 @@ class CustomHeader extends StatelessWidget {
                             fontWeight: FontWeight.normal)),
                     child: const Text("Save changes"),
                   ),
+
+                  if(actions != null && actions!.isNotEmpty)...[
+                    const Spacer(),
+                    Material(
+                      color: Colors.white,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: actions as List<Widget>,
+                      ),
+                    )
+                  ]
                 ],
               ),
 

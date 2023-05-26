@@ -7,6 +7,7 @@ import 'package:musedme/routes/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
+import '../controllers/feed_controller.dart';
 import '../utils/assets.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
@@ -22,21 +23,32 @@ class Header extends StatelessWidget {
     this.showLives = false,
     this.showShadow = true,
     this.isProfile = false,
+    this.hideButton = false,
+    this.showButtonIcon = true,
+    this.buttonText = "Edit Profile",
     this.height,
+    this.lives,
     this.handleSearch,
     this.action
   }) : super(key: key);
 
   final String title;
+  final String buttonText;
   final bool showLives;
+  final Widget? lives;
   final bool showShadow;
   final bool isProfile;
+  final bool hideButton;
+  final bool showButtonIcon;
   final double? height;
   final VoidCallback? action;
   final VoidCallback? handleSearch;
 
+  FeedController get controller => Get.find<FeedController>();
+
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -55,7 +67,8 @@ class Header extends StatelessWidget {
             padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: showLives ? 0 : 10, top: 30),
             child: Row(
               children: [
-                Image.asset(Assets.iconsLogo, height: 40),
+                // Image.asset(Assets.iconsLogo, height: 40),
+                SvgPicture.asset(Assets.logoSvg, fit: BoxFit.cover, height: 40),
                 const SizedBox(width: 20,),
                 Text(title, style: const TextStyle(
                   color: Colors.black,
@@ -82,10 +95,15 @@ class Header extends StatelessWidget {
                       child: const Icon(CupertinoIcons.search, color: AppColors.secondaryColor),
                   ),
                 const SizedBox(width: 15),
-                SmallButton(
+                if(!hideButton)
+                  SmallButton(
                   onPressed: action ?? handleLive,
-                  title: isProfile ? "Edit Profile" : "Go Live",
-                  icon: SvgPicture.asset(isProfile ? Assets.iconsEditProfile : Assets.iconsLive),
+                  title: isProfile ? buttonText : "Go Live",
+                  icon: showButtonIcon ? SvgPicture.asset(
+                      isProfile ?
+                      Assets.iconsEditProfile :
+                      Assets.iconsLive
+                  ) : null,
                 ),
                 if(isProfile)...[
                   const SizedBox(width: 10),
@@ -109,75 +127,84 @@ class Header extends StatelessWidget {
             ),
           ),
           if(showLives)
-            SizedBox(
-            height: 100,
-            child: ListView.separated(
-              itemCount: names.length,
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () =>
-                  // index == 0 ?
-                  presentEditor(index),
-                  // Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),)) :
-                  // null,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Badge(
-                        shape: BadgeShape.square,
-                        badgeColor: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        position: BadgePosition.bottomEnd(end: 3.0, bottom: -3),
-                        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 3, top: 4),
-                        badgeContent: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(Assets.iconsLive, color: AppColors.primaryColor, height: 8),
-                            const SizedBox(width: 2,),
-                            const TextWidget("Live", color: AppColors.primaryColor, weight: FontWeight.normal, size: 10),
-                          ],
-                        ),
-                        showBadge: index == 1 || index == 3,
-                        elevation: 3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: AppColors.pinkColor),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: const [
-                                BoxShadow(
-                                    color: AppColors.pinkColor,
-                                    // spreadRadius: 2,
-                                    blurRadius: 2
-                                )]
+            Obx(() =>
+                controller.gettingUsers() ?
+                    const Center(child: CircularProgressIndicator(color: AppColors.primaryColor,),) :
+                SizedBox(
+              height: 100,
+              child: ListView.separated(
+                itemCount: controller.users.length + 1,
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () =>
+                    // index == 0 ?
+                    presentEditor(index),
+                    // Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),)) :
+                    // null,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Badge(
+                          shape: BadgeShape.square,
+                          badgeColor: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          position: BadgePosition.bottomEnd(end: 3.0, bottom: -3),
+                          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 3, top: 4),
+                          badgeContent: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset(Assets.iconsLive, color: AppColors.primaryColor, height: 8),
+                              const SizedBox(width: 2,),
+                              const TextWidget("Live", color: AppColors.primaryColor, weight: FontWeight.normal, size: 10),
+                            ],
                           ),
-                          padding: const EdgeInsets.all(5),
-                          height: 50,
-                          width: 50,
-                          child:  index == 0 ?
-                          Center(child: SvgPicture.asset(Assets.iconsAdd)) :
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(Constants.dummyImage,
-                              fit: BoxFit.cover,),
+                          showBadge: index != 0 && controller.users.elementAt(index-1)?.isLive == 1,
+                          elevation: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: AppColors.pinkColor),
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: AppColors.pinkColor,
+                                      // spreadRadius: 2,
+                                      blurRadius: 2
+                                  )]
+                            ),
+                            padding: const EdgeInsets.all(5),
+                            height: 50,
+                            width: 50,
+                            child:  index == 0 ?
+                            Center(child: SvgPicture.asset(Assets.iconsAdd)) :
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              // child: Image.network(Constants.dummyImage, fit: BoxFit.cover,),
+                              child: Image.network(
+                                controller.users.elementAt(index-1)?.profilePic != null && controller.users.elementAt(index-1)!.profilePic!.isNotEmpty ?
+                                "${Constants.IMAGE_URL}${controller.users.elementAt(index-1)?.profilePic}" :
+                                Constants.dummyImage,
+                                fit: BoxFit.cover,),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10,),
-                      Text(names.elementAt(index), style: TextStyle(
-                          color: index == 0 ? AppColors.pinkColor : null,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12
-                      ),),
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(width: 30,),
-            ),
-          ),
+                        const SizedBox(height: 10,),
+                        Text(
+                          (index == 0) ?
+                              names.first :
+                          (controller.users.elementAt(index-1)?.userName ?? ""), style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12
+                        ),),
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) => const SizedBox(width: 20),
+              ),
+            )),
         ],
       ),
     );
@@ -185,16 +212,20 @@ class Header extends StatelessWidget {
 
   Future handleLive () async {
     await [Permission.camera, Permission.microphone].request();
-    Get.toNamed(AppRoutes.LIVE);
-    // Navigator.push(context, CupertinoPageRoute(builder: (context) => const LiveScreen(),));
+    Get.toNamed(AppRoutes.LIVE, arguments: {"isBroadcaster": true});
   }
-
-
 
   void presentEditor(index) async {
     if(index == 0) {
       Get.toNamed(AppRoutes.PICKER);
-      // Navigator.push(context, CupertinoPageRoute(builder: (context) => const EditorScreen(),));
+    }
+    else {
+      if(controller.users.elementAt(index-1)?.isLive == 1) {
+        controller.watchLive(controller.users.elementAt(index-1)!);
+      }
+      else {
+        controller.gotoProfile(controller.users.elementAt(index-1)!);
+      }
     }
   }
 }

@@ -1,7 +1,10 @@
 import 'package:get/get.dart';
-import 'package:musedme/bindings/edit_profile_binding.dart';
 
 // SCREENS
+import '../bindings/call_binding.dart';
+import '../bindings/chat_bindings.dart';
+import '../bindings/edit_profile_binding.dart';
+import '../bindings/live_binding.dart';
 import '../bindings/profile_binding.dart';
 import '../bindings/search_binding.dart';
 import '../bindings/root_bindings.dart';
@@ -9,8 +12,14 @@ import '../navigation/bottom_navigation.dart';
 import '../navigation/profile_middle.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
+import '../screens/call_screen.dart';
+import '../screens/messages/chat_screen.dart';
+import '../screens/market/item_screen.dart';
+import '../screens/market/market_screen.dart';
+import '../screens/market/upload_listing_screen.dart';
+import '../screens/messages/message_screen.dart';
 import '../screens/profile/edit_profile_screen.dart';
-import '../screens/feed_screen.dart';
+import '../screens/feed/feed_screen.dart';
 import '../screens/live_screen.dart';
 import '../screens/picker_screen.dart';
 import '../screens/profile/profile_screen.dart';
@@ -67,6 +76,7 @@ class AppPages {
 
     GetPage(
         name: AppRoutes.LIVE,
+        binding: LiveBinding(),
         page: () => const LiveScreen()
     ),
     GetPage(
@@ -82,6 +92,38 @@ class AppPages {
         name: AppRoutes.USER_PROFILE,
         binding: ProfileBinding(),
         page: () => const UserProfileScreen()
-    )
+    ),
+    GetPage(
+        name: AppRoutes.CHAT,
+        page: () => const ChatsScreen()
+    ),
+    GetPage(
+        name: AppRoutes.MESSAGES,
+        binding: MessageBinding(),
+        page: () => const MessageScreen()
+    ),
+    GetPage(
+        name: AppRoutes.CALL,
+        binding: CallBinding(),
+        page: () => const CallScreen()
+    ),
+    GetPage(
+        name: AppRoutes.MARKET,
+        // binding: CallBinding(),
+        // transition: Transition.cupertino,
+        page: () => const MarketScreen()
+    ),
+    GetPage(
+        name: AppRoutes.ITEM,
+        // binding: CallBinding(),
+        // transition: Transition.cupertino,
+        page: () => const ItemScreen()
+    ),
+    GetPage(
+        name: AppRoutes.ITEMUPLOAD,
+        // binding: CallBinding(),
+        transition: Transition.cupertino,
+        page: () => const UploadListingScreen()
+    ),
   ];
 }

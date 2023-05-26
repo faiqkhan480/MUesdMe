@@ -12,6 +12,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       password: json['Password'] as String?,
       firstName: json['FirstName'] as String?,
       lastName: json['LastName'] as String?,
+      fullName: json['FullName'] as String?,
       profilePic: json['ProfilePic'] as String?,
       token: json['Token'] as String?,
       fcmToken: json['FCMToken'] as String?,
@@ -27,6 +28,11 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       followedBy: json['FollowedBy'] as int?,
       followers: json['Followers'] as int?,
       followings: json['Followings'] as int?,
+      posts: json['Posts'] as int?,
+      isLive: json['IsLive'] as int?,
+      rtcToken: json['RTCToken'] as String?,
+      rtmToken: json['RTMToken'] as String?,
+      wallet: (json['Wallet'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -35,6 +41,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'Password': instance.password,
       'FirstName': instance.firstName,
       'LastName': instance.lastName,
+      'FullName': instance.fullName,
       'ProfilePic': instance.profilePic,
       'Token': instance.token,
       'FCMToken': instance.fcmToken,
@@ -50,4 +57,9 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'FollowedBy': instance.followedBy,
       'Followers': instance.followers,
       'Followings': instance.followings,
+      'Posts': instance.posts,
+      'IsLive': instance.isLive,
+      'RTCToken': instance.rtcToken,
+      'RTMToken': instance.rtmToken,
+      'Wallet': instance.wallet,
     };

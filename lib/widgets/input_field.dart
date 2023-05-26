@@ -7,7 +7,6 @@ import '../utils/constants.dart';
 class InputField extends StatelessWidget {
   const InputField(
       {super.key,
-        this.hintText,
         this.labelText,
         this.style,
         this.inputStyle,
@@ -25,7 +24,7 @@ class InputField extends StatelessWidget {
         this.keyboardType,
         this.multiLine = false,
         this.enabled = true,
-        this.minLines = 5,
+        this.minLines = 1,
         this.trailingIcon,
         this.onEditingComplete,
         this.readOnly = false,
@@ -43,7 +42,6 @@ class InputField extends StatelessWidget {
   final bool obscureText;
   final bool enabled;
   final String? initialValue;
-  final String? hintText;
   final String? labelText;
   final TextStyle? style;
   final TextStyle? inputStyle;
@@ -65,6 +63,7 @@ class InputField extends StatelessWidget {
       readOnly: readOnly,
       focusNode: focusNode,
       enabled: enabled,
+      maxLines: minLines,
       style: inputStyle ?? const TextStyle(fontFamily: Constants.fontFamily),
       inputFormatters: inputFormatters,
       maxLength: maxLength,
@@ -82,7 +81,7 @@ class InputField extends StatelessWidget {
       // onFieldSubmitted: (_) => isLastTextField ? null : FocusScope.of(context).nextFocus(),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
-        labelText: hintText,
+        labelText: labelText,
         labelStyle: const TextStyle(fontFamily: Constants.fontFamily, color: AppColors.secondaryColor),
         filled: true,
         fillColor: Colors.white,
@@ -110,7 +109,6 @@ class InputField extends StatelessWidget {
 class DropDownInputField extends StatelessWidget {
   const DropDownInputField(
       {super.key,
-        this.hintText,
         this.labelText,
         this.style,
         this.inputStyle,
@@ -125,7 +123,6 @@ class DropDownInputField extends StatelessWidget {
   final String? value;
   final ValueChanged<String?>? onChanged;
   final bool isLastTextField;
-  final String? hintText;
   final String? labelText;
   final TextStyle? style;
   final TextStyle? inputStyle;
@@ -145,7 +142,7 @@ class DropDownInputField extends StatelessWidget {
       }).toList(),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(top: 15.0, bottom: 15.0, right: 5.0, left: 15.0),
-        labelText: hintText,
+        labelText: labelText,
         labelStyle: const TextStyle(fontFamily: Constants.fontFamily, color: AppColors.secondaryColor),
         filled: true,
         fillColor: Colors.white,

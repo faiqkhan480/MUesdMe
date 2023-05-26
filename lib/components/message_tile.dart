@@ -1,54 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:musedme/services/auth_service.dart';
 import 'package:musedme/widgets/text_widget.dart';
 
-import '../screens/chat_screen.dart';
+import '../models/chat.dart';
+import '../models/message.dart';
+import '../screens/messages/message_screen.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
 class MessageTile extends StatelessWidget {
-  final ChatMessage message;
-  const MessageTile({Key? key, required this.message}) : super(key: key);
+  // final ChatMessage message;
+  final Message message;
+  final String? senderImage;
+  final String? receiverImage;
+  const MessageTile({Key? key, required this.message, this.senderImage, this.receiverImage}) : super(key: key);
 
+  AuthService get _auth => Get.find<AuthService>();
   @override
   Widget build(BuildContext context) {
+    bool isReceiver = message.userId != _auth.currentUser?.userId;
     return Container(
       padding: const EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
       child: Row(
-        mainAxisAlignment: (message.messageType == "receiver" ? MainAxisAlignment.start : MainAxisAlignment.end),
+        mainAxisAlignment: (isReceiver ? MainAxisAlignment.start : MainAxisAlignment.end),
           children: [
-            if(message.messageType == "receiver")
-              const CircleAvatar(
+            if(isReceiver)
+              CircleAvatar(
                 backgroundColor: Colors.white,
                 radius: 28,
-                backgroundImage: NetworkImage(Constants.albumArt)),
-            if(message.messageType == "sender")
+                backgroundImage: NetworkImage(
+                    receiverImage != null && receiverImage!.isNotEmpty ?
+                    Constants.IMAGE_URL + receiverImage! :
+                    Constants.dummyImage
+                ),),
+                // backgroundImage: NetworkImage(
+                //     Constants.IMAGE_URL + receiverImage)),
+            if(!isReceiver)
               const SizedBox(width: 30,),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(isReceiver ? 0 : 20),
+                    bottomRight: Radius.circular(!isReceiver ? 0 : 20),
+                    topLeft: const Radius.circular(20),
+                    topRight: const Radius.circular(20),
+                  ),
+                  // borderRadius: BorderRadius.circular(20),
                   color: (
-                      message.messageType  == "receiver" ?
+                      isReceiver ?
                       const Color(0xFFF2F2F2) :
                       AppColors.primaryColor
                   ),
                 ),
                 padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: TextWidget(message.messageContent,
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                child: TextWidget(message.message ?? "",
                   size: 15,
-                  color: message.messageType  == "receiver" ? Colors.black : Colors.white,
+                  color: isReceiver ? Colors.black : Colors.white,
                   weight: FontWeight.normal,
                 ),
               ),
             ),
-            if(message.messageType == "receiver")
+            if(isReceiver)
               const SizedBox(width: 30,),
-            if(message.messageType == "sender")
-              const CircleAvatar(
+            if(!isReceiver)
+               CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 28,
-                  backgroundImage: NetworkImage(Constants.dummyImage)),
+                  backgroundImage: NetworkImage(
+                      senderImage != null && senderImage!.isNotEmpty ?
+                      Constants.IMAGE_URL + senderImage! :
+                      Constants.dummyImage
+                  )),
           ],
         ),
     );

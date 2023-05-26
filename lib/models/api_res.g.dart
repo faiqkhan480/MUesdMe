@@ -12,6 +12,12 @@ ApiRes _$ApiResFromJson(Map<String, dynamic> json) => ApiRes(
       users: json['Users'],
       user: json['User'],
       feeds: json['Feeds'],
+      feed: json['Feed'],
+      token: json['Token'],
+      feedComments: json['FeedComments'],
+      messages: json['Messages'],
+      listing: json['Listing'],
+      listings: json['Listings'],
     );
 
 Map<String, dynamic> _$ApiResToJson(ApiRes instance) => <String, dynamic>{
@@ -20,4 +26,10 @@ Map<String, dynamic> _$ApiResToJson(ApiRes instance) => <String, dynamic>{
       'Users': instance.users,
       'User': instance.user,
       'Feeds': instance.feeds,
+      'Feed': instance.feed,
+      'Token': instance.token,
+      'FeedComments': instance.feedComments,
+      'Messages': instance.messages,
+      'Listing': instance.listing,
+      'Listings': instance.listings,
     };

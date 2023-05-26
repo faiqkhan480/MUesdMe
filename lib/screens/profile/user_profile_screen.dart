@@ -1,14 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:get/get.dart';
+import 'package:musedme/models/args.dart';
+
+import '../../components/comment_sheet.dart';
 import '../../components/custom_header.dart';
+import '../../components/share_sheet.dart';
+import '../../controllers/comment_controller.dart';
 import '../../controllers/user_profile_controller.dart';
 import '../../models/auths/user_model.dart';
-import '../../utils/assets.dart';
+import '../../models/feed.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/style_config.dart';
 import '../../widgets/button_widget.dart';
 
+import '../../widgets/loader.dart';
 import 'profile_body.dart';
 
 class UserProfileScreen extends GetView<UserProfileController> {
@@ -17,151 +25,176 @@ class UserProfileScreen extends GetView<UserProfileController> {
   // User? get args => Get.arguments;
 
   User? get _user => controller.user.value;
-  double get _toolbarHeight => controller.toolbarHeight();
   bool get _loading => controller.loading();
+  List<Feed?> get _feeds => controller.feeds;
+
+  bool get _fetching => controller.fetching();
+  int get _currIndex => controller.currIndex.value;
+  int get _currTab => controller.currTab.value;
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        body: Obx(() => Stack(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              height: 500,
-              width: double.infinity,
-              decoration: (!_loading || _user?.userId != null) ? const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.orange,
-                      AppColors.primaryColor,
-                      AppColors.pinkColor,
-                    ],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                  )
-              ) : null,
-              // child: (!_loading || _user?.userId != null) ?
-              // Align(
-              //   alignment: Alignment.topCenter,
-              //   child: Image.network(Constants.coverImage,
-              //     height: 400,
-              //     fit: BoxFit.cover,
-              //   ),
-              // ) : null,
-            ),
-            (_loading && _user?.userId == null) ?
-            Center(child: Lottie.asset(Assets.loader)):
-            ProfileBody(
-              onRefresh: controller.getUserDetails,
-              loader: _loading,
-              controller: controller.scroll(),
-              user: _user,
-              toolbarHeight: _toolbarHeight,
-              button: ButtonWidget(
-                text: _user?.follow == 0 ? "Follow" : "Un Follow",
-                onPressed: controller.sendFollowReq,
-                bgColor: AppColors.primaryColor,
-                textColor: Colors.white,
-                loader: _loading,
-              ),
-            ),
-            // RefreshIndicator(
-            //   onRefresh: _controller.getUserDetails,
-            //   child: CustomScrollView(
-            //     controller: _controller.scroll(),
-            //     slivers: [
-            //       // USER INFO
-            //       SliverAppBar(
-            //         pinned: false,
-            //         expandedHeight: 300.0,
-            //         automaticallyImplyLeading: false,
-            //         // flexibleSpace: Image.network(Constants.coverImage,
-            //         //   height: 400,
-            //         //   fit: BoxFit.cover,
-            //         // ),
-            //         toolbarHeight: 300,
-            //         backgroundColor: Colors.transparent,
-            //         // excludeHeaderSemantics: true,
-            //         bottom: PreferredSize(
-            //           preferredSize: const Size(double.infinity, 180),
-            //           child: Container(
-            //             decoration: const BoxDecoration(
-            //                 color: Colors.white,
-            //                 borderRadius: BorderRadius.vertical(top: Radius.circular(20))
-            //             ),
-            //             child: InfoCard(
-            //               // user: (args != null) ? _controller.profile.value : _controller.user.value,
-            //               user: _user,
-            //               button: (args != null) ?
-            //               ButtonWidget(
-            //                 text: _user?.follow == 0 ? "Follow" : "Un Follow",
-            //                 // text: "${_controller.profile.value.follow}",
-            //                 onPressed: _controller.sendFollowReq,
-            //                 bgColor: AppColors.primaryColor,
-            //                 textColor: Colors.white,
-            //                 loader: _loader,
-            //               ) : null,
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //
-            //       // TAB BAR
-            //       SliverAppBar(
-            //         pinned: true,
-            //         expandedHeight: 50,
-            //         // collapsedHeight: 0,
-            //         toolbarHeight: _toolbarHeight,
-            //         bottom: PreferredSize(
-            //             preferredSize: const Size(double.infinity, 0),
-            //             child: Row(
-            //               children: [
-            //                 TabBar(
-            //                     labelColor: AppColors.primaryColor,
-            //                     unselectedLabelColor: Colors.black,
-            //                     isScrollable: true,
-            //                     indicatorSize: TabBarIndicatorSize.label,
-            //                     labelPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-            //                     indicator: const UnderlineTabIndicator(
-            //                         borderSide: BorderSide(width: 2.5, color: AppColors.primaryColor),
-            //                         insets: EdgeInsets.symmetric(horizontal: 35.0)),
-            //                     tabs: List.generate(tabs.length, (index) => Tab(
-            //                       text: tabs.elementAt(index),
-            //                     ))
-            //                 ),
-            //               ],
-            //             )
-            //         ),
-            //       ),
-            //
-            //       // FEEDS LIST
-            //       SliverList(
-            //         delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-            //           return Container(
-            //             color: Colors.white,
-            //             padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            //             child: const FeedCard(horizontalSpace: 10, index: 0),
-            //           );
-            //         },
-            //           childCount: 4,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+           Container(
+               decoration: StyleConfig.gradientBackground,
+               height: 100,
+               child: CustomHeader(
+                 title: "Profile",
+                 buttonColor: AppColors.primaryColor,
+                 showBottom: false,
+                 showSave: false,
+                 actions: [
+                   IconButton(
+                       onPressed: () => handleOption(2),
+                       icon: const Icon(Feather.video)
+                   ),
+                   IconButton(
+                       onPressed: () => handleOption(1),
+                       icon: const Icon(Feather.phone)
+                   ),
+                   IconButton(
+                       onPressed: () => handleOption(0),
+                       icon: const Icon(Feather.message_square)
+                   ),
+                 ],
+             )
+           ),
 
-            const SizedBox(
-                  height: 100,
-                  child: CustomHeader(
-                      title: "Profile",
-                      buttonColor: AppColors.primaryColor,
-                      showBottom: false,
-                      showSave: false
-                  ))
-          ],
-        )),
+           Flexible(child: Obx(() => Stack(
+             children: [
+               Container(
+                 height: 500,
+                 width: double.infinity,
+                 decoration: (!_loading || _user?.userId != null) ? const BoxDecoration(
+                     gradient: LinearGradient(
+                       colors: [
+                         Colors.orange,
+                         AppColors.primaryColor,
+                         AppColors.pinkColor,
+                       ],
+                       begin: Alignment.topRight,
+                       end: Alignment.bottomLeft,
+                     )
+                 ) : null,
+                 // child: (!_loading || _user?.userId != null) ?
+                 // Align(
+                 //   alignment: Alignment.topCenter,
+                 //   child: Image.network(Constants.coverImage,
+                 //     height: 400,
+                 //     fit: BoxFit.cover,
+                 //   ),
+                 // ) : null,
+               ),
+               (_loading && _user?.userId == null) ?
+               const Center(child: Loader()):
+               RefreshIndicator(
+                 // displacement: 20,
+                   notificationPredicate: (controller.feeds.isNotEmpty) ? (notification) {
+                     // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
+                     if (notification is OverscrollNotification || Platform.isIOS) {
+                       return notification.depth == 2;
+                     }
+                     return notification.depth == 0;
+                   } : defaultScrollNotificationPredicate,
+                   onRefresh: controller.getData,
+                   child: ProfileBody(
+                     onRefresh: controller.getData,
+                     loader: _loading,
+                     user: _user,
+                     isOnline: controller.isOnline(),
+                     feeds:  controller.feeds,
+                     fetchingFeeds: controller.feedsLoading(),
+                     // options: PopupMenuButton<int>(
+                     //     padding: const EdgeInsets.only(left: 10, right: 0),
+                     //     onSelected: handleOption,
+                     //     icon: const Icon(Icons.more_horiz_rounded, color: AppColors.lightGrey,),
+                     //     itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+                     //       const PopupMenuItem<int>(
+                     //         value: 0,
+                     //         child: Text('Message'),
+                     //       ),
+                     //       const PopupMenuItem<int>(
+                     //         value: 1,
+                     //         child: Text("Audio Call"),
+                     //       ),
+                     //       const PopupMenuItem<int>(
+                     //         value: 2,
+                     //         child: Text("Vidoe Call"),
+                     //       ),
+                     //     ]
+                     // ),
+                     button: ButtonWidget(
+                       text: _user?.follow == 0 ? "Follow" : "Un Follow",
+                       onPressed: controller.sendFollowReq,
+                       bgColor: AppColors.primaryColor,
+                       textColor: Colors.white,
+                       loader: _loading,
+                     ),
+                     currIndex: _currIndex,
+                     currTab: _currTab,
+                     fetching: _fetching,
+                     likeTap: handleLikeTap,
+                     onShareTap: handleShare,
+                     onCommentTap: handleComment,
+                   )
+               ),
+             ],
+           ))),
+         ],
+        ),
       ),
+    );
+  }
+
+  handleOption(int item) {
+    switch (item) {
+      case 0:
+        controller.navigateToChat();
+        break;
+      case 1:
+        controller.navigateToCall(CallType.audio);
+        break;
+      case 2:
+        controller.navigateToCall(CallType.video);
+        break;
+    }
+  }
+
+  // ON LIKE TAP
+  handleLikeTap(int index, Feed item, int tab) {
+    if(item.feedId != null) {
+      controller.handleLike(index, item.feedId!, currentTab: tab);
+    }
+  }
+
+  // COMMENT SHEET
+  handleComment(int feedId) async {
+    Get.create(() => CommentController(feedId: feedId.toString(), action: controller.updateCommentCount));
+    await Get.bottomSheet(
+        const CommentSheet(),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
+    Get.delete<CommentController>(force: true);
+  }
+
+  // SHARE SHEET
+  handleShare(Feed feed) async {
+    await Get.bottomSheet(
+        ShareSheet(feed: feed),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
     );
   }
 }

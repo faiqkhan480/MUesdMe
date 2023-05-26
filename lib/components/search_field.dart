@@ -26,7 +26,8 @@ class SearchField extends StatelessWidget {
       child: TextField(
         // obscureText: true,
         autofocus: false,
-        onSubmitted: onSubmit,
+        // onSubmitted: onSubmit,
+        onChanged: onSubmit,
         decoration: InputDecoration(
           // prefixIconConstraints: BoxConstraints(minHeight: 20),
           prefixIcon: Padding(

@@ -4,6 +4,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'feed.g.dart';
 
+List<Feed> feedFromJson(String str) => List<Feed>.from(json.decode(str).map((x) => Feed.fromJson(x)));
+
 @JsonSerializable()
 class Feed {
   Feed({
@@ -18,6 +20,9 @@ class Feed {
     required this.postShares,
     required this.postComments,
     required this.feedType,
+    required this.feedDate,
+    required this.postLiked,
+    required this.shareUser,
   });
 
   @JsonKey(name: 'UserID')
@@ -30,7 +35,7 @@ class Feed {
   final String? userName;
 
   @JsonKey(name: 'ProfilePic')
-  final String? profilePic;
+  String? profilePic;
 
   @JsonKey(name: 'FeedID')
   final int? feedId;
@@ -42,16 +47,25 @@ class Feed {
   final int? postViews;
 
   @JsonKey(name: 'PostLikes')
-  final int? postLikes;
+  int? postLikes;
 
   @JsonKey(name: 'PostShares')
   final int? postShares;
 
   @JsonKey(name: 'PostComments')
-  final int? postComments;
+  int? postComments;
 
   @JsonKey(name: 'FeedType')
   final String? feedType;
+
+  @JsonKey(name: 'FeedDate')
+  final DateTime? feedDate;
+
+  @JsonKey(name: 'PostLiked')
+  String? postLiked;
+
+  @JsonKey(name: 'ShareUser')
+  ShareUser? shareUser;
 
   factory Feed.fromJson(Map<String, dynamic> json) => _$FeedFromJson(json);
 
@@ -59,5 +73,45 @@ class Feed {
 
 }
 
-List<Feed> feedFromJson(String str) => List<Feed>.from(json.decode(str).map((x) => Feed.fromJson(x)));
+@JsonSerializable()
+class ShareUser {
+  ShareUser({
+    required this.userId,
+    required this.follow,
+    required this.followedBy,
+    required this.followers,
+    required this.followings,
+    required this.fullName,
+    required this.profilePic,
+    required this.userName,
+  });
 
+  @JsonKey(name: 'UserID')
+  final int? userId;
+
+  @JsonKey(name: 'Follow')
+  final int? follow;
+
+  @JsonKey(name: 'FollowedBy')
+  final int? followedBy;
+
+  @JsonKey(name: 'Followers')
+  final int? followers;
+
+  @JsonKey(name: 'Followings')
+  final int? followings;
+
+  @JsonKey(name: 'FullName')
+  final String? fullName;
+
+  @JsonKey(name: 'ProfilePic')
+  final String? profilePic;
+
+  @JsonKey(name: 'UserName')
+  final String? userName;
+
+  factory ShareUser.fromJson(Map<String, dynamic> json) => _$ShareUserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ShareUserToJson(this);
+
+}

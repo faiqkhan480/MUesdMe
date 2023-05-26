@@ -14,6 +14,7 @@ class Assets {
   static const String iconsFilter = 'assets/icons/filter.svg';
   static const String iconsGoogle = 'assets/icons/google.svg';
   static const String iconsHeart = 'assets/icons/heart.svg';
+  static const String iconsUnlikeHeart = 'assets/icons/unliked_heart.svg';
   static const String iconsLive = 'assets/icons/live.svg';
   static const String iconsMessages = 'assets/icons/Messages.svg';
   static const String iconsProfile = 'assets/icons/Profile.svg';
@@ -27,6 +28,14 @@ class Assets {
   static const String iconsDownloadedVideos = 'assets/icons/downloaded_videos.svg';
   static const String iconsHistory = 'assets/icons/history.svg';
   static const String iconsWatchLater = 'assets/icons/watch_later.svg';
+  static const String iconsNoComments = 'assets/icons/messages-pana.svg';
+  static const String iconsNoFeeds = 'assets/icons/astronaut_suit.svg';
+  static const String iconsCoin = 'assets/icons/goldcoin.svg';
+
+  static const String iconsAudioMerge = 'assets/icons/audio_merge.svg';
+  static const String iconsAudioCutter = 'assets/icons/audio_cutter.svg';
+  static const String iconsVideoEdit = 'assets/icons/video_edit.svg';
+  static const String iconsImageEdit = 'assets/icons/image_edit.svg';
 
   static const String searchUsers = 'assets/icons/search-rafiki.svg';
   static const String emptySearch = 'assets/icons/people_search-cuate.svg';
@@ -34,10 +43,13 @@ class Assets {
 
   // PNG IMAGES
   static const String iconsLogo = 'assets/icons/logo.png';
+  static const String logoSvg = 'assets/icons/logo.svg';
   static const String iconsSmileyFace = 'assets/icons/smiling_face.png';
 
   // LOTTIE ANIMATIONS
   static const String loader = 'assets/lottie/lf30.json';
+  static const String callLoader = 'assets/lottie/call_loader.json';
+  static const String circleLoader = 'assets/lottie/circle_loader.json';
 
   static const List<String> menuIcons = [
     iconsFeed,

@@ -15,18 +15,20 @@ class SearchController extends GetxController {
   final ApiService _service = Get.find<ApiService>();
 
 
-  // FETCH FEEDS
+  // FETCH USERS
   Future<void> getUsers(String? search) async {
-    users.clear();
-    loading.value = true;
-    List<User?> res = await _service.fetchUsers(search ?? "");
-    users.addAll(res);
-    searchResult.value = res == [];
-    loading.value = false;
+    if(search!.isNotEmpty) {
+      users.clear();
+      loading.value = true;
+      List<User?> res = await _service.fetchUsers(search ?? "");
+      users.addAll(res);
+      searchResult.value = res == [];
+      loading.value = false;
+    }
   }
 
-  // HANDLE ON CLICK USER
-  void handleNavigation(User u) {
+  // NAVIGATE TO USER'S PROFILE
+  void gotoProfile(User u) {
     // _profile.getProfileDetails(u.userId!);
     Get.toNamed(AppRoutes.USER_PROFILE, arguments: u);
     // Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileScreen(profile: u),));

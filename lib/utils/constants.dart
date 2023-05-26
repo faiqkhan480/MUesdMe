@@ -4,29 +4,61 @@ class Constants {
   static const String BASE_URL = LIVE_URL;
   static const String IMAGE_URL = "https://musedme.helpinglab.com:6969/assets/Uploads/profile/";
   static const String FEEDS_URL = "https://musedme.helpinglab.com:6969/Uploads/Files/";
+  static const String LISTING_URL = "https://musedme.helpinglab.com:6969/Uploads/Listing/";
 
   ///AUTHENTICATION URLS
   static const String LOGIN = "$BASE_URL/api/Users/AuthenticateUser";
   static const String REGISTER = "$BASE_URL/api/Users/SignUp";
   static const String USER_DETAILS = "$BASE_URL/api/Users/BindUserDetails";
   static const String UPDATE_USER = "$BASE_URL/api/Users/UpdateUser";
+  static const String GET_RTM = "$BASE_URL/api/Agora/GetRTMToken";
+  static const String GET_RTC = "$BASE_URL/api/Agora/GetRTCToken";
+  static const String FORGOT_PASSWORD = "$BASE_URL/api/Users/ForgotPassword";
+  static const String VERIFY_PASSWORD = "$BASE_URL/api/Users/VerifyForgotPassword";
+  static const String UPDATE_PASSWORD = "$BASE_URL/api/Users/UpdatePassword";
 
 
   // POSTS
   static const String FEEDS = "$BASE_URL/api/Feed/GetAllFeeds";
+  static const String USERS_FEEDS = "$BASE_URL/api/Feed/GetMyFeeds";
+  static const String UPLOAD_FEED = "$BASE_URL/api/Feed/UploadFeed";
   static const String SERACH_USER = "$BASE_URL/api/Users/BindUserByName";
   static const String FOLLOW_USER = "$BASE_URL/api/Users/FollowUser";
   static const String UN_FOLLOW_USER = "$BASE_URL/api/Users/UnFollowUser";
+  static const String LIKE_POST = "$BASE_URL/api/Feed/LikePost";
+  static const String ADD_COMMENT = "$BASE_URL/api/Feed/AddFeedComments";
+  static const String GET_COMMENTS = "$BASE_URL/api/Feed/GetFeedComments";
+  static const String SHARE_FEED = "$BASE_URL/api/Feed/ShareFeed";
+  static const String DELETE_USER = "$BASE_URL/api/Users/DeleteUser";
+  static const String GET_CHAT = "$BASE_URL/api/Messages/GetAllChats";
+  static const String GET_MESSAGES = "$BASE_URL/api/Messages/GetChatMessages";
+  static const String SEND_MESSAGE = "$BASE_URL/api/Messages/SendMessage";
+  static const String ACTIVE_USERS = "$BASE_URL/api/Users/GetAllActiveUser";
+  static const String UPLOAD_IMAGE = "$BASE_URL/api/Users/UploadProfilePic";
+  static const String UPLOAD_FILE = "$BASE_URL/api/Feed/UploadFile";
+  static const String GO_LIVE = "$BASE_URL/api/Users/UpdateUserLiveStatus";
+  static const String UPLOAD_LISTING_FILE = "$BASE_URL/api/Listing/UploadListingFiles";
+  static const String UPLOAD_LISTING = "$BASE_URL/api/Listings/UploadListing";
+  static const String UPDATE_LISTING = "$BASE_URL/api/Listings/UpdateListing";
+  static const String MARKET_LISTING = "$BASE_URL/api/Listings/GetAllListings";
+  static const String MARKET_ITEM_DETAIL = "$BASE_URL/api/Listings/GetListingDetails";
+  static const String ADD_ORDER = "$BASE_URL/api/Listings/AddOrder";
+  static const String UPDATE_TRANSACTION = "$BASE_URL/api/Users/UpdateWalletTransactions";
+  static const String ALL_ORDERS = "$BASE_URL/api/Listings/GetAllOrders";
+  static const String RESEND_ORDER = "$BASE_URL/api/Listings/SendOrderFiles";
 
   static const String fontFamily = "Larsseit";
-  static const String dummyImage = "https://cdn.hswstatic.com/gif/play/0b7f4e9b-f59c-4024-9f06-b3dc12850ab7-1920-1080.jpg";
+  static const String dummyImage = "${IMAGE_URL}Users.png"; //"https://cdn.hswstatic.com/gif/play/0b7f4e9b-f59c-4024-9f06-b3dc12850ab7-1920-1080.jpg";
   static const String greenVector = "https://www.wallpapertip.com/wmimgs/188-1884481_green-blue.jpg";
   static const String coverImage = "https://www.history.com/.image/c_fit%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_620/MTY1MTc3MjE0MzExMDgxNTQ1/topic-golden-gate-bridge-gettyimages-177770941.jpg";
   static const String albumArt = "https://legiit-service.s3.amazonaws.com/a3444aabc35417cbb401fc4fbb7148ba/3b9307a4d28eebc3dfff71d319423997.jpg";
 
   // AGORA CREDENTIALS
-  static const String testChanel = "demo";
+  // static const String testChanel = "demo";
+  static const String agoraBaseId = "MusedByMe_";
   static const String appId = 'd7c60d2d306241c49386d0f998fffb4f';
-  static const String rtcToken = '007eJxTYAjpnWBqzFj6fKtsAduCeO4aW6kzR8/Ok3pY1MDj92bBlW0KDCnmyWYGKUYpxgZmRiaGySaWxhZmKQZplpYWaWlpSSZp/XwayXwJmskBm4KZmBgYGViAGMRnApPMYJIFSqak5uYzMLAygAAAvtMg5g==';
-  static const String rtmToken = '006d7c60d2d306241c49386d0f998fffb4fIAAmKhKpv+9q+LGr9zm6vqiLGO7ZKaK7DMEiQQgEXrR89cJBJDUAAAAAEABdcOmd72YpYwEA6APvZilj';
+
+  // STRIPE KEYS
+  static const String stripePublishedKey = 'pk_test_51LpE07LLVy8ltYVbUL10ldtR0lsrgPadvybSvijNVknPmDh7Ct1OC8jY07AqnM4J6o3kLkBcNLTC0fwuH1ZA3MnQ00fLrt2k4k';
+  static const String stripeSecretKey = 'sk_test_51LpE07LLVy8ltYVbyqaJTrmN8sV14cCnFzkjh3JKzfIC7lhkDPwb2MXWYDyP9aHaDGbdDHBl4pliBcNwIqvnCOP400trvbKpGV';
 }
