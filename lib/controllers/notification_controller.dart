@@ -1,9 +1,17 @@
+import 'dart:convert';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:musedme/utils/constants.dart';
 
+import '../models/args.dart';
+import '../models/auths/user_model.dart';
+import '../routes/app_routes.dart';
+import '../utils/network.dart';
+import 'call_controller.dart';
 import 'chat_controller.dart';
 import 'feed_controller.dart';
 
@@ -15,13 +23,13 @@ class PushNotification extends GetxController {
 
   @override
   void onInit() {
-    // // Only after at least the action method is set, the notification events are delivered
-    // localNotification.setListeners(
-    //     onActionReceivedMethod:         NotificationController.onActionReceivedMethod,
-    //     onNotificationCreatedMethod:    NotificationController.onNotificationCreatedMethod,
-    //     onNotificationDisplayedMethod:  NotificationController.onNotificationDisplayedMethod,
-    //     onDismissActionReceivedMethod:  NotificationController.onDismissActionReceivedMethod
-    // );
+    // Only after at least the action method is set, the notification events are delivered
+    localNotification.setListeners(
+        onActionReceivedMethod:         NotificationController.onActionReceivedMethod,
+        onNotificationCreatedMethod:    NotificationController.onNotificationCreatedMethod,
+        onNotificationDisplayedMethod:  NotificationController.onNotificationDisplayedMethod,
+        onDismissActionReceivedMethod:  NotificationController.onDismissActionReceivedMethod
+    );
     // TODO: implement onInit
     super.onInit();
     initialize();
@@ -34,8 +42,8 @@ class PushNotification extends GetxController {
       announcement: false,
       badge: true,
       carPlay: false,
-      criticalAlert: false,
-      provisional: false,
+      criticalAlert: true,
+      provisional: true,
       sound: true,
     );
     // use the returned token to send messages to users from your custom server
@@ -68,7 +76,6 @@ class PushNotification extends GetxController {
       if(Get.isRegistered<FeedController>()) {
         Get.find<FeedController>().getActiveUsers();
       }
-      debugPrint('Message also contained a notification: ${message.notification}');
 
       AwesomeNotifications().createNotification(
           content: NotificationContent(
@@ -76,9 +83,54 @@ class PushNotification extends GetxController {
               channelKey: 'musedme_channel',
               title: message.notification?.title ?? "",
               body: message.notification?.body ?? "",
-              actionType: ActionType.Default
+              actionType: ActionType.Default,
+              payload: {
+                "UserID": message.data['UserID'],
+                "FirstName": message.data['FirstName'],
+                "LastName": message.data['LastName'],
+                "ProfilePic": message.data['ProfilePic'],
+                "UserName": message.data['UserName'],
+                "RTCToken": message.data['RTCToken'],
+                "RTMToken": message.data['RTMToken']
+              }
           )
       );
+    }
+  }
+
+  // SAVE BUY REQUEST
+  Future sndFCMNotification(String? token, User u, String type) async {
+    try {
+      var payload = {
+        "to": token,
+        "notification": {
+          "title": u.userName ?? "",
+          "body": "Calling...",
+          "android": {
+            "ttl": "86400s",
+            "notification": {
+              "notification_priority": "high"
+            }
+          }
+        },
+        "data": {
+          "UserID": u.userId,
+          "FirstName": u.firstName,
+          "LastName": u.lastName,
+          "ProfilePic": u.profilePic,
+          "UserName": u.userName,
+          "RTCToken": u.rtcToken,
+          "RTMToken": u.rtmToken,
+          "Type": type
+        }
+      };
+      var header = {"Authorization": "key=AAAAsS0BE0Q:APA91bHXwg8lkauiV7GOntohpV0u2cjyDlzmq8Dv9VgQ3ZlNve1K035tsMtICHFxBpvpADyQ1HHwwyHnuBvD7KNh48PhGKP9w6rvvKLvhlw_R1ycZL70-6XFO5I2rJNiFzbKDG47JqI-"};
+      final json = await Network.post(url: "https://fcm.googleapis.com/fcm/send", headers: header, payload: payload);
+      debugPrint("FCM RES::::::$json");
+      return null;
+    } catch (e) {
+      debugPrint("FCM ERROR >>>>>>>>>> $e");
+      return null;
     }
   }
 }
@@ -108,10 +160,26 @@ class NotificationController {
   static Future <void> onActionReceivedMethod(ReceivedAction receivedAction) async {
     // Your code goes here
 
-    // Navigate into pages, avoiding to open the notification details page over another details page already opened
-
-    // MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil('/notification-page',
-    //         (route) => (route.settings.name != '/notification-page') || route.isFirst,
-    //     arguments: receivedAction);
+    if(receivedAction.buttonKeyPressed == "accept") {
+      debugPrint("ActionReceivedMethod: ${receivedAction.payload}");
+      Get.toNamed(
+          AppRoutes.CALL,
+          arguments: Args(
+              broadcaster: User().copyWith(
+                userId: int.tryParse((receivedAction.payload?['UserID'] ?? "")),
+                firstName: receivedAction.payload?['FirstName'],
+                lastName: receivedAction.payload?['LastName'],
+                profilePic: receivedAction.payload?['ProfilePic'],
+                userName: receivedAction.payload?['UserName'],
+                rtcToken: receivedAction.payload?['RTCToken'],
+                rtmToken: receivedAction.payload?['RTMToken'],
+              ),
+              callType: CallType.notification,
+              callMode: receivedAction.payload?['Type'] == "Video" ? CallType.video : CallType.audio));
+      AwesomeNotifications().cancelAll();
+    }
+    else {
+      AwesomeNotifications().dismiss(receivedAction.id!);
+    }
   }
 }

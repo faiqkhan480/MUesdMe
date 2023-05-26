@@ -216,19 +216,19 @@ class CallScreen extends GetView<CallController> {
             ),
           ),
           const SizedBox(height: 5,),
-          // SWITCH VIDEO
-          RawMaterialButton(
-            onPressed: controller.switchVideo,
-            shape: const CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
-            child: Icon(
-              isVideo ? Feather.video : Feather.video_off,
-              color: AppColors.lightGrey,
-              size: 20.0,
-            ),
-          ),
+          // // SWITCH VIDEO
+          // RawMaterialButton(
+          //   onPressed: controller.switchVideo,
+          //   shape: const CircleBorder(),
+          //   elevation: 2.0,
+          //   fillColor: Colors.white,
+          //   padding: const EdgeInsets.all(12.0),
+          //   child: Icon(
+          //     isVideo ? Feather.video : Feather.video_off,
+          //     color: AppColors.lightGrey,
+          //     size: 20.0,
+          //   ),
+          // ),
         ],
       ),
     );
@@ -238,7 +238,7 @@ class CallScreen extends GetView<CallController> {
     return Positioned(
         left: Get.width * 0.30,
         right: Get.width * 0.30,
-        bottom: 30,
+        bottom: 20,
         child: TextButton(
           onPressed: controller.endCall,
           style: TextButton.styleFrom(
@@ -247,7 +247,7 @@ class CallScreen extends GetView<CallController> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
           ),
           child: Row(
@@ -277,7 +277,7 @@ class CallScreen extends GetView<CallController> {
 
   /// Video layout wrapper
   Widget _broadcastView() {
-    final views = _getRenderViews();
+    final views = !isVideo ? _getRenderAudioViews() : _getRenderViews();
     List ids = [_authService.currentUser!.userId!, ..._users];
     switch (views.length) {
       case 1:
@@ -340,9 +340,53 @@ class CallScreen extends GetView<CallController> {
     return list;
   }
 
+  List<Widget> _getRenderAudioViews() {
+    final List<Widget> list = [];
+    if (_localUserJoined) {
+      list.add(Center(child: CircleAvatar(
+        backgroundColor: Colors.white,
+        radius: 60,
+        backgroundImage: NetworkImage(
+            _authService.currentUser?.profilePic != null && _authService.currentUser!.profilePic!.isNotEmpty?
+            Constants.IMAGE_URL + _authService.currentUser!.profilePic! :
+            Constants.dummyImage
+        ),
+      ),));
+    }
+    for (var uid in _users) {
+      // broadcaster
+      User? u = _activeUsers.firstWhereOrNull((u) => u?.userId == uid);
+      if(uid == chatUser?.userId){
+        u = chatUser;
+      }
+      list.add(Center(child: CircleAvatar(
+        backgroundColor: Colors.white,
+        radius: 60,
+        backgroundImage: NetworkImage(
+            u?.profilePic != null && u!.profilePic!.isNotEmpty?
+            Constants.IMAGE_URL + u.profilePic! :
+            Constants.dummyImage
+        ),
+      ),));
+    }
+    return list;
+  }
+
+  /// Video view wrapper
+  Widget _videoView(view) {
+    return Expanded(child: Container(child: view));
+  }
+
   /// Video view row wrapper
   Widget _expandedVideoView(List<Widget> views, List ids) {
-    final List<Widget> wrappedViews = [];
+    final wrappedViews = views.map<Widget>(_videoView).toList();
+    return Expanded(
+      child: Row(
+        children: wrappedViews,
+      ),
+    );
+
+    // final List<Widget> wrappedViews = [];
     for(var i = 0; i < views.length; i++) {
       User? user = ids[i] == _authService.currentUser?.userId ? _authService.currentUser : _activeUsers.firstWhereOrNull((u) => u?.userId == ids[i]);
       if((isVideo && ids[i] == _authService.currentUser?.userId) || ids[i] != _authService.currentUser?.userId) {
@@ -377,3 +421,54 @@ class CallScreen extends GetView<CallController> {
     );
   }
 }
+
+// List<Widget> _getRenderViews() {
+//   if(!isVideo) {
+//     final List<Widget> list = [];
+//     if (_localUserJoined) {
+//       if(!isVideo) {
+//         list.add(Center(child: CircleAvatar(
+//           backgroundColor: Colors.white,
+//           radius: 60,
+//           backgroundImage: NetworkImage(
+//               _authService.currentUser?.profilePic != null && _authService.currentUser!.profilePic!.isNotEmpty?
+//               Constants.IMAGE_URL + _authService.currentUser!.profilePic! :
+//               Constants.dummyImage
+//           ),
+//         ),));
+//       }
+//     }
+//
+//     // broadcaster
+//     for (var uid in _users) {
+//       User? u = _activeUsers.firstWhereOrNull((u) => u?.userId == uid);
+//       if(uid == chatUser?.userId){
+//         u = chatUser;
+//       }
+//       if(!isVideo) {
+//         list.add(Center(child: CircleAvatar(
+//           backgroundColor: Colors.white,
+//           radius: 60,
+//           backgroundImage: NetworkImage(
+//               u?.profilePic != null && u!.profilePic!.isNotEmpty?
+//               Constants.IMAGE_URL + u.profilePic! :
+//               Constants.dummyImage
+//           ),
+//         ),));
+//       }
+//     }
+//     return list;
+//   }
+//   else {
+//     final List<StatefulWidget> list = [];
+//     if (_localUserJoined) {
+//       list.add(RtcLocalView.SurfaceView(channelId: channelId));
+//     }
+//
+//     // broadcaster
+//     for (var uid in _users) {
+//       list.add(RtcRemoteView.SurfaceView(uid: uid, channelId: channelId));
+//     }
+//     return list;
+//   }
+// }

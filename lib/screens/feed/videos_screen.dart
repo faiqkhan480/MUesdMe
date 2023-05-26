@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../components/comment_sheet.dart';
-import '../components/feed_actions.dart';
-import '../components/feed_card.dart';
-import '../components/header.dart';
-import '../components/share_sheet.dart';
-import '../controllers/comment_controller.dart';
-import '../controllers/feed_controller.dart';
-import '../models/auths/user_model.dart';
-import '../models/feed.dart';
-import '../utils/app_colors.dart';
-import '../utils/assets.dart';
-import '../widgets/loader.dart';
+import '../../components/comment_sheet.dart';
+import '../../components/feed_actions.dart';
+import '../../components/feed_card.dart';
+import '../../components/header.dart';
+import '../../components/share_sheet.dart';
+import '../../controllers/comment_controller.dart';
+import '../../controllers/feed_controller.dart';
+import '../../models/auths/user_model.dart';
+import '../../models/feed.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/assets.dart';
+import '../../widgets/loader.dart';
 
 class VideosScreen extends StatelessWidget {
   const VideosScreen({Key? key}) : super(key: key);
@@ -32,7 +32,7 @@ class VideosScreen extends StatelessWidget {
   int get _currTab => _controller.currTab.value;
   List<Feed?> get _feeds => _controller.feeds;
   RxList<Feed?> get _videos => _feeds.where((v) => v?.feedType == "Video").toList().obs;
-  RxList<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video" && v!.postLikes! > 0).toList().obs;
+  RxList<Feed?> get _trending => _feeds.where((v) => v?.feedType == "Video").toList().obs;
   RxList<Feed?> get _today => _feeds.where((v) => v?.feedType == "Video" && _checkDateIsToday(v!.feedDate!)).toList().obs;
 
   @override
@@ -79,7 +79,7 @@ class VideosScreen extends StatelessWidget {
         child: TabBarView(
           children: [
             _view(_videos, 0), // ALL VIDEOS
-            _view(_trending, 1), // TRENDING VIDEOS
+            _view(getTrendingList(), 1), // TRENDING VIDEOS
             _view(_today, 1), // TODAY'S VIDEOS
             // SvgPicture.asset(Assets.searchUsers), // TODAY'S VIDEOS
           ],
@@ -191,5 +191,11 @@ class VideosScreen extends StatelessWidget {
     // } else(aDate == tomorrow) {
     // ...
     // }
+  }
+
+  RxList<Feed?> getTrendingList() {
+    List<Feed?> trendingItems = _trending;
+    trendingItems.sort((a, b) => b!.postLikes!.compareTo(a!.postLikes!));
+    return trendingItems.obs;
   }
 }

@@ -27,7 +27,7 @@ class CommentSheet extends GetWidget<CommentController> {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // HEADER
             Row(
@@ -63,34 +63,38 @@ class CommentSheet extends GetWidget<CommentController> {
                           child: _imageView(_comments.elementAt(index)?.profilePic),
                         ),
                         const SizedBox(width: 5,),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE9F1FE),
-                                borderRadius: BorderRadius.circular(6.0),
+                        Flexible(
+                          // fit: FlexFit.tight,
+                          // flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE9F1FE),
+                                  borderRadius: BorderRadius.circular(6.0),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(_comments.elementAt(index)?.fullName ?? "",
+                                        style: const TextStyle(fontWeight: FontWeight.w800),
+                                  ),
+                                      Text(
+                                        _comments.elementAt(index)?.comment ?? "",
+                                        // weight: FontWeight.bold,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextWidget(
-                                  _comments.elementAt(index)?.fullName ?? "",
-                                  weight: FontWeight.w800,
-                                ),
-                                    TextWidget(
-                                  _comments.elementAt(index)?.comment ?? "",
-                                  // weight: FontWeight.bold,
-                                  size: 16.0,
-                                ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
                       ],
                     ),
                     separatorBuilder: (context, index) => const SizedBox(height: 10,),

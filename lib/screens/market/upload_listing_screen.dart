@@ -35,6 +35,7 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
   ApiService get _apiService => Get.find<ApiService>();
   MarketController get _controller => Get.find<MarketController>();
   Listing? get _listing => _controller.uploadItem();
+  bool get _loading => _controller.fetching();
 
   @override
   void initState() {
@@ -82,79 +83,23 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
                       Row(
                         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Radio<String>(
+                          Expanded(child: RadioListTile<String>(
                             value: "Selling",
                             groupValue: _type,
-                            activeColor: AppColors.secondaryColor,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _type = value;
-                              });
-                            },
-                          ),
-                          const Text("\t\tSelling"),
+                            activeColor: AppColors.primaryColor,
+                            onChanged: (String? value) => setState(() => _type = value),
+                            title: const Text("Selling"),
+                          )),
 
-                          Radio<String>(
+                          Expanded(child: RadioListTile<String>(
                             value: "Licensing",
                             groupValue: _type,
-                            activeColor: AppColors.secondaryColor,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _type = value;
-                              });
-                            },
-                          ),
-                          const Text("\t\tLicensing"),
-                          // Expanded(
-                          //   child: TextButton(
-                          //     onPressed: () => setState(() => isMale = true),
-                          //     style: TextButton.styleFrom(
-                          //         backgroundColor: isMale ? AppColors.secondaryColor : Colors.white,
-                          //         foregroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
-                          //         shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(12),
-                          //           side: const BorderSide(color: AppColors.lightGrey)
-                          //         ),
-                          //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                          //         textStyle: const TextStyle(fontSize: 20, fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
-                          //     ),
-                          //     child: Row(
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: const [
-                          //         Icon(Icons.male_rounded, size: 20),
-                          //         Text("\t\tMale"),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
-                          // const SizedBox(width: 10,),
-                          // Expanded(
-                          //   child: TextButton(
-                          //     onPressed: () => setState(() => isMale = false),
-                          //     style: TextButton.styleFrom(
-                          //         backgroundColor: !isMale ? AppColors.secondaryColor : Colors.white,
-                          //         foregroundColor: isMale ? AppColors.secondaryColor : Colors.white,
-                          //         shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(12),
-                          //           side: const BorderSide(color: AppColors.lightGrey)
-                          //         ),
-                          //         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                          //         textStyle: const TextStyle(
-                          //             fontSize: 20,
-                          //             fontFamily: Constants.fontFamily, fontWeight: FontWeight.w500)
-                          //     ),
-                          //     child: Row(
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: const [
-                          //         Icon(Icons.female_rounded, size: 20),
-                          //         Text("\t\tFemale"),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
+                            activeColor: AppColors.primaryColor,
+                            onChanged: (String? value) => setState(() => _type = value),
+                            title: const Text("\t\Licensing"),
+                          )),
                         ],
                       ),
-
                       // PRICE FIELD
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
@@ -188,47 +133,62 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
                           labelText: "Description",
                           minLines: 5,
                           keyboardType: TextInputType.text,
-                          validator: (String? value) => value!.isEmpty ? "User name is required!" : null,
+                          validator: (String? value) => value!.isEmpty ? "Description is required!" : null,
                           onSubmit: (_) => FocusScope.of(context).nextFocus(),
                         ),
                       ),
 
-                      if(_controller.selectedItem.value?.userId == _authService.currentUser?.userId)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextButton(
-                            onPressed: () => _controller.uploadFile(_controller.selectedItem.value!.category!),
-                            style: TextButton.styleFrom(
-                                backgroundColor: AppColors.secondaryColor,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
+                      Obx(() {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if(_controller.selectedItem.value?.userId == _authService.currentUser?.userId)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () => _controller.uploadFile(_controller.selectedItem.value!.category!),
+                                      style: TextButton.styleFrom(
+                                          backgroundColor: AppColors.secondaryColor,
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                                          textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
+                                      ),
+                                      child: const Text("Upload Files"),
+                                    ),
+
+                                    if(_loading)
+                                      const SizedBox(
+                                        height: 50,
+                                        child: Loader(),
+                                      ),
+                                  ],
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                                textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
-                            ),
-                            child: const Text("Upload Files"),
-                          ),
-                        ),
-                      ),
+                              ),
 
-                      if(_listing != null && _listing!.files!.isNotEmpty)...[
-                        const Padding(padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: TextWidget("Items", color: AppColors.secondaryColor, size: 18, weight: FontWeight.w700),
-                        ),
-                        ...List.generate(_listing!.files!.length, (index) => Padding(padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: TextWidget("${_listing?.files?.elementAt(index).filePath}",
-                              color: AppColors.secondaryColor, size: 15, weight: FontWeight.w400),
-                        ), )
-                      ]
+                            if(_listing != null && _listing!.files!.isNotEmpty)...[
+                              const Padding(padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: TextWidget("Items", color: AppColors.secondaryColor, size: 18, weight: FontWeight.w700),
+                              ),
+                              ...List.generate(_listing!.files!.length, (index) => Padding(padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                child: TextWidget("${_listing?.files?.elementAt(index).filePath}",
+                                    color: AppColors.secondaryColor, size: 15, weight: FontWeight.w400),
+                              ), )
+                            ]
 
-                      else if(_controller.selectedItem.value?.files != null && _controller.selectedItem.value!.files!.isNotEmpty)
-                        ...List.generate(_controller.selectedItem.value!.files!.length, (index) => Padding(padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: TextWidget("${_controller.selectedItem.value!.files?.elementAt(index).filePath}",
-                              color: AppColors.secondaryColor, size: 15, weight: FontWeight.w400),
-                        ), )
+                            else if(_controller.selectedItem.value?.files != null && _controller.selectedItem.value!.files!.isNotEmpty)
+                              ...List.generate(_controller.selectedItem.value!.files!.length, (index) => Padding(padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                child: TextWidget("${_controller.selectedItem.value!.files?.elementAt(index).filePath}",
+                                    color: AppColors.secondaryColor, size: 15, weight: FontWeight.w400),
+                              ), )
+                          ],
+                        );
+                      }),
                     ],
                   )
               )
@@ -242,7 +202,10 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
           child: Loader(),
         ) :
         TextButton(
-          onPressed: _controller.selectedItem.value?.files != null && _controller.selectedItem.value!.files!.isNotEmpty ? handleUpdate : handleSubmit,
+          onPressed:
+          _controller.selectedItem.value?.userId == _authService.currentUser?.userId ?
+          handleUpdate :
+          handleSubmit,
           style: TextButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               foregroundColor: Colors.white,
@@ -252,7 +215,7 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
               textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
           ),
-          child: const Text("Submit"),
+          child: Text(_controller.selectedItem.value?.userId == _authService.currentUser?.userId ? "Update" : "Submit"),
         ),
       ),
     );
@@ -273,10 +236,8 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
         bool res = await _apiService.uploadListing(payload);
         setState(() => loader = false);
         if(res) {
+          _controller.uploadItem = Rxn<Listing?>();
           Get.back();
-          // Get.offAllNamed(AppRoutes.ROOT);
-          // if(!mounted) return;
-          // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => const BottomNavigation()));
         }
       }
       catch(e) {
@@ -290,18 +251,35 @@ class _UploadListingScreenState extends State<UploadListingScreen> {
     if(!loader && _formKey.currentState!.validate()) {
       try {
         setState(() => loader = true);
-        Listing? payload = _listing?.copyWith(
+        Listing? payload = Listing(
           type: _type,
           userId: _authService.currentUser?.userId,
           category: Get.arguments,
           description: description.text,
           title: title.text,
           price: double.tryParse(price.text),
-          itemId: _controller.selectedItem.value!.itemId!
+          itemId: _controller.selectedItem.value!.itemId!,
+          status: _controller.selectedItem.value?.status,
+          mainFile: _controller.selectedItem.value?.mainFile,
+          orderId: _controller.selectedItem.value?.orderId,
+          quantity: _controller.selectedItem.value?.quantity,
+          files: _listing?.files ?? _controller.selectedItem.value?.files,
+          userDetails: _controller.selectedItem.value?.userDetails
         );
+        // Listing? payload = _listing?.copyWith(
+        //   type: _type,
+        //   userId: _authService.currentUser?.userId,
+        //   category: Get.arguments,
+        //   description: description.text,
+        //   title: title.text,
+        //   price: double.tryParse(price.text),
+        //   itemId: _controller.selectedItem.value!.itemId!,
+        // );
+        debugPrint("::::::::::::::${payload.toJson()}");
         var res = await _apiService.updateListing(payload);
         setState(() => loader = false);
         if(res != null) {
+          _controller.updateItem(payload!);
           Get.back();
           Get.snackbar("Success!", res ?? "",
               backgroundColor: AppColors.successColor,

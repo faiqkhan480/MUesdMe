@@ -59,26 +59,28 @@ class AuthService extends GetxService {
   }
 
   // USER LOGIN
-  Future<bool> loginUser(String email, String pass) async {
+  Future<bool> loginUser(String email, String pass, int isSocial) async {
     try {
       var payload = {
         "Email": email,
         "Password": pass,
+        "isSocial": isSocial,
         "FCMToken": _box.read("fcm")
       };
       final json = await Network.post(url: Constants.LOGIN, payload: payload);
+      print("LOGIN RES::::::::: $json");
+      // debugPrint("LOGIN RES::::::::: $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.user != null) {
           _currentUser = User.fromJson(res.user);
-          // debugPrint("::::::::: ${_currentUser?.userName}");
           _box.write("user", res.user);
           _box.write("token", _currentUser?.token);
           await getTokens();
           return true;
         }
         else {
-          Get.snackbar("Failed!", res.message ?? "",
+          Get.snackbar("Login Failed!", res.message ?? "",
               backgroundColor: AppColors.pinkColor,
               colorText: Colors.white
           );
@@ -109,7 +111,7 @@ class AuthService extends GetxService {
           return res.token;
         }
         else {
-          Get.snackbar("Failed!", res.message ?? "",
+          Get.snackbar("GET RTM Failed!", res.message ?? "",
               backgroundColor: AppColors.pinkColor,
               colorText: Colors.white
           );
@@ -136,6 +138,7 @@ class AuthService extends GetxService {
         "UserId": currentUser?.userId,
       };
       final json = await Network.post(url: Constants.GET_RTC, payload: payload, headers: header);
+      debugPrint("RTC JSON :::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.token != null) {
@@ -143,7 +146,7 @@ class AuthService extends GetxService {
           return res.token;
         }
         else {
-          Get.snackbar("Failed!", res.message ?? "",
+          Get.snackbar("GET RTC Failed!", res.message ?? "",
               backgroundColor: AppColors.pinkColor,
               colorText: Colors.white
           );
@@ -166,10 +169,11 @@ class AuthService extends GetxService {
       String lastName,
       String userName,
       String email,
-      String gender,
+      String? gender,
       String country,
-      String dob,
+      String? dob,
       String password,
+      int isSocial,
       ) async {
     try {
       var payload = {
@@ -181,6 +185,7 @@ class AuthService extends GetxService {
         "Country": country,
         "DOB": dob,
         "Gender": gender,
+        "isSocial": isSocial,
         "FCMToken": _box.read("fcm")
       };
       final json = await Network.post(url: Constants.REGISTER, payload: payload);
@@ -320,7 +325,11 @@ class AuthService extends GetxService {
   }
 
   Future clearUser() async {
-    await _box.erase();
+    _box.remove("token");
+    _box.remove("user");
+    _box.remove("rtm");
+    _box.remove("rtc");
+    // await _box.erase();
     // _box.write("token", null);
     // _box.write("user", null);
     _currentUser = null;
@@ -351,6 +360,101 @@ class AuthService extends GetxService {
     } catch (e) {
       debugPrint("ERROR >>>>>>>>>> $e");
       return null;
+    }
+  }
+
+  // FORGOT PASSWORD
+  Future<bool> forgotPass(String email) async {
+    try {
+      var payload = {
+        "Email": email,
+      };
+      final json = await Network.post(url: Constants.FORGOT_PASSWORD, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+          return true;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return false;
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return false;
+    }
+  }
+
+  // VERIFY PASSWORD
+  Future<bool> verifyPassCode(String email, String code) async {
+    try {
+      var payload = {
+        "Email": email,
+        "Code": code,
+      };
+      final json = await Network.post(url: Constants.VERIFY_PASSWORD, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+          return true;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return false;
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return false;
+    }
+  }
+
+  // UPDATE PASSWORD
+  Future<bool> updatePassword(String email, String password) async {
+    try {
+      var payload = {
+        "Email": email,
+        "Password": password,
+      };
+      final json = await Network.post(url: Constants.UPDATE_PASSWORD, payload: payload);
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.back();
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+          return false;
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return false;
     }
   }
 }

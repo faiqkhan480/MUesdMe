@@ -19,7 +19,7 @@ class InvitationCard extends StatelessWidget {
         color: AppColors.secondaryColor,
         borderRadius: BorderRadius.circular(10)
       ),
-      margin: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
+      margin: const EdgeInsets.only(bottom: 10, left: 20, right: 20, top: 10),
       padding: const EdgeInsets.only(right: 10, bottom: 5, top: 5),
       // alignment: Alignment.center,
       child: Row(

@@ -94,13 +94,13 @@ class UserProfileScreen extends GetView<UserProfileController> {
                const Center(child: Loader()):
                RefreshIndicator(
                  // displacement: 20,
-                   notificationPredicate: (notification) {
+                   notificationPredicate: (controller.feeds.isNotEmpty) ? (notification) {
                      // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
                      if (notification is OverscrollNotification || Platform.isIOS) {
                        return notification.depth == 2;
                      }
                      return notification.depth == 0;
-                   },
+                   } : defaultScrollNotificationPredicate,
                    onRefresh: controller.getData,
                    child: ProfileBody(
                      onRefresh: controller.getData,

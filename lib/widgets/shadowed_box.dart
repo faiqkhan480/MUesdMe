@@ -19,6 +19,7 @@ class ShadowedBox extends StatelessWidget {
               blurRadius: 4
           )] : null
       ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       padding: padding ?? const EdgeInsets.all(20),
       child: child,
     );

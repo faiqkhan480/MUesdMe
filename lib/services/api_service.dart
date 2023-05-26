@@ -320,17 +320,9 @@ class ApiService extends GetxService {
       debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        // if(res.message != null && res.message!.isNotEmpty) {
-        //   Get.snackbar("Failed!", res.message ?? "",
-        //       backgroundColor: AppColors.pinkColor,
-        //       colorText: Colors.white
-        //   );
-        // }
         if(res.code == 200 && res.message != null) {
-          //   List<Comment> comments = commentFromJson(jsonEncode(res.feedComments));
-          //   return comments;
           Get.back();
-          Get.snackbar("Success!", res.message ?? "",
+          Get.snackbar("Success!", "Feed is shared on your wall...",
               backgroundColor: AppColors.successColor,
               colorText: Colors.white
           );
@@ -396,15 +388,16 @@ class ApiService extends GetxService {
         "UserID": _userId,
         "Message": message,
         "ChatWithUser": chatWithUser,
-        "IsActive": 0,
+        "IsActive": isActive,
         "Type": type ?? "Message"
       };
       final json = await Network.post(url: Constants.SEND_MESSAGE, headers: _header, payload: payload);
-      // debugPrint("json::::::$json");
+      debugPrint("json::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
-        if(res.code == 200 && res.message != null) {
-          return true;
+        if(res.code == 200 && res.messages != null) {
+          List<Message> message = messageFromJson(jsonEncode(res.messages));
+          return message;
         }
         else {
           Get.snackbar("Failed!", res.message ?? "",
@@ -474,7 +467,7 @@ class ApiService extends GetxService {
   Future<Listing?> uploadListingFile(List<String> filePath) async {
     try {
       final json = await Network.multipart(url: Constants.UPLOAD_LISTING_FILE, headers: _header, filePath: filePath);
-      // debugPrint("json::::::$json");
+      debugPrint("UPLOAD FILE::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.listing != null) {
@@ -499,7 +492,7 @@ class ApiService extends GetxService {
   Future uploadListing(Listing? listing) async {
     try {
       final json = await Network.post(url: Constants.UPLOAD_LISTING, headers: _header, payload: listing?.toJson());
-      debugPrint("json::::::$json");
+      debugPrint("UPLOAD LISTING::::::$json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         // if(res.message != null && res.message!.isNotEmpty) {
@@ -557,7 +550,7 @@ class ApiService extends GetxService {
         "UserID": _userId,
       };
       final json = await Network.post(url: Constants.MARKET_LISTING, headers: _header, payload: payload);
-      // debugPrint("LISTING:::::::::::: $json");
+      debugPrint("LISTING:::::::::::: $json");
       if(json != null) {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.listings != null) {
@@ -608,6 +601,85 @@ class ApiService extends GetxService {
         ApiRes res = ApiRes.fromJson(jsonDecode(json));
         if(res.code == 200 && res.message != null) {
           return res.message;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
+
+  // CONFIRM ORDER
+  Future confirmPayment(String transactionId, String price) async {
+    try {
+      var payload = {
+        "UserID": _userId,
+        "TransactionID": transactionId,
+        "TransactionAmount": price,
+        "PaymentMethod": "Stripe",
+        "Status": "Success"
+      };
+      final json = await Network.post(url: Constants.UPDATE_TRANSACTION, headers: _header, payload: payload);
+      debugPrint("Confirm Payment RES::::::$json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.message != null) {
+          return res.message;
+        }
+        else {
+          Get.snackbar("Failed!", res.message ?? "",
+              backgroundColor: AppColors.pinkColor,
+              colorText: Colors.white
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return null;
+    }
+  }
+
+  // GET ALL ORDERS
+  Future<List<Listing?>> getOrders() async {
+    try {
+      var payload = {"UserID": _userId};
+      final json = await Network.post(url: Constants.ALL_ORDERS, headers: _header, payload: payload);
+      // debugPrint("ORDERS:::::::::::: $json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200 && res.listings != null) {
+          List<Listing?> listing = listingFromJson(jsonEncode(res.listings));
+          return listing;
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint("ERROR >>>>>>>>>> $e");
+      return [];
+    }
+  }
+
+  Future resendLink([int? orderId]) async {
+    try {
+      var payload = {"UserID": _userId, "OrderID": orderId};
+      final json = await Network.post(url: Constants.RESEND_ORDER, headers: _header, payload: payload);
+      // debugPrint("LISTING:::::::::::: $json");
+      if(json != null) {
+        ApiRes res = ApiRes.fromJson(jsonDecode(json));
+        if(res.code == 200) {
+          Get.snackbar("Success!", res.message ?? "",
+              backgroundColor: AppColors.successColor,
+              colorText: Colors.white
+          );
+          return true;
         }
         else {
           Get.snackbar("Failed!", res.message ?? "",

@@ -13,7 +13,7 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> _options = ["Themes", "About", "Privacy", "Security", "Help", "Logout"];
+    final List<String> _options = ["About", "Privacy", "Security", "Help", "Logout"];
 
     return DefaultTabController(
       length: 2,

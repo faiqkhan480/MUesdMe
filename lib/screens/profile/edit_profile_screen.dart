@@ -14,6 +14,7 @@ import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/constants.dart';
+import '../../widgets/loader.dart';
 
 class EditProfileScreen extends GetView<EditProfileController> {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -61,19 +62,19 @@ class EditProfileScreen extends GetView<EditProfileController> {
 
                     EmailPasswordCard(email: _authService.currentUser?.email),
 
-                    const SizedBox(height: 20,),
-
-                    SocialLinks(
-                      val1: controller.connectTwitter.value,
-                      val2: controller.connectFacebook.value,
-                      action1: (val) => null,
-                      action2: (val) => null,
-                    ),
+                    // const SizedBox(height: 20,),
+                    //
+                    // SocialLinks(
+                    //   val1: controller.connectTwitter.value,
+                    //   val2: controller.connectFacebook.value,
+                    //   action1: (val) => null,
+                    //   action2: (val) => null,
+                    // ),
 
                     const SizedBox(height: 20,),
 
                     TextButton(
-                      onPressed: controller.deleteAccount,
+                      onPressed: onDelete,
                       style: TextButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
                           foregroundColor: Colors.white,
@@ -83,7 +84,12 @@ class EditProfileScreen extends GetView<EditProfileController> {
                           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
                           textStyle: const TextStyle(fontSize: 15, fontFamily: Constants.fontFamily)
                       ),
-                      child: Row(
+                      child: controller.fetching() ?
+                      const SizedBox(
+                        height: 50,
+                        child: Loader(),
+                      ) :
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -99,6 +105,25 @@ class EditProfileScreen extends GetView<EditProfileController> {
           ),
         ],
       )),
+    );
+  }
+
+  onDelete() {
+    // controller.deleteAccount()
+    // Get.dialog(
+    //     Column(
+    //       children: [
+    //
+    //       ],
+    // ));
+
+    Get.defaultDialog(
+        title: "Alert!",
+      content: const Text("Are you to delete your account?"),
+      onConfirm: () => controller.deleteAccount(),
+      confirmTextColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+      onCancel: () {},
     );
   }
 }

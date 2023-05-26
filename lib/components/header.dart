@@ -24,6 +24,8 @@ class Header extends StatelessWidget {
     this.showShadow = true,
     this.isProfile = false,
     this.hideButton = false,
+    this.showButtonIcon = true,
+    this.buttonText = "Edit Profile",
     this.height,
     this.lives,
     this.handleSearch,
@@ -31,11 +33,13 @@ class Header extends StatelessWidget {
   }) : super(key: key);
 
   final String title;
+  final String buttonText;
   final bool showLives;
   final Widget? lives;
   final bool showShadow;
   final bool isProfile;
   final bool hideButton;
+  final bool showButtonIcon;
   final double? height;
   final VoidCallback? action;
   final VoidCallback? handleSearch;
@@ -94,8 +98,12 @@ class Header extends StatelessWidget {
                 if(!hideButton)
                   SmallButton(
                   onPressed: action ?? handleLive,
-                  title: isProfile ? "Edit Profile" : "Go Live",
-                  icon: SvgPicture.asset(isProfile ? Assets.iconsEditProfile : Assets.iconsLive),
+                  title: isProfile ? buttonText : "Go Live",
+                  icon: showButtonIcon ? SvgPicture.asset(
+                      isProfile ?
+                      Assets.iconsEditProfile :
+                      Assets.iconsLive
+                  ) : null,
                 ),
                 if(isProfile)...[
                   const SizedBox(width: 10),

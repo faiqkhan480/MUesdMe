@@ -13,6 +13,7 @@ class Listing {
   Listing({
     required this.userId,
     required this.itemId,
+    required this.orderId,
     required this.price,
     required this.quantity,
     required this.type,
@@ -30,6 +31,9 @@ class Listing {
 
   @JsonKey(name: 'ItemID')
   final int? itemId;
+
+  @JsonKey(name: 'OrderID')
+  final int? orderId;
 
   @JsonKey(name: 'Price')
   final double? price;
@@ -62,6 +66,7 @@ class Listing {
   Listing copyWith({
     int? userId,
     int? itemId,
+    int? orderId,
     double? price,
     int? quantity,
     String? type,
@@ -76,6 +81,7 @@ class Listing {
     return Listing(
       userId: userId ?? this.userId,
       itemId: itemId ?? this.itemId,
+      orderId: orderId ?? this.orderId,
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
       type: type ?? this.type,

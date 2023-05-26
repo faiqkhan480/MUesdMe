@@ -55,7 +55,12 @@ class GeneralInfo extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: TextWidget(label, color: AppColors.lightGrey, size: 12, weight: FontWeight.normal,)),
+          Expanded(child: Row(
+            children: [
+              TextWidget("$label ", color: AppColors.lightGrey, size: 12, weight: FontWeight.normal,),
+              const Icon(Icons.edit, color: AppColors.lightGrey, size: 12),
+            ],
+          )),
           Expanded(
             child: TextField(
               textAlign: TextAlign.end,

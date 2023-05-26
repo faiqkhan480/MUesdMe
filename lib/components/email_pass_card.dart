@@ -11,18 +11,22 @@ class EmailPasswordCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ShadowedBox(
-      padding: const EdgeInsets.only(top: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          dataRow("Email address", email ?? ""),
-          const Divider(color: AppColors.grayScale, thickness: 1),
-          dataRow("Password", "· · · · · ·",
-              fontSize: 36,
-              weight: FontWeight.w800,
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 2, bottom: 8)
-          ),
-        ],
+      padding: EdgeInsets.zero,
+      child: Container(
+        color: AppColors.grayScale,
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            dataRow("Email address", email ?? ""),
+            const Divider(color: AppColors.grayScale, thickness: 1),
+            dataRow("Password", "· · · · · ·",
+                fontSize: 36,
+                weight: FontWeight.w800,
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 2, bottom: 8)
+            ),
+          ],
+        ),
       ),
     );
   }

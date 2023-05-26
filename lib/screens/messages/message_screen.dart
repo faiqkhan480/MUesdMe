@@ -4,18 +4,20 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
 
-import '../components/invitation_card.dart';
-import '../components/message_input.dart';
-import '../components/message_tile.dart';
-import '../controllers/message_controller.dart';
-import '../models/chat.dart';
-import '../models/message.dart';
-import '../services/auth_service.dart';
-import '../utils/app_colors.dart';
-import '../utils/constants.dart';
-import '../utils/style_config.dart';
-import '../widgets/loader.dart';
+import '../../components/invitation_card.dart';
+import '../../components/message_input.dart';
+import '../../components/message_tile.dart';
+import '../../controllers/message_controller.dart';
+import '../../models/chat.dart';
+import '../../models/message.dart';
+import '../../services/auth_service.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/constants.dart';
+import '../../utils/style_config.dart';
+import '../../widgets/loader.dart';
 
 
 class MessageScreen extends GetView<MessageController> {
@@ -84,31 +86,79 @@ class MessageScreen extends GetView<MessageController> {
         children: [
           _loading && _messages.isEmpty ?
           const Loader() :
-          ListView.builder(
-            itemCount: _messages.length,
-            physics: const BouncingScrollPhysics(),
-            reverse: true,
+          GroupedListView<Message?, DateTime?>(
             padding: const EdgeInsets.only(top: 10,bottom: 60),
-            // physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              if(_messages.elementAt(index)?.chatId != _chatUser?.chatId){
+            elements: _messages,
+            groupBy: (element) {
+              if(element?.type == "Invite"){
+                if(element?.userId != _authService.currentUser?.userId) {
+                  return DateTime(element!.messageDate!.year, element.messageDate!.month, element.messageDate!.day);
+                }
+                return DateTime(element!.messageDate!.year, element.messageDate!.month, element.messageDate!.day, 1);
+              }
+              return DateTime(element!.messageDate!.year, element.messageDate!.month, element.messageDate!.day);
+            },
+            groupSeparatorBuilder: (DateTime? groupByValue) => (groupByValue == null || groupByValue.hour == 1) ?
+            const SizedBox.shrink() :
+            Center(child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.secondaryColor,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                padding: const EdgeInsets.all(8),
+                child: Text(DateFormat("dd MMM yyyy").format(groupByValue), style: const TextStyle(color: Colors.white),),
+              ),),
+            // itemBuilder: (context, dynamic element) => Text(element['name']),
+            itemBuilder: (context, element) {
+              if(element?.chatId != _chatUser?.chatId){
                 return const SizedBox.shrink();
               }
-              if(_messages.elementAt(index)?.type == "Invite"){
-                if(_messages.elementAt(index)?.userId != _authService.currentUser?.userId) {
+              if(element?.type == "Invite"){
+                if(element?.userId != _authService.currentUser?.userId) {
                   return Center(
-                    child: InvitationCard(user: _chatUser, onTap: () => controller.handleInvite(_messages.elementAt(index)!),),
+                    child: InvitationCard(user: _chatUser, onTap: () => controller.handleInvite(element!),),
                   );
                 }
                 return const SizedBox.shrink();
               }
               return MessageTile(
-                message: _messages.elementAt(index)!,
+                message: element!,
                 senderImage: _authService.currentUser?.profilePic,
                 receiverImage: _chatUser?.profilePic,
               );
             },
+            itemComparator: (item1, item2) => (item1 != null && item2 != null) ? item1.messageDate!.compareTo(item2.messageDate!) : 0, // optional
+            useStickyGroupSeparators: false, // optional
+            floatingHeader: true, // optional
+            order: GroupedListOrder.DESC, // optional
+            physics: const BouncingScrollPhysics(),
+            reverse: true,
           ),
+          // ListView.builder(
+          //   itemCount: _messages.length,
+          //   physics: const BouncingScrollPhysics(),
+          //   reverse: true,
+          //   padding: const EdgeInsets.only(top: 10,bottom: 60),
+          //   // physics: const NeverScrollableScrollPhysics(),
+          //   itemBuilder: (context, index) {
+          //     if(_messages.elementAt(index)?.chatId != _chatUser?.chatId){
+          //       return const SizedBox.shrink();
+          //     }
+          //     if(_messages.elementAt(index)?.type == "Invite"){
+          //       if(_messages.elementAt(index)?.userId != _authService.currentUser?.userId) {
+          //         return Center(
+          //           child: InvitationCard(user: _chatUser, onTap: () => controller.handleInvite(_messages.elementAt(index)!),),
+          //         );
+          //       }
+          //       return const SizedBox.shrink();
+          //     }
+          //     return MessageTile(
+          //       message: _messages.elementAt(index)!,
+          //       senderImage: _authService.currentUser?.profilePic,
+          //       receiverImage: _chatUser?.profilePic,
+          //     );
+          //   },
+          // ),
 
           if(!_loading)...[
             Offstage(

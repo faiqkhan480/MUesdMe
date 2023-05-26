@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-import '../models/api_res.dart';
 import '../models/listing.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
@@ -12,13 +11,22 @@ import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 
-class MarketController extends GetxController {
+class MarketController extends GetxController with GetSingleTickerProviderStateMixin  {
+
+  List<String> myTabs = [
+    "Market Items",
+    "My Listing"
+  ];
+
+  late TabController tabController;
+
   Rx<Listing?> selectedItem = Rxn<Listing?>();
 
   RxBool buy = false.obs;
   RxBool loading = true.obs;
   RxBool fetching = false.obs;
   RxBool buying = false.obs;
+  RxBool orderResponse = false.obs;
   RxInt currIndex = 0.obs;
   Rx<BoxFit> boxFit = BoxFit.cover.obs;
   Rx<Alignment> alignment = const Alignment(0.6, 0).obs;
@@ -41,6 +49,8 @@ class MarketController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    tabController = TabController(vsync: this, length: myTabs.length);
+
     betterCtrl = BetterPlayerListVideoPlayerController();
     betterCtrl.setVolume(0);
     getAllListing();
@@ -97,28 +107,32 @@ class MarketController extends GetxController {
   }
 
   Future<void> _sndBuyRequest() async {
-    buying.value = true;
+    orderResponse.value = false;
     var res = await _service.buyItem(selectedItem.value!.itemId!.toString(), selectedItem.value!.price!.toString());
     if(res != null) {
       _authService.setUser(_authService.currentUser?.copyWith(wallet: (_authService.currentUser!.wallet! - selectedItem.value!.price!)));
-      Get.back();
+      // Get.back();
       Get.snackbar("Success!", res ?? "",
           backgroundColor: AppColors.successColor,
           colorText: Colors.white
       );
+      orderResponse.value = true;
     }
-    buying.value = false;
+    buying.value = true;
   }
 
-  void resetValues() {
+  void resetValues(bool deleteItem) {
     debugPrint(":::::::::::::::RESET");
     if(!buy() && selectedItem.value?.userId != _authService.currentUser?.userId) {
       Get.back();
     }
     buy.value = false;
-    // boxFit.value = buy() ? BoxFit.none : BoxFit.cover;
     height.value = Get.height;
     borderRadius.value = buy() ? BorderRadius.circular(0) : BorderRadius.circular(30);
+    currIndex.value = 0;
+    if(deleteItem) {
+      selectedItem = Rxn<Listing?>();
+    }
   }
 
   Future updatePaletteGenerator([String? path, int? index]) async {
@@ -160,7 +174,15 @@ class MarketController extends GetxController {
 
   // EDIT ITEM
   void editItem() {
+    uploadItem.value = uploadItem.value?.copyWith(
+      files: selectedItem.value?.files
+    );
     Get.toNamed(AppRoutes.ITEMUPLOAD, arguments: selectedItem.value!.category!);
   }
 
+  // UPDATE ITEM
+  updateItem(Listing item) {
+    uploadItem = Rxn<Listing?>();
+    selectedItem.value = item;
+  }
 }

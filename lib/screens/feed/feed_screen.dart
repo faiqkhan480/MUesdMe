@@ -1,19 +1,23 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 
-import '../components/comment_sheet.dart';
-import '../components/feed_actions.dart';
-import '../components/feed_card.dart';
-import '../components/header.dart';
-import '../components/share_sheet.dart';
-import '../controllers/comment_controller.dart';
-import '../models/auths/user_model.dart';
-import '../models/feed.dart';
-import '../controllers/feed_controller.dart';
-import '../utils/assets.dart';
-import '../widgets/loader.dart';
+import '../../components/comment_sheet.dart';
+import '../../components/editor_sheet.dart';
+import '../../components/feed_actions.dart';
+import '../../components/feed_card.dart';
+import '../../components/header.dart';
+import '../../components/share_sheet.dart';
+import '../../controllers/comment_controller.dart';
+import '../../models/auths/user_model.dart';
+import '../../models/feed.dart';
+import '../../controllers/feed_controller.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/assets.dart';
+import '../../widgets/loader.dart';
 
 class FeedScreen extends StatelessWidget {
 // class FeedScreen extends GetView<FeedController> {
@@ -87,6 +91,11 @@ class FeedScreen extends StatelessWidget {
           )),
         ],
       ),
+
+     floatingActionButton: FloatingActionButton(
+       onPressed: openEditorSheet,
+       child: const Icon(FontAwesome5Solid.brush),
+     )
     );
   }
 
@@ -127,5 +136,17 @@ class FeedScreen extends StatelessWidget {
     if(_feeds.elementAt(index)?.feedId != null) {
       controller.handleLike(index, _feeds.elementAt(index)!.feedId!);
     }
+  }
+
+  // OPEN EDITOR SHEET
+  openEditorSheet() {
+     Get.bottomSheet(
+        const EditorSheet(),
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
   }
 }

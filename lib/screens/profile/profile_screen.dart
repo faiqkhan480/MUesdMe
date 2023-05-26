@@ -7,11 +7,11 @@ import 'package:lottie/lottie.dart';
 import '../../components/comment_sheet.dart';
 import '../../components/header.dart';
 import '../../components/share_sheet.dart';
+import '../../components/wallet_sheet.dart';
 import '../../controllers/comment_controller.dart';
 import '../../controllers/profile_controller.dart';
 import '../../models/auths/user_model.dart';
 import '../../models/feed.dart';
-import '../../routes/app_routes.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/style_config.dart';
@@ -60,13 +60,13 @@ class ProfileScreen extends GetView<ProfileController> {
                 Center(child: Lottie.asset(Assets.loader)):
                 RefreshIndicator(
                   // displacement: 20,
-                  notificationPredicate: (notification) {
+                  notificationPredicate: (controller.feeds.isNotEmpty) ? (notification) {
                     // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
                     if (notification is OverscrollNotification || Platform.isIOS) {
                       return notification.depth == 2;
                     }
                     return notification.depth == 0;
-                 },
+                  } : defaultScrollNotificationPredicate,
                   onRefresh: controller.getData,
                   child: ProfileBody(
                     onRefresh: controller.getData,
@@ -89,9 +89,7 @@ class ProfileScreen extends GetView<ProfileController> {
                         padding: const EdgeInsets.all(10),
                         width: 100,
                         child: WalletButton(
-                          onTap: () {
-                            // Get.toNamed(AppRoutes.MARKET, arguments: "Profile");
-                          },
+                          onTap: handleWallet,
                           val: _user?.wallet,)
                     )
                   ),
@@ -130,6 +128,19 @@ class ProfileScreen extends GetView<ProfileController> {
     await Get.bottomSheet(
         ShareSheet(feed: feed),
         clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
+        enableDrag: true,
+        persistent: true,
+        ignoreSafeArea: false
+    );
+  }
+
+  // COMMENT SHEET
+  handleWallet() async {
+    await Get.bottomSheet(
+        const WalletSheet(),
+        clipBehavior: Clip.antiAlias,
+        isScrollControlled: true,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20)),),
         enableDrag: true,
         persistent: true,

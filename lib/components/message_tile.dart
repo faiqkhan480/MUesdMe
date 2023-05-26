@@ -5,7 +5,7 @@ import 'package:musedme/widgets/text_widget.dart';
 
 import '../models/chat.dart';
 import '../models/message.dart';
-import '../screens/message_screen.dart';
+import '../screens/messages/message_screen.dart';
 import '../utils/app_colors.dart';
 import '../utils/constants.dart';
 

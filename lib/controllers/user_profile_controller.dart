@@ -10,6 +10,7 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import 'agora_controller.dart';
 import 'chat_controller.dart';
+import 'feed_controller.dart';
 import 'profile_controller.dart';
 
 class UserProfileController extends GetxController {
@@ -29,6 +30,7 @@ class UserProfileController extends GetxController {
   final ApiService _service = Get.find<ApiService>();
   final AuthService _authService = Get.find<AuthService>();
   final ProfileController _profile = Get.find<ProfileController>();
+  final List<User?> _users = Get.find<FeedController>().users;
   final AgoraController _agora = Get.find<AgoraController>();
 
   // RxList<CachedVideoPlayerController?> videos = List<CachedVideoPlayerController?>.empty(growable: true).obs;
@@ -115,7 +117,10 @@ class UserProfileController extends GetxController {
   }
 
   navigateToCall(type) {
-    Get.toNamed(AppRoutes.CALL, arguments: Args(broadcaster: user.value, callType: CallType.outgoing, callMode: type));
+    Get.toNamed(AppRoutes.CALL,
+        arguments: Args(
+            broadcaster: _users.firstWhereOrNull((u) => u?.userId == user.value.userId) ?? user.value,
+        callType: CallType.outgoing, callMode: type));
   }
 
   // LIKE ON FEED

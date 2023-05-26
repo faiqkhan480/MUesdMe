@@ -67,6 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '760964256580',
     projectId: 'musedbyme-220ef',
     storageBucket: 'musedbyme-220ef.appspot.com',
+    androidClientId: '760964256580-sahrdm9c3tgp4iopfdee2igfuad75fq5.apps.googleusercontent.com',
     iosClientId: '760964256580-lfpvs22phagevmg6kithb20msl1taio4.apps.googleusercontent.com',
     iosBundleId: 'com.example.musedme',
   );
@@ -77,6 +78,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '760964256580',
     projectId: 'musedbyme-220ef',
     storageBucket: 'musedbyme-220ef.appspot.com',
+    androidClientId: '760964256580-sahrdm9c3tgp4iopfdee2igfuad75fq5.apps.googleusercontent.com',
     iosClientId: '760964256580-lfpvs22phagevmg6kithb20msl1taio4.apps.googleusercontent.com',
     iosBundleId: 'com.example.musedme',
   );

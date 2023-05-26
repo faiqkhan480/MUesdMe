@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:760964256580:android:75c7b8a702de0267c1bd11",
+        "mobilesdk_app_id": "1:760964256580:android:feedfba9a160ec3ec1bd11",
         "android_client_info": {
-          "package_name": "com.geSolucions.agora_interactive_broadcasting"
+          "package_name": "com.example.google_auth"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "760964256580-jegtu6q0d3u451cc42rfnjq8bi4om0g3.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "760964256580-lfpvs22phagevmg6kithb20msl1taio4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.musedme"
+              }
             }
           ]
         }
@@ -43,6 +50,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "760964256580-urobjj9phmbff9sp8d1gilq4jgpdn3fa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gesolucions.musedme",
+            "certificate_hash": "cb175749757e1826adf87b8bd2577c400859d8aa"
+          }
+        },
+        {
           "client_id": "760964256580-jegtu6q0d3u451cc42rfnjq8bi4om0g3.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -58,6 +73,13 @@
             {
               "client_id": "760964256580-jegtu6q0d3u451cc42rfnjq8bi4om0g3.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "760964256580-lfpvs22phagevmg6kithb20msl1taio4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.musedme"
+              }
             }
           ]
         }

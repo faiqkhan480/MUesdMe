@@ -29,7 +29,8 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
   @override
   Widget build(BuildContext context) {
     return path == null ?
-    const Center(child: Loader()) :
+        Container(color: Colors.black,) :
+    // const Center(child: Loader()) :
     Image.file(
       File(path ?? ""),
       fit: BoxFit.cover, height: double.infinity, width: double.infinity,);

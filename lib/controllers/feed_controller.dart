@@ -97,6 +97,16 @@ class FeedController extends GetxController {
     }
   }
 
+  // DOWNLOAD MEDIA
+  void handleLocalDownload(String path, bool isVideo) {
+    if(isVideo) {
+      _saveNetworkVideo(path.substring(7));
+    }
+    else {
+      _saveNetworkImage(path.substring(7).replaceAll("%20", " "));
+    }
+  }
+
   // SAVE/DOWNLOAD IMAGE
   void _saveNetworkVideo(String path) async {
     GallerySaver.saveVideo(path).then((bool? success) {
